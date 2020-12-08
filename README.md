@@ -1,1 +1,1 @@
-# blockchain-iot
+# blockchain-hyperledger-fabric-electronic-patient-records
