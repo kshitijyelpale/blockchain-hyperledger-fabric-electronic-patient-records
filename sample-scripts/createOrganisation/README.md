@@ -31,3 +31,4 @@ PeerOrgs:
     - Hospital A has one peer
     - Hospital B has two peers
     - Certifcates provided to all using cryptogen
+5. After running, you can check by seeing two new directories that get created peerOrganizations and ordererOrganizations
