@@ -44,15 +44,15 @@ Organizations:
         OrdererEndpoints:
             - orderer.example.com:7050
 
-    - &Org1
+    - &HospitalA
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment
-        Name: Org1MSP
+        Name: HospitalA-MSP
 
         # ID to load the MSP definition as
-        ID: Org1MSP
+        ID: HospitalA-MSP
 
-        MSPDir: ../organizations/peerOrganizations/org1.example.com/msp
+        MSPDir: ../organizations/peerOrganizations/hospA.example.com/msp
 
         # Policies defines the set of policies at this level of the config tree
         # For organization policies, their canonical path is usually
@@ -60,34 +60,34 @@ Organizations:
         Policies:
             Readers:
                 Type: Signature
-                Rule: "OR('Org1MSP.admin', 'Org1MSP.peer', 'Org1MSP.client')"
+                Rule: "OR('HospitalA-MSP.admin', 'HospitalA-MSP.peer', 'HospitalA-MSP.client')"
             Writers:
                 Type: Signature
-                Rule: "OR('Org1MSP.admin', 'Org1MSP.client')"
+                Rule: "OR('HospitalA-MSP.admin', 'HospitalA-MSP.client')"
             Admins:
                 Type: Signature
-                Rule: "OR('Org1MSP.admin')"
+                Rule: "OR('HospitalA-MSP.admin')"
             Endorsement:
                 Type: Signature
-                Rule: "OR('Org1MSP.peer')"
+                Rule: "OR('HospitalA-MSP.peer')"
 
         # leave this flag set to true.
         AnchorPeers:
             # AnchorPeers defines the location of peers which can be used
             # for cross org gossip communication.  Note, this value is only
             # encoded in the genesis block in the Application section context
-            - Host: peer0.org1.example.com
+            - Host: peer0.hospA.example.com
               Port: 7051
 
-    - &Org2
+    - &HospitalB
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment
-        Name: Org2MSP
+        Name: HospitalB-MSP
 
         # ID to load the MSP definition as
-        ID: Org2MSP
+        ID: HospitalB-MSP
 
-        MSPDir: ../organizations/peerOrganizations/org2.example.com/msp
+        MSPDir: ../organizations/peerOrganizations/hospB.example.com/msp
 
         # Policies defines the set of policies at this level of the config tree
         # For organization policies, their canonical path is usually
@@ -95,22 +95,56 @@ Organizations:
         Policies:
             Readers:
                 Type: Signature
-                Rule: "OR('Org2MSP.admin', 'Org2MSP.peer', 'Org2MSP.client')"
+                Rule: "OR('HospitalB-MSP.admin', 'HospitalB-MSP.peer', 'HospitalB-MSP.client')"
             Writers:
                 Type: Signature
-                Rule: "OR('Org2MSP.admin', 'Org2MSP.client')"
+                Rule: "OR('HospitalB-MSP.admin', 'HospitalB-MSP.client')"
             Admins:
                 Type: Signature
-                Rule: "OR('Org2MSP.admin')"
+                Rule: "OR('HospitalB-MSP.admin')"
             Endorsement:
                 Type: Signature
-                Rule: "OR('Org2MSP.peer')"
+                Rule: "OR('HospitalB-MSP.peer')"
 
         AnchorPeers:
             # AnchorPeers defines the location of peers which can be used
             # for cross org gossip communication.  Note, this value is only
             # encoded in the genesis block in the Application section context
-            - Host: peer0.org2.example.com
+            - Host: peer0.hospB.example.com
+              Port: 9051
+
+    - &HospitalC
+        # DefaultOrg defines the organization which is used in the sampleconfig
+        # of the fabric.git development environment
+        Name: HospitalC-MSP
+
+        # ID to load the MSP definition as
+        ID: HospitalC-MSP
+
+        MSPDir: ../organizations/peerOrganizations/hospC.example.com/msp
+
+        # Policies defines the set of policies at this level of the config tree
+        # For organization policies, their canonical path is usually
+        #   /Channel/<Application|Orderer>/<OrgName>/<PolicyName>
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('HospitalC-MSP.admin', 'HospitalC-MSP.peer', 'HospitalC-MSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('HospitalC-MSP.admin', 'HospitalC-MSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('HospitalC-MSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('HospitalC-MSP.peer')"
+
+        AnchorPeers:
+            # AnchorPeers defines the location of peers which can be used
+            # for cross org gossip communication.  Note, this value is only
+            # encoded in the genesis block in the Application section context
+            - Host: peer0.hospC.example.com
               Port: 9051
 
 ################################################################################
@@ -217,7 +251,7 @@ Orderer: &OrdererDefaults
 
     # Orderer Type: The orderer implementation to start
     OrdererType: etcdraft
-    
+
     # Addresses used to be the list of orderer addresses that clients and peers
     # could connect to.  However, this does not allow clients to associate orderer
     # addresses and orderer organizations which can be useful for things such
@@ -316,7 +350,7 @@ Channel: &ChannelDefaults
 ################################################################################
 Profiles:
 
-    TwoOrgsOrdererGenesis:
+    ThreeOrgsOrdererGenesis:
         <<: *ChannelDefaults
         Orderer:
             <<: *OrdererDefaults
@@ -327,15 +361,17 @@ Profiles:
         Consortiums:
             SampleConsortium:
                 Organizations:
-                    - *Org1
-                    - *Org2
-    TwoOrgsChannel:
+                    - *HospitalA
+                    - *HospitalB
+                    - *HospitalC
+    ThreeOrgsChannel:
         Consortium: SampleConsortium
         <<: *ChannelDefaults
         Application:
             <<: *ApplicationDefaults
             Organizations:
-                - *Org1
-                - *Org2
+                - *HospitalA
+                - *HospitalB
+                - *HospitalC
             Capabilities:
                 <<: *ApplicationCapabilities

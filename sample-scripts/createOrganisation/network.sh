@@ -107,14 +107,18 @@ function checkPrereqs() {
 }
 
 
-# MY function
+# Function to create an organization
+# Prerequisite YAML file in organization/cryptogen
+# Call this function with the organzation name as a parameter, the
+# The YAML file name nust be in format crypto-config-orgName.yaml
 function myCreateOrg() {
-  infoln "TESTTTTTTTTTT"
+  #infoln "Debug"
   infoln "Creating ${1} Identities"
   CRYPTOGEN_FILE_PATH="./organizations/cryptogen/crypto-config-${1}.yaml"
 
   infoln $CRYPTOGEN_FILE_PATH
-  # Check if org already exists
+
+  # Check if org already exists,
   if [ -d "organizations/peerOrganizations/${1}" ]; then
     fatalln "Organization already found. exiting"
   fi
@@ -286,12 +290,14 @@ function createConsortium() {
   # Note: For some unknown reason (at least for now) the block file can't be
   # named orderer.genesis.block or the orderer will fail to launch!
   set -x
-  configtxgen -profile TwoOrgsOrdererGenesis -channelID system-channel -outputBlock ./system-genesis-block/genesis.block
+  configtxgen -profile ThreeOrgsOrdererGenesis -channelID system-channel -outputBlock ./system-genesis-block/genesis.block
   res=$?
   { set +x; } 2>/dev/null
   if [ $res -ne 0 ]; then
     fatalln "Failed to generate orderer genesis block..."
   fi
+
+  infoln "Generated Orderer Genesis block"
 }
 
 # After we create the org crypto material and the system channel genesis block,
@@ -306,24 +312,25 @@ function networkUp() {
   checkPrereqs
   # generate artifacts if they don't exist
   if [ ! -d "organizations/peerOrganizations" ]; then
-    myCreateOrg org1
-    myCreateOrg org2
+    myCreateOrg hospA
+    myCreateOrg hospB
+    myCreateOrg hospC
     myCreateOrg orderer
-    #createConsortium
+    createConsortium
   fi
 
-  #COMPOSE_FILES="-f ${COMPOSE_FILE_BASE}"
+  COMPOSE_FILES="-f ${COMPOSE_FILE_BASE}"
 
-  #if [ "${DATABASE}" == "couchdb" ]; then
-  #  COMPOSE_FILES="${COMPOSE_FILES} -f ${COMPOSE_FILE_COUCH}"
-  #fi
+  if [ "${DATABASE}" == "couchdb" ]; then
+    COMPOSE_FILES="${COMPOSE_FILES} -f ${COMPOSE_FILE_COUCH}"
+  fi
 
-  #IMAGE_TAG=$IMAGETAG docker-compose ${COMPOSE_FILES} up -d 2>&1
+  IMAGE_TAG=$IMAGETAG docker-compose ${COMPOSE_FILES} up -d 2>&1
 
-  #docker ps -a
-  #if [ $? -ne 0 ]; then
-  #  fatalln "Unable to start network"
-  #fi
+  docker ps -a
+  if [ $? -ne 0 ]; then
+    fatalln "Unable to start network"
+  fi
 }
 
 ## call the script to join create the channel and join the peers of org1 and org2

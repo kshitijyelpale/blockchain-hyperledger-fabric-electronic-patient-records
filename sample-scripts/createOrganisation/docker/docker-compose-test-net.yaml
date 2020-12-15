@@ -7,8 +7,9 @@ version: '2'
 
 volumes:
   orderer.example.com:
-  peer0.org1.example.com:
-  peer0.org2.example.com:
+  peer0.hospA.example.com:
+  peer0.hospB.example.com:
+  peer0.hospC.example.com:
 
 networks:
   test:
@@ -48,8 +49,8 @@ services:
     networks:
       - test
 
-  peer0.org1.example.com:
-    container_name: peer0.org1.example.com
+  peer0.hospA.example.com:
+    container_name: peer0.hospA.example.com
     image: hyperledger/fabric-peer:$IMAGE_TAG
     environment:
       #Generic peer variables
@@ -66,19 +67,19 @@ services:
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
       # Peer specific variabes
-      - CORE_PEER_ID=peer0.org1.example.com
-      - CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+      - CORE_PEER_ID=peer0.hospA.example.com
+      - CORE_PEER_ADDRESS=peer0.hospA.example.com:7051
       - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
-      - CORE_PEER_CHAINCODEADDRESS=peer0.org1.example.com:7052
+      - CORE_PEER_CHAINCODEADDRESS=peer0.hospA.example.com:7052
       - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.example.com:7051
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.example.com:7051
-      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.hospA.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.hospA.example.com:7051
+      - CORE_PEER_LOCALMSPID=HospitalA-MSP
     volumes:
         - /var/run/:/host/var/run/
-        - ../organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp:/etc/hyperledger/fabric/msp
-        - ../organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls:/etc/hyperledger/fabric/tls
-        - peer0.org1.example.com:/var/hyperledger/production
+        - ../organizations/peerOrganizations/hospA.example.com/peers/peer0.hospA.example.com/msp:/etc/hyperledger/fabric/msp
+        - ../organizations/peerOrganizations/hospA.example.com/peers/peer0.hospA.example.com/tls:/etc/hyperledger/fabric/tls
+        - peer0.hospA.example.com:/var/hyperledger/production
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: peer node start
     ports:
@@ -86,8 +87,8 @@ services:
     networks:
       - test
 
-  peer0.org2.example.com:
-    container_name: peer0.org2.example.com
+  peer0.hospB.example.com:
+    container_name: peer0.hospB.example.com
     image: hyperledger/fabric-peer:$IMAGE_TAG
     environment:
       #Generic peer variables
@@ -104,22 +105,60 @@ services:
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
       # Peer specific variabes
-      - CORE_PEER_ID=peer0.org2.example.com
-      - CORE_PEER_ADDRESS=peer0.org2.example.com:9051
+      - CORE_PEER_ID=peer0.hospB.example.com
+      - CORE_PEER_ADDRESS=peer0.hospB.example.com:9051
       - CORE_PEER_LISTENADDRESS=0.0.0.0:9051
-      - CORE_PEER_CHAINCODEADDRESS=peer0.org2.example.com:9052
+      - CORE_PEER_CHAINCODEADDRESS=peer0.hospB.example.com:9052
       - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:9052
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org2.example.com:9051
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org2.example.com:9051
-      - CORE_PEER_LOCALMSPID=Org2MSP
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.hospB.example.com:9051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.hospB.example.com:9051
+      - CORE_PEER_LOCALMSPID=HospitalB-MSP
     volumes:
         - /var/run/:/host/var/run/
-        - ../organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/msp:/etc/hyperledger/fabric/msp
-        - ../organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls:/etc/hyperledger/fabric/tls
-        - peer0.org2.example.com:/var/hyperledger/production
+        - ../organizations/peerOrganizations/hospB.example.com/peers/peer0.hospB.example.com/msp:/etc/hyperledger/fabric/msp
+        - ../organizations/peerOrganizations/hospB.example.com/peers/peer0.hospB.example.com/tls:/etc/hyperledger/fabric/tls
+        - peer0.hospB.example.com:/var/hyperledger/production
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: peer node start
     ports:
       - 9051:9051
+    networks:
+      - test
+
+  peer0.hospC.example.com:
+    container_name: peer0.hospC.example.com
+    image: hyperledger/fabric-peer:$IMAGE_TAG
+    environment:
+      #Generic peer variables
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      # the following setting starts chaincode containers on the same
+      # bridge network as the peers
+      # https://docs.docker.com/compose/networking/
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_test
+      - FABRIC_LOGGING_SPEC=INFO
+      #- FABRIC_LOGGING_SPEC=DEBUG
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      # Peer specific variabes
+      - CORE_PEER_ID=peer0.hospC.example.com
+      - CORE_PEER_ADDRESS=peer0.hospC.example.com:9061
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:9061
+      - CORE_PEER_CHAINCODEADDRESS=peer0.hospC.example.com:9062
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:9062
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.hospC.example.com:9061
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.hospC.example.com:9061
+      - CORE_PEER_LOCALMSPID=HospitalC-MSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../organizations/peerOrganizations/hospC.example.com/peers/peer0.hospC.example.com/msp:/etc/hyperledger/fabric/msp
+        - ../organizations/peerOrganizations/hospC.example.com/peers/peer0.hospC.example.com/tls:/etc/hyperledger/fabric/tls
+        - peer0.hospC.example.com:/var/hyperledger/production
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    ports:
+      - 9061:9061
     networks:
       - test

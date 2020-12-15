@@ -1,0 +1,18 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+PeerOrgs:
+  # ---------------------------------------------------------------------------
+  # Hospital A
+  # ---------------------------------------------------------------------------
+  - Name: HospitalA
+    Domain: hospA.example.com
+    EnableNodeOUs: true
+    Template:
+      Count: 2
+      SANS:
+        - localhost
+    Users:
+      Count: 1
