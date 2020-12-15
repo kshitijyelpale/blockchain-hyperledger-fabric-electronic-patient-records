@@ -32,3 +32,16 @@ PeerOrgs:
     - Hospital B has two peers
     - Certifcates provided to all using cryptogen
 5. After running, you can check by seeing two new directories that get created peerOrganizations and ordererOrganizations
+
+
+# Create Consortium
+
+- The consortium is created in the function createConsortium in network.sh
+- File that needs to be modified for creation of consortium
+    1. configtx/configtx.yaml 
+        - In this YAML file the changes are made by adding one extra organisation and changing the Profiles at the bottom
+    2. docker/docker-compose-ca.yaml
+        - In this YAML file the changes are made by adding one extra organisation
+    3. docker/docker-compose-test-net.yaml
+    
+### Now network.sh can be executed to bring the network up with three organisations and one orderer.
