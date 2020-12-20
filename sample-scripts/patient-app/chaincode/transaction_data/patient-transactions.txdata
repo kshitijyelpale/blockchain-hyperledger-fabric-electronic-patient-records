@@ -1,0 +1,44 @@
+[
+    {
+        "transactionName": "patientExists",
+        "transactionLabel": "A test patientExists transaction",
+        "arguments": [
+            "001"
+        ],
+        "transientData": {}
+    },
+    {
+        "transactionName": "createPatient",
+        "transactionLabel": "A test createPatient transaction",
+        "arguments": [
+            "001",
+            "some value"
+        ],
+        "transientData": {}
+    },
+    {
+        "transactionName": "readPatient",
+        "transactionLabel": "A test readPatient transaction",
+        "arguments": [
+            "001"
+        ],
+        "transientData": {}
+    },
+    {
+        "transactionName": "updatePatient",
+        "transactionLabel": "A test updatePatient transaction",
+        "arguments": [
+            "001",
+            "some other value"
+        ],
+        "transientData": {}
+    },
+    {
+        "transactionName": "deletePatient",
+        "transactionLabel": "A test deletePatient transaction",
+        "arguments": [
+            "001"
+        ],
+        "transientData": {}
+    }
+]
