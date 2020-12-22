@@ -69,7 +69,8 @@ class PatientContract extends Contract {
         if (!exists) {
             throw new Error(`The patient ${patientId} does not exist`);
         }
-        const patient = { address: newAddress };
+        const patient = await this.readPatient(ctx, patientId)
+        patient.address = newAddress;
         const buffer = Buffer.from(JSON.stringify(patient));
         await ctx.stub.putState(patientId, buffer);
     }

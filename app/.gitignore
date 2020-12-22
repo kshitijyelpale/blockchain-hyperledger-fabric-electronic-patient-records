@@ -1,2 +1,4 @@
 *.lock
 */.gradle/*
+bin/
+/bin/
