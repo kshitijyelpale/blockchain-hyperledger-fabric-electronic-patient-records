@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2020-12-20T14:26:03.249Z" agent="5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36" etag="S6LH6sQLG53SLchtFE2V" version="14.1.1" type="github">
+<mxfile host="app.diagrams.net" modified="2020-12-22T11:47:42.486Z" agent="5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36" etag="6Pg7tnl4KvBn9ogmgtho" version="14.1.1" type="github">
   <diagram id="Ks6JhOUS_nB5R6ai6mRj" name="Page-1">
     <mxGraphModel dx="1186" dy="764" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
@@ -88,7 +88,7 @@
         <mxCell id="oR3yUl0_6StW2h7NLH77-51" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeColor=#000000;" parent="1" source="oR3yUl0_6StW2h7NLH77-47" target="oR3yUl0_6StW2h7NLH77-43" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="oR3yUl0_6StW2h7NLH77-47" value="NodeJS server" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;" parent="1" vertex="1">
+        <mxCell id="oR3yUl0_6StW2h7NLH77-47" value="Fabric SDK&lt;br&gt;NodeJS server" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;" parent="1" vertex="1">
           <mxGeometry x="440" y="15" width="80" height="50" as="geometry" />
         </mxCell>
         <mxCell id="oR3yUl0_6StW2h7NLH77-50" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeColor=#000000;" parent="1" source="oR3yUl0_6StW2h7NLH77-48" target="oR3yUl0_6StW2h7NLH77-47" edge="1">
