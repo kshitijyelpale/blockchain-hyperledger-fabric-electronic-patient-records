@@ -2,3 +2,4 @@
 */.gradle/*
 bin/
 /bin/
+node_modules/
