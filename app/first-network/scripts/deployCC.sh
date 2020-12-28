@@ -40,8 +40,8 @@ if [ "$CC_SRC_PATH" = "NA" ]; then
   # first see which chaincode we have. This will be based on the
   # short name of the known chaincode sample
   if [ "$CC_NAME" = "patient" ]; then
-    println $'\e[0;32m'patient-app$'\e[0m' chaincode
-    CC_SRC_PATH="../patient-app"
+    println $'\e[0;32m'patient-asset-transfer-basic$'\e[0m' chaincode
+    CC_SRC_PATH="../patient-asset-transfer-basic"
   else
     fatalln "The chaincode name ${CC_NAME} is not supported by this script. Supported chaincode names are: patient, etc.,"
   fi
@@ -258,8 +258,8 @@ infoln "Installing chaincode on peer0.hosp1..."
 installChaincode 1
 infoln "Install chaincode on peer0.hosp2..."
 installChaincode 2
-#infoln "Install chaincode on peer0.hosp3..."
-#installChaincode 3
+infoln "Install chaincode on peer0.hosp3..."
+installChaincode 3
 
 ## query whether the chaincode is installed
 queryInstalled 1
@@ -271,7 +271,7 @@ approveForMyOrg 1
 ## expect org1 to have approved and org2 not to
 checkCommitReadiness 1 "\"hosp1MSP\": true" "\"hosp2MSP\": false"
 checkCommitReadiness 2 "\"hosp1MSP\": true" "\"hosp2MSP\": false" 
-#checkCommitReadiness 3 "\"hosp1MSP\": true" "\"hosp2MSP\": false" "\"hosp3MSP\": false"
+checkCommitReadiness 3 "\"hosp1MSP\": true" "\"hosp2MSP\": false" "\"hosp3MSP\": false"
 
 ## now approve also for hosp2
 approveForMyOrg 2
@@ -280,31 +280,31 @@ approveForMyOrg 2
 ## expect them both to have approved
 checkCommitReadiness 1 "\"hosp1MSP\": true" "\"hosp2MSP\": true" 
 checkCommitReadiness 2 "\"hosp1MSP\": true" "\"hosp2MSP\": true" 
-#checkCommitReadiness 3 "\"hosp1MSP\": true" "\"hosp2MSP\": true" "\"hosp3MSP\": false"
+checkCommitReadiness 3 "\"hosp1MSP\": true" "\"hosp2MSP\": true" "\"hosp3MSP\": false"
 
 ## now approve also for hosp3
-#approveForMyOrg 3
+approveForMyOrg 3
 
 ## check whether the chaincode definition is ready to be committed
 ## expect them both to have approved
 checkCommitReadiness 1 "\"hosp1MSP\": true" "\"hosp2MSP\": true" 
 checkCommitReadiness 2 "\"hosp1MSP\": true" "\"hosp2MSP\": true" 
-#checkCommitReadiness 3 "\"hosp1MSP\": true" "\"hosp2MSP\": true" "\"hosp3MSP\": true"
+checkCommitReadiness 3 "\"hosp1MSP\": true" "\"hosp2MSP\": true" "\"hosp3MSP\": true"
 
 ## now that we know for sure both orgs have approved, commit the definition
-commitChaincodeDefinition 1 2
+commitChaincodeDefinition 1 2 3
 
 ## query on both orgs to see that the definition committed successfully
 queryCommitted 1
 queryCommitted 2
-#queryCommitted 3
+queryCommitted 3
 
 ## Invoke the chaincode - this does require that the chaincode have the 'initLedger'
 ## method defined
 if [ "$CC_INIT_FCN" = "NA" ]; then
   infoln "Chaincode initialization is not required"
 else
-  chaincodeInvokeInit 1 2
+  chaincodeInvokeInit 1 2 3
 fi
 
 exit 0
