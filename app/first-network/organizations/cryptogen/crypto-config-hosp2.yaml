@@ -11,7 +11,7 @@ PeerOrgs:
   # Org2
   # ---------------------------------------------------------------------------
   - Name: hosp2
-    Domain: hosp2.example.com
+    Domain: hosp2.lithium.com
     EnableNodeOUs: true
     # ---------------------------------------------------------------------------
     # "Specs"
@@ -30,8 +30,8 @@ PeerOrgs:
     #                 Org.Domain, respectively.
     # ---------------------------------------------------------------------------
     # Specs:
-    #   - Hostname: foo # implicitly "foo.org1.example.com"
-    #     CommonName: foo27.org5.example.com # overrides Hostname-based FQDN set above
+    #   - Hostname: foo # implicitly "foo.org1.lithium.com"
+    #     CommonName: foo27.org5.lithium.com # overrides Hostname-based FQDN set above
     #   - Hostname: bar
     #   - Hostname: baz
     # ---------------------------------------------------------------------------

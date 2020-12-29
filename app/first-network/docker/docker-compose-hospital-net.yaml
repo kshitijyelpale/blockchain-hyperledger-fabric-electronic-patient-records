@@ -6,17 +6,17 @@
 version: '2'
 
 volumes:
-  orderer.example.com:
-  peer0.hosp1.example.com:
-  peer0.hosp2.example.com:
+  orderer.lithium.com:
+  peer0.hosp1.lithium.com:
+  peer0.hosp2.lithium.com:
 
 networks:
-  test:
+  hospital:
 
 services:
 
-  orderer.example.com:
-    container_name: orderer.example.com
+  orderer.lithium.com:
+    container_name: orderer.lithium.com
     image: hyperledger/fabric-orderer:$IMAGE_TAG
     environment:
       - FABRIC_LOGGING_SPEC=INFO
@@ -40,16 +40,16 @@ services:
     command: orderer
     volumes:
         - ../system-genesis-block/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
-        - ../organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp:/var/hyperledger/orderer/msp
-        - ../organizations/ordererOrganizations/example.com/orderers/orderer.example.com/tls/:/var/hyperledger/orderer/tls
-        - orderer.example.com:/var/hyperledger/production/orderer
+        - ../organizations/ordererOrganizations/lithium.com/orderers/orderer.lithium.com/msp:/var/hyperledger/orderer/msp
+        - ../organizations/ordererOrganizations/lithium.com/orderers/orderer.lithium.com/tls/:/var/hyperledger/orderer/tls
+        - orderer.lithium.com:/var/hyperledger/production/orderer
     ports:
       - 7050:7050
     networks:
-      - test
+      - hospital
 
-  peer0.hosp1.example.com:
-    container_name: peer0.hosp1.example.com
+  peer0.hosp1.lithium.com:
+    container_name: peer0.hosp1.lithium.com
     image: hyperledger/fabric-peer:$IMAGE_TAG
     environment:
       #Generic peer variables
@@ -66,28 +66,28 @@ services:
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
       # Peer specific variabes
-      - CORE_PEER_ID=peer0.hosp1.example.com
-      - CORE_PEER_ADDRESS=peer0.hosp1.example.com:7051
+      - CORE_PEER_ID=peer0.hosp1.lithium.com
+      - CORE_PEER_ADDRESS=peer0.hosp1.lithium.com:7051
       - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
-      - CORE_PEER_CHAINCODEADDRESS=peer0.hosp1.example.com:7052
+      - CORE_PEER_CHAINCODEADDRESS=peer0.hosp1.lithium.com:7052
       - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.hosp1.example.com:7051
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.hosp1.example.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.hosp1.lithium.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.hosp1.lithium.com:7051
       - CORE_PEER_LOCALMSPID=hosp1MSP
     volumes:
         - /var/run/:/host/var/run/
-        - ../organizations/peerOrganizations/hosp1.example.com/peers/peer0.hosp1.example.com/msp:/etc/hyperledger/fabric/msp
-        - ../organizations/peerOrganizations/hosp1.example.com/peers/peer0.hosp1.example.com/tls:/etc/hyperledger/fabric/tls
-        - peer0.hosp1.example.com:/var/hyperledger/production
+        - ../organizations/peerOrganizations/hosp1.lithium.com/peers/peer0.hosp1.lithium.com/msp:/etc/hyperledger/fabric/msp
+        - ../organizations/peerOrganizations/hosp1.lithium.com/peers/peer0.hosp1.lithium.com/tls:/etc/hyperledger/fabric/tls
+        - peer0.hosp1.lithium.com:/var/hyperledger/production
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: peer node start
     ports:
       - 7051:7051
     networks:
-      - test
+      - hospital
 
-  peer0.hosp2.example.com:
-    container_name: peer0.hosp2.example.com
+  peer0.hosp2.lithium.com:
+    container_name: peer0.hosp2.lithium.com
     image: hyperledger/fabric-peer:$IMAGE_TAG
     environment:
       #Generic peer variables
@@ -104,22 +104,22 @@ services:
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
       # Peer specific variabes
-      - CORE_PEER_ID=peer0.hosp2.example.com
-      - CORE_PEER_ADDRESS=peer0.hosp2.example.com:9051
+      - CORE_PEER_ID=peer0.hosp2.lithium.com
+      - CORE_PEER_ADDRESS=peer0.hosp2.lithium.com:9051
       - CORE_PEER_LISTENADDRESS=0.0.0.0:9051
-      - CORE_PEER_CHAINCODEADDRESS=peer0.hosp2.example.com:9052
+      - CORE_PEER_CHAINCODEADDRESS=peer0.hosp2.lithium.com:9052
       - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:9052
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.hosp2.example.com:9051
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.hosp2.example.com:9051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.hosp2.lithium.com:9051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.hosp2.lithium.com:9051
       - CORE_PEER_LOCALMSPID=hosp2MSP
     volumes:
         - /var/run/:/host/var/run/
-        - ../organizations/peerOrganizations/hosp2.example.com/peers/peer0.hosp2.example.com/msp:/etc/hyperledger/fabric/msp
-        - ../organizations/peerOrganizations/hosp2.example.com/peers/peer0.hosp2.example.com/tls:/etc/hyperledger/fabric/tls
-        - peer0.hosp2.example.com:/var/hyperledger/production
+        - ../organizations/peerOrganizations/hosp2.lithium.com/peers/peer0.hosp2.lithium.com/msp:/etc/hyperledger/fabric/msp
+        - ../organizations/peerOrganizations/hosp2.lithium.com/peers/peer0.hosp2.lithium.com/tls:/etc/hyperledger/fabric/tls
+        - peer0.hosp2.lithium.com:/var/hyperledger/production
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: peer node start
     ports:
       - 9051:9051
     networks:
-      - test
+      - hospital

@@ -21,7 +21,7 @@ Organizations:
         # ID to load the MSP definition as
         ID: hosp3MSP
 
-        MSPDir: ../organizations/peerOrganizations/hosp3.example.com/msp
+        MSPDir: ../organizations/peerOrganizations/hosp3.lithium.com/msp
 
         Policies:
             Readers:
@@ -41,5 +41,5 @@ Organizations:
             # AnchorPeers defines the location of peers which can be used
             # for cross org gossip communication.  Note, this value is only
             # encoded in the genesis block in the Application section context
-            - Host: peer0.hosp3.example.com
+            - Host: peer0.hosp3.lithium.com
               Port: 11051

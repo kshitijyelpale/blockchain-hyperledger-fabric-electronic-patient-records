@@ -40,7 +40,7 @@
 version: 1.2.0
 
 # Server's listening port (default: 7054)
-port: 11054
+port: 7054
 
 # Enables debug logging (default: false)
 debug: false
@@ -80,7 +80,7 @@ tls:
 #############################################################################
 ca:
   # Name of this CA
-  name: hosp3CA
+  name: hosp2CA
   # Key file (is only used to import a private key into BCCSP)
   keyfile:
   # Certificate file (default: ca-cert.pem)
@@ -301,16 +301,16 @@ signing:
 #     CA certificates though it can still issue end entity certificates.
 ###########################################################################
 csr:
-   cn: ca.hosp3.lithium.com
+   cn: ca.hosp2.lithium.com
    names:
-      - C: US
-        ST: "North Carolina"
-        L: "Raleigh"
-        O: hosp3.lithium.com
+      - C: UK
+        ST: "Hampshire"
+        L: "Hursley"
+        O: hosp2.lithium.com
         OU:
    hosts:
      - localhost
-     - hosp3.lithium.com
+     - hosp2.lithium.com
    ca:
       expiry: 131400h
       pathlength: 1

@@ -25,7 +25,7 @@ Organizations:
         ID: OrdererMSP
 
         # MSPDir is the filesystem path which contains the MSP configuration
-        MSPDir: ../organizations/ordererOrganizations/example.com/msp
+        MSPDir: ../organizations/ordererOrganizations/lithium.com/msp
 
         # Policies defines the set of policies at this level of the config tree
         # For organization policies, their canonical path is usually
@@ -42,7 +42,7 @@ Organizations:
                 Rule: "OR('OrdererMSP.admin')"
 
         OrdererEndpoints:
-            - orderer.example.com:7050
+            - orderer.lithium.com:7050
 
     - &hosp1
         # DefaultOrg defines the organization which is used in the sampleconfig
@@ -52,7 +52,7 @@ Organizations:
         # ID to load the MSP definition as
         ID: hosp1MSP
 
-        MSPDir: ../organizations/peerOrganizations/hosp1.example.com/msp
+        MSPDir: ../organizations/peerOrganizations/hosp1.lithium.com/msp
 
         # Policies defines the set of policies at this level of the config tree
         # For organization policies, their canonical path is usually
@@ -76,7 +76,7 @@ Organizations:
             # AnchorPeers defines the location of peers which can be used
             # for cross org gossip communication.  Note, this value is only
             # encoded in the genesis block in the Application section context
-            - Host: peer0.hosp1.example.com
+            - Host: peer0.hosp1.lithium.com
               Port: 7051
 
     - &hosp2
@@ -87,7 +87,7 @@ Organizations:
         # ID to load the MSP definition as
         ID: hosp2MSP
 
-        MSPDir: ../organizations/peerOrganizations/hosp2.example.com/msp
+        MSPDir: ../organizations/peerOrganizations/hosp2.lithium.com/msp
 
         # Policies defines the set of policies at this level of the config tree
         # For organization policies, their canonical path is usually
@@ -110,7 +110,7 @@ Organizations:
             # AnchorPeers defines the location of peers which can be used
             # for cross org gossip communication.  Note, this value is only
             # encoded in the genesis block in the Application section context
-            - Host: peer0.hosp2.example.com
+            - Host: peer0.hosp2.lithium.com
               Port: 9051
 
 ################################################################################
@@ -224,14 +224,14 @@ Orderer: &OrdererDefaults
     # as TLS validation.  The preferred way to specify orderer addresses is now
     # to include the OrdererEndpoints item in your org definition
     Addresses:
-        - orderer.example.com:7050
+        - orderer.lithium.com:7050
 
     EtcdRaft:
         Consenters:
-        - Host: orderer.example.com
+        - Host: orderer.lithium.com
           Port: 7050
-          ClientTLSCert: ../organizations/ordererOrganizations/example.com/orderers/orderer.example.com/tls/server.crt
-          ServerTLSCert: ../organizations/ordererOrganizations/example.com/orderers/orderer.example.com/tls/server.crt
+          ClientTLSCert: ../organizations/ordererOrganizations/lithium.com/orderers/orderer.lithium.com/tls/server.crt
+          ServerTLSCert: ../organizations/ordererOrganizations/lithium.com/orderers/orderer.lithium.com/tls/server.crt
 
     # Batch Timeout: The amount of time to wait before creating a batch
     BatchTimeout: 2s

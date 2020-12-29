@@ -12,7 +12,7 @@
 #
 
 echo
-echo "========= Getting hosp3 on to your test network ========= "
+echo "========= Getting hosp3 on to your hospital network ========= "
 echo
 CHANNEL_NAME="$1"
 DELAY="$2"
@@ -52,7 +52,7 @@ joinChannelWithRetry() {
 
 echo "Fetching channel config block from orderer..."
 set -x
-peer channel fetch 0 $CHANNEL_NAME.block -o orderer.example.com:7050 --ordererTLSHostnameOverride orderer.example.com -c $CHANNEL_NAME --tls --cafile $ORDERER_CA >&log.txt
+peer channel fetch 0 $CHANNEL_NAME.block -o orderer.lithium.com:7050 --ordererTLSHostnameOverride orderer.lithium.com -c $CHANNEL_NAME --tls --cafile $ORDERER_CA >&log.txt
 res=$?
 { set +x; } 2>/dev/null
 cat log.txt
@@ -62,7 +62,7 @@ joinChannelWithRetry 3
 echo "===================== peer0.hosp3 joined channel '$CHANNEL_NAME' ===================== "
 
 echo
-echo "========= Finished adding hosp3 to your test network! ========= "
+echo "========= Finished adding hosp3 to your hospital network! ========= "
 echo
 
 exit 0
