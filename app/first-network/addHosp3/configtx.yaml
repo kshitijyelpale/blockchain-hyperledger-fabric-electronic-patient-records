@@ -1,0 +1,45 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+---
+################################################################################
+#
+#   Section: Organizations
+#
+#   - This section defines the different organizational identities which will
+#   be referenced later in the configuration.
+#
+################################################################################
+Organizations:
+    - &hosp3
+        # DefaultOrg defines the organization which is used in the sampleconfig
+        # of the fabric.git development environment
+        Name: hosp3MSP
+
+        # ID to load the MSP definition as
+        ID: hosp3MSP
+
+        MSPDir: ../organizations/peerOrganizations/hosp3.lithium.com/msp
+
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('hosp3MSP.admin', 'hosp3MSP.peer', 'hosp3MSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('hosp3MSP.admin', 'hosp3MSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('hosp3MSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('hosp3MSP.peer')"
+
+        AnchorPeers:
+            # AnchorPeers defines the location of peers which can be used
+            # for cross org gossip communication.  Note, this value is only
+            # encoded in the genesis block in the Application section context
+            - Host: peer0.hosp3.lithium.com
+              Port: 11051

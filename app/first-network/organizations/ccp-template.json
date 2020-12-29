@@ -1,0 +1,49 @@
+{
+    "name": "hospital-network-hosp${ORG}",
+    "version": "1.0.0",
+    "client": {
+        "organization": "hosp${ORG}",
+        "connection": {
+            "timeout": {
+                "peer": {
+                    "endorser": "300"
+                }
+            }
+        }
+    },
+    "organizations": {
+        "hosp${ORG}": {
+            "mspid": "hosp${ORG}MSP",
+            "peers": [
+                "peer0.hosp${ORG}.lithium.com"
+            ],
+            "certificateAuthorities": [
+                "ca.hosp${ORG}.lithium.com"
+            ]
+        }
+    },
+    "peers": {
+        "peer0.hosp${ORG}.lithium.com": {
+            "url": "grpcs://localhost:${P0PORT}",
+            "tlsCACerts": {
+                "pem": "${PEERPEM}"
+            },
+            "grpcOptions": {
+                "ssl-target-name-override": "peer0.hosp${ORG}.lithium.com",
+                "hostnameOverride": "peer0.hosp${ORG}.lithium.com"
+            }
+        }
+    },
+    "certificateAuthorities": {
+        "ca.hosp${ORG}.lithium.com": {
+            "url": "https://localhost:${CAPORT}",
+            "caName": "ca-hosp${ORG}",
+            "tlsCACerts": {
+                "pem": ["${CAPEM}"]
+            },
+            "httpOptions": {
+                "verify": false
+            }
+        }
+    }
+}
