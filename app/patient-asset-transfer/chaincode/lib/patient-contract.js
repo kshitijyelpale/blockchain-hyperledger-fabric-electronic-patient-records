@@ -1,3 +1,9 @@
+/**
+ * @author [Varsha Kamath]
+ * @create date 2020-12-14 21:50:38
+ * @modify date 2020-12-28 21:50:38
+ * @desc [Smartcontract to create, read, update and delete patient details in legder]
+ */
 /*
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -84,22 +90,33 @@ class PatientContract extends Contract {
     }
 
     async queryAllPatients(ctx) {
-        const startKey = '';
-        const endKey = '';
+
+        const iterator = await ctx.stub.getStateByRange('', '');
+
         const allResults = [];
-        for await (const {key, value} of ctx.stub.getStateByRange(startKey, endKey)) {
-            const strValue = Buffer.from(value).toString('utf8');
-            let record;
-            try {
-                record = JSON.parse(strValue);
-            } catch (err) {
-                console.log(err);
-                record = strValue;
+        while (true) {
+            const res = await iterator.next();
+
+            if (res.value && res.value.value.toString()) {
+                console.log(res.value.value.toString('utf8'));
+
+                const Key = res.value.key;
+                let Record;
+                try {
+                    Record = JSON.parse(res.value.value.toString('utf8'));
+                } catch (err) {
+                    console.log(err);
+                    Record = res.value.value.toString('utf8');
+                }
+                allResults.push({ Key, Record });
             }
-            allResults.push({ Key: key, Record: record });
+            if (res.done) {
+                console.log('end of data');
+                await iterator.close();
+                console.info(allResults);
+                return JSON.stringify(allResults);
+            }
         }
-        console.info(allResults);
-        return JSON.stringify(allResults);
     }
 
 
