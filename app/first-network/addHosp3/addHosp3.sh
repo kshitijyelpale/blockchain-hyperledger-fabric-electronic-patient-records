@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-# This script extends the Hyperledger Fabric test network by adding
+# This script extends the Hyperledger Fabric hospital network by adding
 # adding a third organization to the network
 #
 
@@ -21,10 +21,10 @@ function printHelp () {
   echo "  addHosp3.sh up|down|generate [-c <channel name>] [-t <timeout>] [-d <delay>] [-f <docker-compose-file>] [-s <dbtype>]"
   echo "  addHosp3.sh -h|--help (print this message)"
   echo "    <mode> - one of 'up', 'down', or 'generate'"
-  echo "      - 'up' - add hosp3 to the sample network. You need to bring up the test network and create a channel first."
-  echo "      - 'down' - bring down the test network and hosp3 nodes"
+  echo "      - 'up' - add hosp3 to the sample network. You need to bring up the hospital network and create a channel first."
+  echo "      - 'down' - bring down the hospital network and hosp3 nodes"
   echo "      - 'generate' - generate required certificates and org definition"
-  echo "    -c <channel name> - test network channel name (defaults to \"mychannel\")"
+  echo "    -c <channel name> - hospital network channel name (defaults to \"mychannel\")"
   echo "    -ca <use CA> -  Use a CA to generate the crypto material"
   echo "    -t <timeout> - CLI timeout duration in seconds (defaults to 10)"
   echo "    -d <delay> - delay duration in seconds (defaults to 3)"
@@ -105,7 +105,7 @@ function generateHosp3() {
     sleep 10
 
     echo "##########################################################"
-    echo "############ Create Org3 Identities ######################"
+    echo "############ Create Hospital 3 Identities ######################"
     echo "##########################################################"
 
     createHosp3
@@ -113,7 +113,7 @@ function generateHosp3() {
   fi
 
   echo
-  echo "Generate CCP files for Org3"
+  echo "Generate CCP files for Hospital 3"
   ./ccp-generate.sh
 }
 
@@ -125,11 +125,11 @@ function generateHosp3Definition() {
     exit 1
   fi
   echo "##########################################################"
-  echo "#######  Generating Org3 organization definition #########"
+  echo "#######  Generating Hospital 3 organization definition #########"
   echo "##########################################################"
    export FABRIC_CFG_PATH=$PWD
    set -x
-   configtxgen -printOrg hosp3MSP > ../organizations/peerOrganizations/hosp3.example.com/hosp3.json
+   configtxgen -printOrg hosp3MSP > ../organizations/peerOrganizations/hosp3.lithium.com/hosp3.json
    res=$?
    { set +x; } 2>/dev/null
    if [ $res -ne 0 ]; then
@@ -140,7 +140,7 @@ function generateHosp3Definition() {
 }
 
 function Hosp3Up () {
-  # start org3 nodes
+  # start Hospital 3 nodes
   if [ "${DATABASE}" == "couchdb" ]; then
     IMAGE_TAG=${IMAGETAG} docker-compose -f $COMPOSE_FILE_ORG3 -f $COMPOSE_FILE_COUCH_ORG3 up -d 2>&1
   else
@@ -155,7 +155,7 @@ function Hosp3Up () {
 # Generate the needed certificates, the genesis block and start the network.
 function addHosp3 () {
 
-  # If the test network is not up, abort
+  # If the hospital network is not up, abort
   if [ ! -d ../organizations/ordererOrganizations ]; then
     echo
     echo "ERROR: Please, run ./network.sh up createChannel first."
@@ -164,7 +164,7 @@ function addHosp3 () {
   fi
 
   # generate artifacts if they don't exist
-  if [ ! -d "../organizations/peerOrganizations/hosp3.example.com" ]; then
+  if [ ! -d "../organizations/peerOrganizations/hosp3.lithium.com" ]; then
     generateHosp3
     generateHosp3Definition
   fi
@@ -176,10 +176,10 @@ function addHosp3 () {
   fi
 
   # Use the CLI container to create the configuration transaction needed to add
-  # Org3 to the network
+  # Hospital 3 to the network
   echo
   echo "###############################################################"
-  echo "####### Generate and submit config tx to add Org3 #############"
+  echo "####### Generate and submit config tx to add Hospital 3 #############"
   echo "###############################################################"
   docker exec Hosp3cli ./scripts/hosp3-scripts/step1hosp3.sh $CHANNEL_NAME $CLI_DELAY $CLI_TIMEOUT $VERBOSE
   if [ $? -ne 0 ]; then
@@ -189,11 +189,11 @@ function addHosp3 () {
 
   echo
   echo "###############################################################"
-  echo "############### Have Org3 peers join network ##################"
+  echo "############### Have Hospital 3 peers join network ##################"
   echo "###############################################################"
   docker exec Hosp3cli ./scripts/hosp3-scripts/step2hosp3.sh $CHANNEL_NAME $CLI_DELAY $CLI_TIMEOUT $VERBOSE
   if [ $? -ne 0 ]; then
-    echo "ERROR !!!! Unable to have Org3 peers join network"
+    echo "ERROR !!!! Unable to have Hospital 3 peers join network"
     exit 1
   fi
 
@@ -214,7 +214,7 @@ OS_ARCH=$(echo "$(uname -s|tr '[:upper:]' '[:lower:]'|sed 's/mingw64_nt.*/window
 # another container before giving up
 
 # Using crpto vs CA. default is cryptogen
-CRYPTO="cryptogen"
+CRYPTO="Certificate Authorities"
 
 CLI_TIMEOUT=10
 #default for delay
@@ -299,12 +299,12 @@ done
 
 # Determine whether starting, stopping, restarting or generating for announce
 if [ "$MODE" == "up" ]; then
-  echo "Add Org3 to channel '${CHANNEL_NAME}' with '${CLI_TIMEOUT}' seconds and CLI delay of '${CLI_DELAY}' seconds and using database '${DATABASE}'"
+  echo "Add Hospital 3 to channel '${CHANNEL_NAME}' with '${CLI_TIMEOUT}' seconds and CLI delay of '${CLI_DELAY}' seconds and using database '${DATABASE}'"
   echo
 elif [ "$MODE" == "down" ]; then
   EXPMODE="Stopping network"
 elif [ "$MODE" == "generate" ]; then
-  EXPMODE="Generating certs and organization definition for Org3"
+  EXPMODE="Generating certs and organization definition for Hospital 3"
 else
   printHelp
   exit 1

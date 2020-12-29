@@ -3,7 +3,7 @@
 source scriptUtils.sh
 
 CHANNEL_NAME=${1:-"hospitalchannel"}
-CC_NAME=${2:-"patient"}
+CC_NAME=${2:-"asset-transfer-basic"}
 CC_SRC_PATH=${3:-"NA"}
 CC_SRC_LANGUAGE=${4:-"javascript"}
 CC_VERSION=${5:-"1.0"}
@@ -39,9 +39,9 @@ if [ "$CC_SRC_PATH" = "NA" ]; then
   infoln "Determining the path to the chaincode"
   # first see which chaincode we have. This will be based on the
   # short name of the known chaincode sample
-  if [ "$CC_NAME" = "patient" ]; then
-    println $'\e[0;32m'patient-app$'\e[0m' chaincode
-    CC_SRC_PATH="../patient-app"
+  if [ "$CC_NAME" = "asset-transfer-basic" ]; then
+    println $'\e[0;32m'asset-transfer-basic$'\e[0m' chaincode
+    CC_SRC_PATH="../asset-transfer-basic"
   else
     fatalln "The chaincode name ${CC_NAME} is not supported by this script. Supported chaincode names are: patient, etc.,"
   fi
@@ -119,7 +119,7 @@ approveForMyOrg() {
   ORG=$1
   setGlobals $ORG
   set -x
-  peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile $ORDERER_CA --channelID $CHANNEL_NAME --name ${CC_NAME} --version ${CC_VERSION} --package-id ${PACKAGE_ID} --sequence ${CC_SEQUENCE} ${INIT_REQUIRED} ${CC_END_POLICY} ${CC_COLL_CONFIG} >&log.txt
+  peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.lithium.com --tls --cafile $ORDERER_CA --channelID $CHANNEL_NAME --name ${CC_NAME} --version ${CC_VERSION} --package-id ${PACKAGE_ID} --sequence ${CC_SEQUENCE} ${INIT_REQUIRED} ${CC_END_POLICY} ${CC_COLL_CONFIG} >&log.txt
   res=$?
   { set +x; } 2>/dev/null
   cat log.txt
@@ -151,7 +151,7 @@ checkCommitReadiness() {
     COUNTER=$(expr $COUNTER + 1)
   done
   cat log.txt
-  if test $rc -eq 0; then
+  if hospital $rc -eq 0; then
     infoln "Checking the commit readiness of the chaincode definition successful on peer0.hosp${ORG} on channel '$CHANNEL_NAME'"
   else
     fatalln "After $MAX_RETRY attempts, Check commit readiness result on peer0.hosp${ORG} is INVALID!"
@@ -168,7 +168,7 @@ commitChaincodeDefinition() {
   # peer (if join was successful), let's supply it directly as we know
   # it using the "-o" option
   set -x
-  peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile $ORDERER_CA --channelID $CHANNEL_NAME --name ${CC_NAME} $PEER_CONN_PARMS --version ${CC_VERSION} --sequence ${CC_SEQUENCE} ${INIT_REQUIRED} ${CC_END_POLICY} ${CC_COLL_CONFIG} >&log.txt
+  peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.lithium.com --tls --cafile $ORDERER_CA --channelID $CHANNEL_NAME --name ${CC_NAME} $PEER_CONN_PARMS --version ${CC_VERSION} --sequence ${CC_SEQUENCE} ${INIT_REQUIRED} ${CC_END_POLICY} ${CC_COLL_CONFIG} >&log.txt
   res=$?
   { set +x; } 2>/dev/null
   cat log.txt
@@ -193,12 +193,12 @@ queryCommitted() {
     peer lifecycle chaincode querycommitted --channelID $CHANNEL_NAME --name ${CC_NAME} >&log.txt
     res=$?
     { set +x; } 2>/dev/null
-    test $res -eq 0 && VALUE=$(cat log.txt | grep -o '^Version: '$CC_VERSION', Sequence: [0-9]*, Endorsement Plugin: escc, Validation Plugin: vscc')
-    test "$VALUE" = "$EXPECTED_RESULT" && let rc=0
+    hospital $res -eq 0 && VALUE=$(cat log.txt | grep -o '^Version: '$CC_VERSION', Sequence: [0-9]*, Endorsement Plugin: escc, Validation Plugin: vscc')
+    hospital "$VALUE" = "$EXPECTED_RESULT" && let rc=0
     COUNTER=$(expr $COUNTER + 1)
   done
   cat log.txt
-  if test $rc -eq 0; then
+  if hospital $rc -eq 0; then
     successln "Query chaincode definition successful on peer0.hosp${ORG} on channel '$CHANNEL_NAME'"
   else
     fatalln "After $MAX_RETRY attempts, Query chaincode definition result on peer0.hosp${ORG} is INVALID!"
@@ -216,7 +216,7 @@ chaincodeInvokeInit() {
   set -x
   fcn_call='{"function":"'${CC_INIT_FCN}'","Args":[]}'
   infoln "invoke fcn call:${fcn_call}"
-  peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n ${CC_NAME} $PEER_CONN_PARMS --isInit -c ${fcn_call} >&log.txt
+  peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.lithium.com --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n ${CC_NAME} $PEER_CONN_PARMS --isInit -c ${fcn_call} >&log.txt
   res=$?
   { set +x; } 2>/dev/null
   cat log.txt
@@ -243,7 +243,7 @@ chaincodeQuery() {
     COUNTER=$(expr $COUNTER + 1)
   done
   cat log.txt
-  if test $rc -eq 0; then
+  if hospital $rc -eq 0; then
     successln "Query successful on peer0.hosp${ORG} on channel '$CHANNEL_NAME'"
   else
     fatalln "After $MAX_RETRY attempts, Query result on peer0.hosp${ORG} is INVALID!"

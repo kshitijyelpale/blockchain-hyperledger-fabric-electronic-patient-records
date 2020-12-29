@@ -301,16 +301,16 @@ signing:
 #     CA certificates though it can still issue end entity certificates.
 ###########################################################################
 csr:
-   cn: ca.hosp3.example.com
+   cn: ca.hosp3.lithium.com
    names:
       - C: US
         ST: "North Carolina"
         L: "Raleigh"
-        O: hosp3.example.com
+        O: hosp3.lithium.com
         OU:
    hosts:
      - localhost
-     - hosp3.example.com
+     - hosp3.lithium.com
    ca:
       expiry: 131400h
       pathlength: 1

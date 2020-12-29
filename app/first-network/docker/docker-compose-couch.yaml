@@ -6,7 +6,7 @@
 version: '2'
 
 networks:
-  test:
+  hospital:
 
 services:
   couchdb0:
@@ -22,9 +22,9 @@ services:
     ports:
       - "5984:5984"
     networks:
-      - test
+      - hospital
 
-  peer0.hosp1.example.com:
+  peer0.hosp1.lithium.com:
     environment:
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
       - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb0:5984
@@ -49,9 +49,9 @@ services:
     ports:
       - "7984:5984"
     networks:
-      - test
+      - hospital
 
-  peer0.hosp2.example.com:
+  peer0.hosp2.lithium.com:
     environment:
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
       - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb1:5984

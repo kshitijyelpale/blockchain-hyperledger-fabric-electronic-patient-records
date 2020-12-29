@@ -11,7 +11,7 @@ PeerOrgs:
   # Org3
   # ---------------------------------------------------------------------------
   - Name: hosp3
-    Domain: hosp3.example.com
+    Domain: hosp3.lithium.com
     EnableNodeOUs: true
     Template:
       Count: 1
