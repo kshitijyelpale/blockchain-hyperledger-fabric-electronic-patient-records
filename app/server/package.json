@@ -3,7 +3,10 @@
     "version": "1.0.0",
     "description": "Patient application implemented in JavaScript",
     "scripts": {
-        "start": "./node_modules/nodemon/bin/nodemon.js src/server.js"
+        "start": "./node_modules/nodemon/bin/nodemon.js src/server.js",
+        "lint":"eslint .",
+        "api-doc": "cd ../../docs/API/ && npm start",
+        "readme-doc": "cd ../../docs/ReadMe/readme-website && yarn run start"
     },
     "engines": {
         "node": ">=12",
@@ -16,11 +19,16 @@
         "fabric-network": "^2.2.0",
         "body-parser": "^1.19.0",
         "cors": "^2.8.5",
-        "eslint": "^6.0.1",
         "express": "^4.17.1",
         "fabric-client": "^1.4.10",
         "morgan": "^1.9.1",
         "nodemon": "^1.19.1",
-        "concurrently": "^5.2.0"
+        "concurrently": "^5.2.0",
+        "jsonwebtoken": "^8.5.1"
+    },
+    "devDependencies": {
+        "eslint": "^7.16.0",
+        "eslint-config-google": "^0.14.0",
+        "eslint-plugin-react": "^7.22.0"
     }
 }
