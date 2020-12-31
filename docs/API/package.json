@@ -1,0 +1,17 @@
+{
+    "name": "api",
+    "version": "1.0.0",
+    "description": "API Documentation",
+    "main": "index.js",
+    "scripts": {
+        "start": "./node_modules/nodemon/bin/nodemon.js ./index.js"
+    },
+    "author": "Jathin",
+    "license": "Apache-2.0",
+    "dependencies": {
+        "express": "^4.17.1",
+        "swagger-ui-express": "^4.1.4",
+        "yamljs": "^0.3.0",
+        "nodemon": "^1.19.1"
+    }
+}
