@@ -2,7 +2,7 @@
  * @author Jathin Sreenivas
  * @email jathin.sreenivas@stud.fra-uas.de
  * @create date 2020-12-26 13:26:42
- * @modify date 2020-12-29 21:45:51
+ * @modify date 2020-12-31 10:55:31
  * @desc Referenced from https://github.com/hyperledger/fabric-samples/tree/master/test-application/javascript
  */
 
@@ -19,7 +19,8 @@ const path = require('path');
  */
 exports.buildCCPHosp1 = () => {
 	// load the common connection configuration file
-	const ccpPath = path.resolve(__dirname, '..', '..', 'first-network', 'organizations', 'peerOrganizations', 'hosp1.lithium.com', 'connection-hosp1.json');
+	const ccpPath = path.resolve(__dirname, '..', '..', 'first-network', 
+		'organizations', 'peerOrganizations', 'hosp1.lithium.com', 'connection-hosp1.json');
 	const fileExists = fs.existsSync(ccpPath);
 	if (!fileExists) {
 		throw new Error(`no such file or directory: ${ccpPath}`);
