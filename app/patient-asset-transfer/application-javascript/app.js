@@ -2,7 +2,7 @@
  * @author Jathin Sreenivas
  * @email jathin.sreenivas@stud.fra-uas.de
  * @create date 2020-12-26 13:26:42
- * @modify date 2021-01-01 11:09:40
+ * @modify date 2021-01-01 11:25:10
  * @desc The file which interacts with the fabric network.
  */
 
@@ -94,27 +94,17 @@ exports.connectToNetwork = async function(doctorID) {
 exports.invoke = async function(networkObj, isQuery, func, args) {
   try {
     if (isQuery === true) {
-      if (args) {
-        const response = await networkObj.contract.evaluateTransaction(func, args);
-        await networkObj.gateway.disconnect();
-        return response;
-      } else {
-        const response = await networkObj.contract.evaluateTransaction(func);
-        await networkObj.gateway.disconnect();
-        return response;
-      }
+      const response = await networkObj.contract.evaluateTransaction(func, args);
+      await networkObj.gateway.disconnect();
+      return response;
     } else {
       if (args) {
         args = JSON.parse(args[0]);
         args = JSON.stringify(args);
-        const response = await networkObj.contract.submitTransaction(func, args);
-        await networkObj.gateway.disconnect();
-        return response;
-      } else {
-        const response = await networkObj.contract.submitTransaction(func);
-        await networkObj.gateway.disconnect();
-        return response;
       }
+      const response = await networkObj.contract.submitTransaction(func, args);
+      await networkObj.gateway.disconnect();
+      return response;
     }
   } catch (error) {
     console.error(`Failed to submit transaction: ${error}`);
