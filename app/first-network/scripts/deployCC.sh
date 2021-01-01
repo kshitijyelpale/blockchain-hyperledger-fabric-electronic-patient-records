@@ -151,7 +151,7 @@ checkCommitReadiness() {
     COUNTER=$(expr $COUNTER + 1)
   done
   cat log.txt
-  if hospital $rc -eq 0; then
+  if test $rc -eq 0; then
     infoln "Checking the commit readiness of the chaincode definition successful on peer0.hosp${ORG} on channel '$CHANNEL_NAME'"
   else
     fatalln "After $MAX_RETRY attempts, Check commit readiness result on peer0.hosp${ORG} is INVALID!"
@@ -193,12 +193,12 @@ queryCommitted() {
     peer lifecycle chaincode querycommitted --channelID $CHANNEL_NAME --name ${CC_NAME} >&log.txt
     res=$?
     { set +x; } 2>/dev/null
-    hospital $res -eq 0 && VALUE=$(cat log.txt | grep -o '^Version: '$CC_VERSION', Sequence: [0-9]*, Endorsement Plugin: escc, Validation Plugin: vscc')
-    hospital "$VALUE" = "$EXPECTED_RESULT" && let rc=0
+    test $res -eq 0 && VALUE=$(cat log.txt | grep -o '^Version: '$CC_VERSION', Sequence: [0-9]*, Endorsement Plugin: escc, Validation Plugin: vscc')
+    test "$VALUE" = "$EXPECTED_RESULT" && let rc=0
     COUNTER=$(expr $COUNTER + 1)
   done
   cat log.txt
-  if hospital $rc -eq 0; then
+  if test $rc -eq 0; then
     successln "Query chaincode definition successful on peer0.hosp${ORG} on channel '$CHANNEL_NAME'"
   else
     fatalln "After $MAX_RETRY attempts, Query chaincode definition result on peer0.hosp${ORG} is INVALID!"
@@ -243,7 +243,7 @@ chaincodeQuery() {
     COUNTER=$(expr $COUNTER + 1)
   done
   cat log.txt
-  if hospital $rc -eq 0; then
+  if test $rc -eq 0; then
     successln "Query successful on peer0.hosp${ORG} on channel '$CHANNEL_NAME'"
   else
     fatalln "After $MAX_RETRY attempts, Query result on peer0.hosp${ORG} is INVALID!"
