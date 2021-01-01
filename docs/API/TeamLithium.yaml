@@ -6,9 +6,9 @@ openapi: 3.0.0
 ################################################################################
 info:
   version: v1
-  title: Team Lithium API
+  title: Team Lithium Fabris SDK API's
   description: |
-    The first version of the testing
+    The first version of the backend routes of the Fabric SDK available.
 
 ################################################################################
 #                  Host, Base Path, Schemes and Content Types                  #
@@ -24,18 +24,32 @@ tags:
   - name: Patients
   - name: Doctors
 
-
-
-################################################################################
-#                                   Parameters                                 #
-################################################################################
-
 ################################################################################
 #                                           Paths                              #
 ################################################################################
 paths:
-  /registerDocter:
+  /patients/register:
     post:
+      tags:
+        - Patients
+      security:
+        - bearerAuth: []
+      description: Register a Patient
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Patient'
+      responses:
+        '200':
+          description: Patient created
+        '403':
+          description: Forbidden
+
+  /doctors/register:
+    post:
+      tags:
+        - Doctors
       security:
         - bearerAuth: []
       description: Register a Doctor
@@ -51,12 +65,15 @@ paths:
                   type: string
       responses:
         '200':
-          description: OK
+          description: Doctor created
+        '403':
+          description: Forbidden
+
   /login:
     post:
-      description: Get all patients data.
+      description: Admin/Doctor/Patient Login.
       requestBody:
-        description: Optional description in *Markdown*
+        description: Credentials enclosed in the body.
         required: true
         content:
           application/json:
@@ -70,7 +87,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/token'
         '400':
-          description: Bad request. User ID must be an integer and larger than 0.
+          description: Bad request. Incorrect Credentials
 
   /patients/_all:
     get:
@@ -78,17 +95,21 @@ paths:
         - Patients
       description: Get all patients data.
       responses:
-        200:
+        '200':
           description: All Patients object
-          schema:
-            type: object
-            properties:
-              data:
+          content:
+            application/json:
+              schema:
                 $ref: '#/components/schemas/Patient'
 
   /patient/{patient-id}:
     parameters:
-      - $ref: '#/parameters/patient-id'
+      - in: path
+        name: patient-id
+        schema:
+          type: string
+        description: Patient ID
+        required: true
     get:
       security:
         - bearerAuth: []
@@ -98,10 +119,9 @@ paths:
       responses:
         200:
           description: The patient object
-          schema:
-            type: object
-            properties:
-              data:
+          content:
+            application/json:
+              schema:
                 $ref: '#/components/schemas/Patient'
 
 
@@ -122,60 +142,62 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
+    Doctor:
+      title: Doctor
+      type: object
+      properties:
+        address:
+          type: string
+        age:
+          type: string
+        docType:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+      required:
+        - address
+        - age
+        - docType
+        - firstName
+        - lastName
+
+    Patient:
+      title: Patient
+      type: object
+      properties:
+        address:
+          type: string
+        age:
+          type: string
+        docType:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+      required:
+        - address
+        - age
+        - docType
+        - firstName
+        - lastName
+
+    credentials:
+      title: credentials
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - username
+        - password
+    
     token:
       type: object
       properties:
         accessToken:
           type: string
-    Doctor:
-      title: A Slack message
-      type: object
-      properties:
-        address:
-          type: string
-          description: Message text
-        age:
-          type: string
-          description: Message text
-        docType:
-          type: string
-          description: Message text
-        firstName:
-          type: string
-          description: Message text
-        lastName:
-          type: string
-          description: Message text
-    Patient:
-      title: A Slack message
-      type: object
-      properties:
-        address:
-          type: string
-          description: Message text
-        age:
-          type: string
-          description: Message text
-        docType:
-          type: string
-          description: Message text
-        firstName:
-          type: string
-          description: Message text
-        lastName:
-          type: string
-          description: Message text
-
-    credentials:
-      title: A Slack message
-      type: object
-      properties:
-        username:
-          type: string
-          description: Message text
-        password:
-          type: string
-          description: Message text
-      required:
-        - username
-        - password
