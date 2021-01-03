@@ -1,0 +1,203 @@
+---
+openapi: 3.0.0
+
+################################################################################
+#                              API Information                                 #
+################################################################################
+info:
+  version: v1
+  title: Team Lithium Fabris SDK API's
+  description: |
+    The first version of the backend routes of the Fabric SDK available.
+
+################################################################################
+#                  Host, Base Path, Schemes and Content Types                  #
+################################################################################
+servers:
+  - url: http://localhost:1001
+    description: Localhost
+
+################################################################################
+#                                   Tags                                       #
+################################################################################
+tags:
+  - name: Patients
+  - name: Doctors
+
+################################################################################
+#                                           Paths                              #
+################################################################################
+paths:
+  /patients/register:
+    post:
+      tags:
+        - Patients
+      security:
+        - bearerAuth: []
+      description: Register a Patient
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Patient'
+      responses:
+        '200':
+          description: Patient created
+        '403':
+          description: Forbidden
+
+  /doctors/register:
+    post:
+      tags:
+        - Doctors
+      security:
+        - bearerAuth: []
+      description: Register a Doctor
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                hospitalID:
+                  type: integer
+                doctorID:
+                  type: string
+      responses:
+        '200':
+          description: Doctor created
+        '403':
+          description: Forbidden
+
+  /login:
+    post:
+      description: Admin/Doctor/Patient Login.
+      requestBody:
+        description: Credentials enclosed in the body.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/credentials'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/token'
+        '400':
+          description: Bad request. Incorrect Credentials
+
+  /patients/_all:
+    get:
+      tags:
+        - Patients
+      description: Get all patients data.
+      responses:
+        '200':
+          description: All Patients object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Patient'
+
+  /patient/{patient-id}:
+    parameters:
+      - in: path
+        name: patient-id
+        schema:
+          type: string
+        description: Patient ID
+        required: true
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Patients
+      description: Get basic information about a patient.
+      responses:
+        200:
+          description: The patient object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Patient'
+
+
+################################################################################
+#                                 Definitions                                  #
+################################################################################
+components:
+  responses:
+    UnauthorizedError:
+      description: Authentication information is missing or invalid
+      headers:
+        WWW_Authenticate:
+          schema:
+            type: string
+  securitySchemes:
+    bearerAuth:            # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Doctor:
+      title: Doctor
+      type: object
+      properties:
+        address:
+          type: string
+        age:
+          type: string
+        docType:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+      required:
+        - address
+        - age
+        - docType
+        - firstName
+        - lastName
+
+    Patient:
+      title: Patient
+      type: object
+      properties:
+        address:
+          type: string
+        age:
+          type: string
+        docType:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+      required:
+        - address
+        - age
+        - docType
+        - firstName
+        - lastName
+
+    credentials:
+      title: credentials
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - username
+        - password
+    
+    token:
+      type: object
+      properties:
+        accessToken:
+          type: string
