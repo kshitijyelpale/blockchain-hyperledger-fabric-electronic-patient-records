@@ -3,7 +3,7 @@
 source scriptUtils.sh
 
 CHANNEL_NAME=${1:-"hospitalchannel"}
-CC_NAME=${2:-"asset-transfer-basic"}
+CC_NAME=${2:-"patient"}
 CC_SRC_PATH=${3:-"NA"}
 CC_SRC_LANGUAGE=${4:-"javascript"}
 CC_VERSION=${5:-"1.0"}
@@ -39,15 +39,15 @@ if [ "$CC_SRC_PATH" = "NA" ]; then
   infoln "Determining the path to the chaincode"
   # first see which chaincode we have. This will be based on the
   # short name of the known chaincode sample
-  if [ "$CC_NAME" = "asset-transfer-basic" ]; then
-    println $'\e[0;32m'asset-transfer-basic$'\e[0m' chaincode
-    CC_SRC_PATH="../asset-transfer-basic"
+  if [ "$CC_NAME" = "patient" ]; then
+    println $'\e[0;32m'patient-asset-transfer$'\e[0m' chaincode
+    CC_SRC_PATH="../patient-asset-transfer"
   else
     fatalln "The chaincode name ${CC_NAME} is not supported by this script. Supported chaincode names are: patient, etc.,"
   fi
 
   CC_SRC_PATH="$CC_SRC_PATH/chaincode/"
-  
+
 ## Make sure that the path the chaincode exists if provided
 elif [ ! -d "$CC_SRC_PATH" ]; then
   fatalln "Path to chaincode does not exist. Please provide different path"
@@ -270,7 +270,7 @@ approveForMyOrg 1
 ## check whether the chaincode definition is ready to be committed
 ## expect org1 to have approved and org2 not to
 checkCommitReadiness 1 "\"hosp1MSP\": true" "\"hosp2MSP\": false"
-checkCommitReadiness 2 "\"hosp1MSP\": true" "\"hosp2MSP\": false" 
+checkCommitReadiness 2 "\"hosp1MSP\": true" "\"hosp2MSP\": false"
 #checkCommitReadiness 3 "\"hosp1MSP\": true" "\"hosp2MSP\": false" "\"hosp3MSP\": false"
 
 ## now approve also for hosp2
@@ -278,8 +278,8 @@ approveForMyOrg 2
 
 ## check whether the chaincode definition is ready to be committed
 ## expect them both to have approved
-checkCommitReadiness 1 "\"hosp1MSP\": true" "\"hosp2MSP\": true" 
-checkCommitReadiness 2 "\"hosp1MSP\": true" "\"hosp2MSP\": true" 
+checkCommitReadiness 1 "\"hosp1MSP\": true" "\"hosp2MSP\": true"
+checkCommitReadiness 2 "\"hosp1MSP\": true" "\"hosp2MSP\": true"
 #checkCommitReadiness 3 "\"hosp1MSP\": true" "\"hosp2MSP\": true" "\"hosp3MSP\": false"
 
 ## now approve also for hosp3
@@ -287,8 +287,8 @@ checkCommitReadiness 2 "\"hosp1MSP\": true" "\"hosp2MSP\": true"
 
 ## check whether the chaincode definition is ready to be committed
 ## expect them both to have approved
-checkCommitReadiness 1 "\"hosp1MSP\": true" "\"hosp2MSP\": true" 
-checkCommitReadiness 2 "\"hosp1MSP\": true" "\"hosp2MSP\": true" 
+checkCommitReadiness 1 "\"hosp1MSP\": true" "\"hosp2MSP\": true"
+checkCommitReadiness 2 "\"hosp1MSP\": true" "\"hosp2MSP\": true"
 #checkCommitReadiness 3 "\"hosp1MSP\": true" "\"hosp2MSP\": true" "\"hosp3MSP\": true"
 
 ## now that we know for sure both orgs have approved, commit the definition
