@@ -2,7 +2,7 @@
  * @author Jathin Sreenivas
  * @email jathin.sreenivas@stud.fra-uas.de
  * @create date 2020-12-26 13:26:42
- * @modify date 2021-01-01 11:25:10
+ * @modify date 2021-01-06 20:51:27
  * @desc The file which interacts with the fabric network.
  */
 
@@ -115,11 +115,11 @@ exports.invoke = async function(networkObj, isQuery, func, args) {
 /**
  * @author Jathin Sreenivas
  * @param  {string} hospitalId representing the hospital to which the user/doctor has to be created
- * @param  {string} doctorId
- * @description Creates a user/doctor and adds to the wallet to the given hospital
+ * @param  {string} userId patientID or doctorID
+ * @description Creates a patient/doctor and adds to the wallet to the given hospital
  */
-exports.registerDoctor = async function(hospitalId, doctorId) {
-  if (!doctorId || !hospitalId) {
+exports.registerUser = async function(hospitalId, userId) {
+  if (!userId || !hospitalId) {
     const response = {};
     response.error = 'Error! You need to fill all fields before you can register!';
     return response;
@@ -130,34 +130,17 @@ exports.registerDoctor = async function(hospitalId, doctorId) {
     if (hospitalId === 1) {
       const ccp = buildCCPHosp1();
       const caClient = buildCAClient(FabricCAServices, ccp, 'ca.hosp1.lithium.com');
-      await registerAndEnrollUser(caClient, wallet, mspOrg1, doctorId, 'admin');
+      await registerAndEnrollUser(caClient, wallet, mspOrg1, userId, 'admin');
     } else {
       const ccp = buildCCPHosp2();
       const caClient = buildCAClient(FabricCAServices, ccp, 'ca.hosp2.lithium.com');
-      await registerAndEnrollUser(caClient, wallet, mspOrg2, doctorId, 'admin');
+      await registerAndEnrollUser(caClient, wallet, mspOrg2, userId, 'admin');
     }
-    console.log(`Successfully registered doctor . Use doctorId ${doctorId} to login above.`);
-    const response = `Successfully registered doctor . Use doctorId ${doctorId} to login above.`;
+    console.log(`Successfully registered doctor . Use doctorId ${userId} to login above.`);
+    const response = `Successfully registered doctor . Use doctorId ${userId} to login above.`;
     return response;
   } catch (error) {
-    console.error(`Failed to register user + ${doctorId} + : ${error}`);
-    const response = {};
-    response.error = error;
-    return response;
-  }
-};
-
-
-/* TEMP */
-
-exports.registerPatient = async function(networkObj, patientId, firstName, lastName, age, address) {
-  try {
-    console.log('\n--> Submit Transaction: CreateAsset, creates new asset with ID, color, owner, size, and appraisedValue arguments');
-    console.log(`Successfully registered Patient . Use patientId ${patientId} to login above.`);
-    const response = `Successfully registered Patient . Use patientId ${patientId} to login above.`;
-    return response;
-  } catch (error) {
-    console.error(`Failed to register patient + ${patientId} + : ${error}`);
+    console.error(`Failed to register user + ${userId} + : ${error}`);
     const response = {};
     response.error = error;
     return response;
