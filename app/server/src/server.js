@@ -2,7 +2,7 @@
  * @author Jathin Sreenivas
  * @email jathin.sreenivas@stud.fra-uas.de
  * @create date 2020-12-26 11:31:42
- * @modify date 2021-01-06 20:37:26
+ * @modify date 2021-01-06 21:03:29
  * @desc NodeJS APIs to interact with the fabric network.
  * @desc Look into API docs for the documentation of the routes
  */
@@ -84,15 +84,9 @@ app.post('/doctors/register', authenticateJWT, async (req, res) => {
   // const userPasswd = req.body.userPasswd;
 
   // first create the identity for the voter and add to wallet
-  const response = await network.registerDoctor(hospitalId, doctorId);
+  const response = await network.registerUser(hospitalId, doctorId);
 
-  if (response.error) {
-    res.send(response.error);
-  } else {
-    console.log('Doctor registered');
-    // let parsedResponse = JSON.parse(response);
-    res.send(response);
-  }
+  (response.error) ? res.send(response.error) : console.log('Doctor registered'); res.send(response);
 });
 
 
@@ -106,18 +100,14 @@ app.post('/patients/register', authenticateJWT, async (req, res) => {
   // TODO: take admin id instead of doctor
   const networkObj = await network.connectToNetwork('hosp1admin');
   // delete req.body['doctorId'];
-
   req.body = JSON.stringify(req.body);
   const args = [req.body];
-  const response = await network.invoke(networkObj, false, 'createPatient', args);
-
-  // const response = await network.registerPatient(networkObj, req.body.patientId, req.body.firstName,
-  // req.body.lastName, req.body.age, req.body.address);
+  let response = await network.registerUser(req.body.hospitalId, req.body.patientId);
   if (response.error) {
     res.send(response.error);
-  } else {
-    res.send(response);
   }
+  response = await network.invoke(networkObj, false, 'createPatient', args);
+  (response.error) ? res.send(response.error) : res.send(response);
 });
 
 /**
@@ -132,14 +122,8 @@ app.get('/patients/:patientId', authenticateJWT, async (req, res) => {
   const networkObj = await network.connectToNetwork('hosp1admin');
 
   const response = await network.invoke(networkObj, true, 'readPatient', patientId);
-
-  if (response.error) {
-    res.send(response.error);
-  } else {
-    const parsedResponse = await JSON.parse(response);
-    res.setHeader('content-type', 'application/json; charset=utf-8');
-    res.send(parsedResponse);
-  }
+  const parsedResponse = await JSON.parse(response);
+  (response.error) ? res.send(response.error) : res.send(parsedResponse);
 });
 
 /**
@@ -157,11 +141,7 @@ app.patch('/patients/:patientId/updatePatientMedicalDetails', authenticateJWT, a
   const networkObj = await network.connectToNetwork('hosp1admin');
   const response = await network.invoke(networkObj, false, 'updatePatientMedicalDetails', args);
 
-  if (response.error) {
-    res.send(response.error);
-  } else {
-    res.send(response);
-  }
+  (response.error) ? res.send(response.error) : res.send(response);
 });
 
 
@@ -180,11 +160,7 @@ app.patch('/patients/:patientId/updatePatientPersonalDetails', authenticateJWT, 
   const networkObj = await network.connectToNetwork('hosp1admin');
   const response = await network.invoke(networkObj, false, 'updatePatientPersonalDetails', args);
 
-  if (response.error) {
-    res.send(response.error);
-  } else {
-    res.send(response);
-  }
+  (response.error) ? res.send(response.error) : res.send(response);
 });
 
 
@@ -202,11 +178,7 @@ app.get('/patients/:patientId/history', authenticateJWT, async (req, res) => {
   const response = await network.invoke(networkObj, true, 'getPatientHistory', patientId);
 
   const parsedResponse = await JSON.parse(response);
-  if (response.error) {
-    res.send(response.error);
-  } else {
-    res.send(parsedResponse);
-  }
+  (response.error) ? res.send(response.error) : res.send(parsedResponse);
 });
 
 
