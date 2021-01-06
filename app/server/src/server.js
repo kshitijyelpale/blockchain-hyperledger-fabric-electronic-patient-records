@@ -2,7 +2,7 @@
  * @author Jathin Sreenivas
  * @email jathin.sreenivas@stud.fra-uas.de
  * @create date 2020-12-26 11:31:42
- * @modify date 2020-12-31 14:51:40
+ * @modify date 2021-01-06 20:37:26
  * @desc NodeJS APIs to interact with the fabric network.
  * @desc Look into API docs for the documentation of the routes
  */
@@ -14,7 +14,6 @@ const cors = require('cors');
 const morgan = require('morgan');
 const jwt = require('jsonwebtoken');
 
-
 const network = require('../../patient-asset-transfer/application-javascript/app.js');
 
 const app = express();
@@ -22,7 +21,7 @@ app.use(morgan('combined'));
 app.use(bodyParser.json());
 app.use(cors());
 
-app.listen(1001, () => console.log('Backend server running on 1001'));
+app.listen(3001, () => console.log('Backend server running on 3001'));
 
 
 app.post('/login', async (req, res) => {
@@ -30,11 +29,11 @@ app.post('/login', async (req, res) => {
   const {username, password} = req.body;
 
   // Filter user from the users array by username and password
-  const user = username === 'admin' && password === 'adminpw';
+  const user = username === 'hosp1admin' && password === 'hosp1lithium';
 
   if (user) {
     // Generate an access token
-    const accessToken = jwt.sign({username: 'admin', role: 'admin'}, 'adminpw');
+    const accessToken = jwt.sign({username: 'hosp1admin', role: 'admin'}, 'hosp1lithium');
     res.json({
       accessToken,
     });
@@ -49,7 +48,7 @@ const authenticateJWT = (req, res, next) => {
   if (authHeader) {
     const token = authHeader.split(' ')[1];
 
-    jwt.verify(token, 'adminpw', (err, user) => {
+    jwt.verify(token, 'hosp1lithium', (err, user) => {
       if (err) {
         return res.sendStatus(403);
       }
@@ -79,9 +78,10 @@ app.get('/patients/_all', async (req, res) => {
  * @description Register a doctor, the doctor data must be in the body and connects to the network using admin.
  * @description Adds the doctor to the wallet
  */
-app.post('/registerDocter', authenticateJWT, async (req, res) => {
+app.post('/doctors/register', authenticateJWT, async (req, res) => {
   const doctorId = req.body.doctorId;
   const hospitalId = req.body.hospitalId;
+  // const userPasswd = req.body.userPasswd;
 
   // first create the identity for the voter and add to wallet
   const response = await network.registerDoctor(hospitalId, doctorId);
@@ -100,19 +100,19 @@ app.post('/registerDocter', authenticateJWT, async (req, res) => {
  * @author Jathin Sreenivas
  * @body Patient JSON
  * @description Register a patient, the patient data must be in the body and connects to the network using admin.
- * @description Adds the patient to the ledger via the patient chaincode
+ * @description Adds the patient to the ledger via the patient chaincode.
  */
 app.post('/patients/register', authenticateJWT, async (req, res) => {
   // TODO: take admin id instead of doctor
-  const networkObj = await network.connectToNetwork('admin');
+  const networkObj = await network.connectToNetwork('hosp1admin');
   // delete req.body['doctorId'];
 
-  // req.body = JSON.stringify(req.body);
-  // let args = [req.body];
-  // let response = await network.invoke(networkObj, false, 'createPatient', args);
+  req.body = JSON.stringify(req.body);
+  const args = [req.body];
+  const response = await network.invoke(networkObj, false, 'createPatient', args);
 
-  const response = await network.registerPatient(networkObj, req.body.patientId, req.body.firstName,
-    req.body.lastName, req.body.age, req.body.address);
+  // const response = await network.registerPatient(networkObj, req.body.patientId, req.body.firstName,
+  // req.body.lastName, req.body.age, req.body.address);
   if (response.error) {
     res.send(response.error);
   } else {
@@ -128,14 +128,85 @@ app.post('/patients/register', authenticateJWT, async (req, res) => {
  */
 app.get('/patients/:patientId', authenticateJWT, async (req, res) => {
   const patientId = req.params.patientId;
-  const doctorId = req.body.doctorId;
 
-  const networkObj = await network.connectToNetwork(doctorId);
+  const networkObj = await network.connectToNetwork('hosp1admin');
 
   const response = await network.invoke(networkObj, true, 'readPatient', patientId);
+
+  if (response.error) {
+    res.send(response.error);
+  } else {
+    const parsedResponse = await JSON.parse(response);
+    res.setHeader('content-type', 'application/json; charset=utf-8');
+    res.send(parsedResponse);
+  }
+});
+
+/**
+ * @author Jathin Sreenivas
+ * @query patientID
+ * @body JSON consisting of patient's medical details
+ * @description Updates the patient medical details, to be used only by doctors.
+ */
+app.patch('/patients/:patientId/updatePatientMedicalDetails', authenticateJWT, async (req, res) => {
+  let args = req.body;
+  args.patientId = req.params.patientId;
+  args= [JSON.stringify(args)];
+
+  // TODO: Connect to network using patientID from req auth. Dependency external DB
+  const networkObj = await network.connectToNetwork('hosp1admin');
+  const response = await network.invoke(networkObj, false, 'updatePatientMedicalDetails', args);
+
   if (response.error) {
     res.send(response.error);
   } else {
     res.send(response);
   }
 });
+
+
+/**
+ * @author Jathin Sreenivas
+ * @query patientID
+ * @body JSON consisting of patient's personal details
+ * @description Updates the patient personal details, to be used only by patient themselves.
+ */
+app.patch('/patients/:patientId/updatePatientPersonalDetails', authenticateJWT, async (req, res) => {
+  let args = req.body;
+  args.patientId = req.params.patientId;
+  args= [JSON.stringify(args)];
+
+  // TODO: Connect to network using patientID from req auth. Dependency external DB
+  const networkObj = await network.connectToNetwork('hosp1admin');
+  const response = await network.invoke(networkObj, false, 'updatePatientPersonalDetails', args);
+
+  if (response.error) {
+    res.send(response.error);
+  } else {
+    res.send(response);
+  }
+});
+
+
+/**
+ * @author Jathin Sreenivas
+ * @query patientID
+ * @body JSON consisting of patient's personal details
+ * @description Updates the patient personal details, to be used only by patient themselves.
+ */
+app.get('/patients/:patientId/history', authenticateJWT, async (req, res) => {
+  const patientId = req.params.patientId;
+
+  // TODO: Connect to network using patientID from req auth. Dependency external DB
+  const networkObj = await network.connectToNetwork('hosp1admin');
+  const response = await network.invoke(networkObj, true, 'getPatientHistory', patientId);
+
+  const parsedResponse = await JSON.parse(response);
+  if (response.error) {
+    res.send(response.error);
+  } else {
+    res.send(parsedResponse);
+  }
+});
+
+
