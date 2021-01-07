@@ -2,7 +2,7 @@
  * @author Jathin Sreenivas
  * @email jathin.sreenivas@stud.fra-uas.de
  * @create date 2020-12-26 11:31:42
- * @modify date 2021-01-06 21:03:29
+ * @modify date 2021-01-07 11:33:45
  * @desc NodeJS APIs to interact with the fabric network.
  * @desc Look into API docs for the documentation of the routes
  */
@@ -132,7 +132,7 @@ app.get('/patients/:patientId', authenticateJWT, async (req, res) => {
  * @body JSON consisting of patient's medical details
  * @description Updates the patient medical details, to be used only by doctors.
  */
-app.patch('/patients/:patientId/updatePatientMedicalDetails', authenticateJWT, async (req, res) => {
+app.patch('/patients/:patientId/details/medical', authenticateJWT, async (req, res) => {
   let args = req.body;
   args.patientId = req.params.patientId;
   args= [JSON.stringify(args)];
@@ -151,7 +151,7 @@ app.patch('/patients/:patientId/updatePatientMedicalDetails', authenticateJWT, a
  * @body JSON consisting of patient's personal details
  * @description Updates the patient personal details, to be used only by patient themselves.
  */
-app.patch('/patients/:patientId/updatePatientPersonalDetails', authenticateJWT, async (req, res) => {
+app.patch('/patients/:patientId/details/personal', authenticateJWT, async (req, res) => {
   let args = req.body;
   args.patientId = req.params.patientId;
   args= [JSON.stringify(args)];
