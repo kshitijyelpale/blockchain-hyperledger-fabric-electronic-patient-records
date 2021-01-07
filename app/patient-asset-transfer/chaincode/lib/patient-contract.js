@@ -2,7 +2,7 @@
  * @author Varsha Kamath
  * @email varsha.kamath@stud.fra-uas.de
  * @create date 2020-12-14 21:50:38
- * @modify date 2020-12-28 21:50:38
+ * @modify date 2021-01-07 15:30:00
  * @desc [Smartcontract to create, read, update and delete patient details in legder]
  */
 /*
@@ -18,8 +18,7 @@ class PatientContract extends Contract {
 
     async initLedger(ctx) {
         console.info('============= START : Initialize Ledger ===========');
-        const patient = [
-            {
+        const patient = [{
                 firstName: 'Monica',
                 lastName: 'Latte',
                 age: '50',
@@ -56,7 +55,7 @@ class PatientContract extends Contract {
                 address: 'Genslerstraße 19, 60326 Berlin',
                 bloodGroup: 'B+',
                 allergies: 'No',
-                symptoms: 'Dizziness, Nausea, systolic-150, diastolic-110' ,
+                symptoms: 'Dizziness, Nausea, systolic-150, diastolic-110',
                 diagnosis: 'Hypertension',
                 treatment: 'CORBIS 5 mg one per day',
                 followUp: '2 Weeks',
@@ -118,10 +117,18 @@ class PatientContract extends Contract {
         return (!!buffer && buffer.length > 0);
     }
 
+    //Returns the last patientId in the set
+    async getLatestPatientId(ctx) {
+        let allResults = await this.queryAllPatients(ctx);
+        let data = JSON.parse(allResults);
+        let lastPatientId = data[data.length - 1].Key;
+        return lastPatientId;
+    }
+
     async createPatient(ctx, args) {
         args = JSON.parse(args);
 
-        let newPatient = await new Patient(args.patientId, args.firstName, args.lastName, args.age, args.phoneNumber, args.emergPhoneNumber, args.address, args.bloodGroup, args.allergies, args.symptoms, args.diagnosis, args.treatment, args.followUp);
+        let newPatient = await new Patient(args.patientId, args.firstName, args.lastName, args.age, args.phoneNumber, args.emergPhoneNumber, args.address, args.bloodGroup, args.allergies);
         const exists = await this.patientExists(ctx, newPatient.patientId);
         if (exists) {
             throw new Error(`The patient ${newPatient.patientId} already exists`);
@@ -141,45 +148,59 @@ class PatientContract extends Contract {
     }
 
     //This function is to update patient personal details. This function should be called by patient.
-    async updatePatientPersonalDetails(ctx, patientId, newPhoneNumber, newEmergPhoneNumber, newAddress, newAllergies) {
+    async updatePatientPersonalDetails(ctx, args) {
+        args = JSON.parse(args);
+        let patientId = args.patientId;
+        let newPhoneNumber = args.newPhoneNumber;
+        let newEmergPhoneNumber = args.newEmergPhoneNumber;
+        let newAddress = args.newAddress;
+        let newAllergies = args.newAllergies;
+
         const exists = await this.patientExists(ctx, patientId);
         if (!exists) {
             throw new Error(`The patient ${patientId} does not exist`);
         }
         const patient = await this.readPatient(ctx, patientId)
-        if(newPhoneNumber !== null && newPhoneNumber !== '')
+        if (newPhoneNumber !== null && newPhoneNumber !== '')
             patient.phoneNumber = newPhoneNumber;
 
-        if(newEmergPhoneNumber !== null && newEmergPhoneNumber !== '')
+        if (newEmergPhoneNumber !== null && newEmergPhoneNumber !== '')
             patient.emergPhoneNumber = newEmergPhoneNumber;
 
-        if(newAddress !== null && newAddress !== '')
+        if (newAddress !== null && newAddress !== '')
             patient.address = newAddress;
 
-        if(newAllergies !== null && newAllergies !== '')
+        if (newAllergies !== null && newAllergies !== '')
             patient.allergies = newAllergies;
-        
+
         const buffer = Buffer.from(JSON.stringify(patient));
         await ctx.stub.putState(patientId, buffer);
     }
 
     //This function is to update patient medical details. This function should be called by only doctor.
-    async updatePatientMedicalDetails(ctx, patientId, newSymptoms, newDiagnosis, newTreatment, newFollowUp) {
+    async updatePatientMedicalDetails(ctx, args) {
+        args = JSON.parse(args);
+        let patientId = args.patientId;
+        let newSymptoms = args.newSymptoms;
+        let newDiagnosis = args.newDiagnosis;
+        let newTreatment = args.newTreatment;
+        let newFollowUp = args.newFollowUp;
+
         const exists = await this.patientExists(ctx, patientId);
         if (!exists) {
             throw new Error(`The patient ${patientId} does not exist`);
         }
         const patient = await this.readPatient(ctx, patientId)
-        if(newSymptoms !== null && newSymptoms !== '')
+        if (newSymptoms !== null && newSymptoms !== '')
             patient.symptoms = newSymptoms;
-        
-        if(newDiagnosis !== null && newDiagnosis !== '')
+
+        if (newDiagnosis !== null && newDiagnosis !== '')
             patient.diagnosis = newDiagnosis;
-        
-        if(newTreatment !== null && newTreatment !== '')
+
+        if (newTreatment !== null && newTreatment !== '')
             patient.treatment = newTreatment;
 
-        if(newFollowUp !== null && newFollowUp !== '')
+        if (newFollowUp !== null && newFollowUp !== '')
             patient.followUp = newFollowUp;
 
         const buffer = Buffer.from(JSON.stringify(patient));
@@ -196,72 +217,78 @@ class PatientContract extends Contract {
 
     //Read patients based on lastname
     async queryPatientsByLastName(ctx, lastName) {
-		let queryString = {};
-		queryString.selector = {};
-		queryString.selector.docType = 'patient';
-		queryString.selector.lastName = lastName;
-		return await this.getQueryResultForQueryString(ctx, JSON.stringify(queryString));
+        let queryString = {};
+        queryString.selector = {};
+        queryString.selector.docType = 'patient';
+        queryString.selector.lastName = lastName;
+        return await this.getQueryResultForQueryString(ctx, JSON.stringify(queryString));
     }
-    
-    async getQueryResultForQueryString(ctx, queryString) {
 
+    //Read patients based on firstName
+    async queryPatientsByFirstName(ctx, firstName) {
+        let queryString = {};
+        queryString.selector = {};
+        queryString.selector.docType = 'patient';
+        queryString.selector.firstName = firstName;
+        return await this.getQueryResultForQueryString(ctx, JSON.stringify(queryString));
+    }
+
+    async getQueryResultForQueryString(ctx, queryString) {
         let resultsIterator = await ctx.stub.getQueryResult(queryString);
         console.info('getQueryResultForQueryString <--> ', resultsIterator);
-		let results = await this.getAllPatientResults(resultsIterator, false);
-		return JSON.stringify(results);
-	}
+        let results = await this.getAllPatientResults(resultsIterator, false);
+        return JSON.stringify(results);
+    }
 
     //Retrieves patient medical history based on patientId
     async getPatientHistory(ctx, patientId) {
-
         let resultsIterator = await ctx.stub.getHistoryForKey(patientId);
-		let results = await this.getAllPatientResults(resultsIterator, true);
+        let results = await this.getAllPatientResults(resultsIterator, true);
         console.info('results <--> ', results);
         return JSON.stringify(results);
-        
     }
-    
+
     //Retrieves all patients details
     async queryAllPatients(ctx) {
         let resultsIterator = await ctx.stub.getStateByRange('', '');
-		let results = await this.getAllPatientResults(resultsIterator, false);
-		return JSON.stringify(results);
+        let results = await this.getAllPatientResults(resultsIterator, false);
+        return JSON.stringify(results);
     }
 
     async getAllPatientResults(iterator, isHistory) {
         let allResults = [];
         while (true) {
-          let res = await iterator.next();
-    
-          if (res.value && res.value.value.toString()) {
-            let jsonRes = {};
-            console.log(res.value.value.toString('utf8'));
-    
-            if (isHistory && isHistory === true) {
-              jsonRes.Timestamp = res.value.timestamp;
-              try {
-                jsonRes.Value = JSON.parse(res.value.value.toString('utf8'));
-              } catch (err) {
-                console.log(err);
-                jsonRes.Value = res.value.value.toString('utf8');
-              }
-            } else {
-              jsonRes.Key = res.value.key;
-              try {
-                jsonRes.Record = JSON.parse(res.value.value.toString('utf8'));
-              } catch (err) {
-                console.log(err);
-                jsonRes.Record = res.value.value.toString('utf8');
-              }
+            let res = await iterator.next();
+
+            if (res.value && res.value.value.toString()) {
+                let jsonRes = {};
+                console.log(res.value.value.toString('utf8'));
+
+                if (isHistory && isHistory === true) {
+                    jsonRes.Timestamp = res.value.timestamp;
+                    try {
+                        jsonRes.Value = JSON.parse(res.value.value.toString('utf8'));
+                    } catch (err) {
+                        console.log(err);
+                        jsonRes.Value = res.value.value.toString('utf8');
+                    }
+                } else {
+                    jsonRes.Key = res.value.key;
+                    try {
+                        jsonRes.Record = JSON.parse(res.value.value.toString('utf8'));
+                    } catch (err) {
+                        console.log(err);
+                        jsonRes.Record = res.value.value.toString('utf8');
+                    }
+                }
+                allResults.push(jsonRes);
             }
-            allResults.push(jsonRes);
-          }
-          if (res.done) {
-            console.log('end of data');
-            await iterator.close();
-            console.info(allResults);
-            return allResults;
-          }
+            if (res.done) {
+                console.log('end of data');
+                await iterator.close();
+                console.info(allResults);
+                return allResults;
+            }
         }
     }
 }
