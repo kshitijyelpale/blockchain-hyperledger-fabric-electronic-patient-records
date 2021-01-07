@@ -2,7 +2,7 @@
  * @author Jathin Sreenivas
  * @email jathin.sreenivas@stud.fra-uas.de
  * @create date 2020-12-26 13:26:42
- * @modify date 2020-12-31 14:45:24
+ * @modify date 2021-01-06 20:00:10
  * @desc Execute this file to create and enroll an admin at Hospital 2.
  */
 
@@ -12,8 +12,8 @@ const FabricCAServices = require('fabric-ca-client');
 const path = require('path');
 const {buildCAClient, enrollAdmin} = require('../patient-asset-transfer/application-javascript/CAUtil.js');
 const {buildCCPHosp2, buildWallet} = require('../patient-asset-transfer/application-javascript/AppUtil.js');
-const adminHospital2 = 'admin';
-const adminHospital2Passwd = 'adminpw';
+const adminHospital2 = 'hosp2admin';
+const adminHospital2Passwd = 'hosp2lithium';
 
 const mspHosp2 = 'hosp2MSP';
 const walletPath = path.join(__dirname, '../patient-asset-transfer/application-javascript/wallet');

@@ -2,7 +2,7 @@
  * @author Jathin Sreenivas
  * @email jathin.sreenivas@stud.fra-uas.de
  * @create date 2020-12-26 13:26:42
- * @modify date 2020-12-31 14:44:13
+ * @modify date 2021-01-06 20:00:38
  * @desc Execute this file to create and enroll an admin at Hospital 1.
  */
 
@@ -12,14 +12,14 @@ const FabricCAServices = require('fabric-ca-client');
 const path = require('path');
 const {buildCAClient, enrollAdmin} = require('../patient-asset-transfer/application-javascript/CAUtil.js');
 const {buildCCPHosp1, buildWallet} = require('../patient-asset-transfer/application-javascript/AppUtil.js');
-const adminHospital1 = 'admin';
-const adminHospital1Passwd = 'adminpw';
+const adminHospital1 = 'hosp1admin';
+const adminHospital1Passwd = 'hosp1lithium';
 
 const mspHosp1 = 'hosp1MSP';
 const walletPath = path.join(__dirname, '../patient-asset-transfer/application-javascript/wallet');
 
 // Temporary DB
-const {addUser} = require('./Hosp1LocalDB.js');
+// const {addUser} = require('./Hosp1LocalDB.js');
 
 /**
  *
@@ -40,8 +40,6 @@ async function main() {
     await enrollAdmin(caClient, wallet, mspHosp1, adminHospital1, adminHospital1Passwd);
 
     console.log('msg: Successfully enrolled admin user ' + adminHospital1 + ' and imported it into the wallet');
-
-    addUser(adminHospital1, adminHospital1Passwd, 'admin');
   } catch (error) {
     console.error(`Failed to enroll admin user ' + ${adminHospital1} + : ${error}`);
     process.exit(1);
