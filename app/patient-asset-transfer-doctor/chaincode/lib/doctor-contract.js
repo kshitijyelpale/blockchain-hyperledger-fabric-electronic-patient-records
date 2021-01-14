@@ -14,7 +14,7 @@
 const { Contract } = require('fabric-contract-api');
 let Patient = require('./Patient.js');
 
-class PatientContract extends Contract {
+class DoctorContract extends Contract {
 
     async initLedger(ctx) {
         console.info('============= START : Initialize Ledger ===========');
@@ -117,6 +117,26 @@ class PatientContract extends Contract {
         return (!!buffer && buffer.length > 0);
     }
 
+    //Returns the last patientId in the set
+    async getLatestPatientId(ctx) {
+        let allResults = await this.queryAllPatients(ctx);
+        let data = JSON.parse(allResults);
+        let lastPatientId = data[data.length - 1].Key;
+        return lastPatientId;
+    }
+
+    async createPatient(ctx, args) {
+        args = JSON.parse(args);
+
+        let newPatient = await new Patient(args.patientId, args.firstName, args.lastName, args.age, args.phoneNumber, args.emergPhoneNumber, args.address, args.bloodGroup, args.allergies);
+        const exists = await this.patientExists(ctx, newPatient.patientId);
+        if (exists) {
+            throw new Error(`The patient ${newPatient.patientId} already exists`);
+        }
+        const buffer = Buffer.from(JSON.stringify(newPatient));
+        await ctx.stub.putState(newPatient.patientId, buffer);
+    }
+
     async readPatient(ctx, patientId) {
         const exists = await this.patientExists(ctx, patientId);
         if (!exists) {
@@ -127,34 +147,59 @@ class PatientContract extends Contract {
         return asset;
     }
 
-    //This function is to update patient personal details. This function should be called by patient.
-    async updatePatientPersonalDetails(ctx, args) {
+    //This function is to update patient medical details. This function should be called by only doctor.
+    async updatePatientMedicalDetails(ctx, args) {
         args = JSON.parse(args);
         let patientId = args.patientId;
-        let newPhoneNumber = args.newPhoneNumber;
-        let newEmergPhoneNumber = args.newEmergPhoneNumber;
-        let newAddress = args.newAddress;
-        let newAllergies = args.newAllergies;
+        let newSymptoms = args.newSymptoms;
+        let newDiagnosis = args.newDiagnosis;
+        let newTreatment = args.newTreatment;
+        let newFollowUp = args.newFollowUp;
 
         const exists = await this.patientExists(ctx, patientId);
         if (!exists) {
             throw new Error(`The patient ${patientId} does not exist`);
         }
         const patient = await this.readPatient(ctx, patientId)
-        if (newPhoneNumber !== null && newPhoneNumber !== '')
-            patient.phoneNumber = newPhoneNumber;
+        if (newSymptoms !== null && newSymptoms !== '')
+            patient.symptoms = newSymptoms;
 
-        if (newEmergPhoneNumber !== null && newEmergPhoneNumber !== '')
-            patient.emergPhoneNumber = newEmergPhoneNumber;
+        if (newDiagnosis !== null && newDiagnosis !== '')
+            patient.diagnosis = newDiagnosis;
 
-        if (newAddress !== null && newAddress !== '')
-            patient.address = newAddress;
+        if (newTreatment !== null && newTreatment !== '')
+            patient.treatment = newTreatment;
 
-        if (newAllergies !== null && newAllergies !== '')
-            patient.allergies = newAllergies;
+        if (newFollowUp !== null && newFollowUp !== '')
+            patient.followUp = newFollowUp;
 
         const buffer = Buffer.from(JSON.stringify(patient));
         await ctx.stub.putState(patientId, buffer);
+    }
+
+    //Read patients based on lastname
+    async queryPatientsByLastName(ctx, lastName) {
+        let queryString = {};
+        queryString.selector = {};
+        queryString.selector.docType = 'patient';
+        queryString.selector.lastName = lastName;
+        return await this.getQueryResultForQueryString(ctx, JSON.stringify(queryString));
+    }
+
+    //Read patients based on firstName
+    async queryPatientsByFirstName(ctx, firstName) {
+        let queryString = {};
+        queryString.selector = {};
+        queryString.selector.docType = 'patient';
+        queryString.selector.firstName = firstName;
+        return await this.getQueryResultForQueryString(ctx, JSON.stringify(queryString));
+    }
+
+    async getQueryResultForQueryString(ctx, queryString) {
+        let resultsIterator = await ctx.stub.getQueryResult(queryString);
+        console.info('getQueryResultForQueryString <--> ', resultsIterator);
+        let results = await this.getAllPatientResults(resultsIterator, false);
+        return JSON.stringify(results);
     }
 
     //Retrieves patient medical history based on patientId
@@ -162,6 +207,13 @@ class PatientContract extends Contract {
         let resultsIterator = await ctx.stub.getHistoryForKey(patientId);
         let results = await this.getAllPatientResults(resultsIterator, true);
         console.info('results <--> ', results);
+        return JSON.stringify(results);
+    }
+
+    //Retrieves all patients details
+    async queryAllPatients(ctx) {
+        let resultsIterator = await ctx.stub.getStateByRange('', '');
+        let results = await this.getAllPatientResults(resultsIterator, false);
         return JSON.stringify(results);
     }
 
@@ -202,4 +254,4 @@ class PatientContract extends Contract {
         }
     }
 }
-module.exports = PatientContract;
+module.exports = DoctorContract;
