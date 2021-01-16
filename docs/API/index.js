@@ -7,6 +7,6 @@ const swaggerDocument = YAML.load('./TeamLithium.yaml');
 
 app.use('/', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
-console.log('Starting API documnetation on localhost 1002')
+console.log('Starting API documnetation on localhost 3002')
 
-app.listen(1002);
+app.listen(3002);
