@@ -2,7 +2,7 @@
  * @author Jathin Sreenivas
  * @email jathin.sreenivas@stud.fra-uas.de
  * @create date 2020-12-26 13:26:42
- * @modify date 2021-01-06 20:51:27
+ * @modify date 2021-01-11 16:02:40
  * @desc The file which interacts with the fabric network.
  */
 
@@ -95,6 +95,7 @@ exports.invoke = async function(networkObj, isQuery, func, args) {
   try {
     if (isQuery === true) {
       const response = await networkObj.contract.evaluateTransaction(func, args);
+      console.log(response);
       await networkObj.gateway.disconnect();
       return response;
     } else {
@@ -107,8 +108,10 @@ exports.invoke = async function(networkObj, isQuery, func, args) {
       return response;
     }
   } catch (error) {
+    const response = {};
+    response.error = error;
     console.error(`Failed to submit transaction: ${error}`);
-    return error;
+    return response;
   }
 };
 
@@ -130,14 +133,14 @@ exports.registerUser = async function(hospitalId, userId) {
     if (hospitalId === 1) {
       const ccp = buildCCPHosp1();
       const caClient = buildCAClient(FabricCAServices, ccp, 'ca.hosp1.lithium.com');
-      await registerAndEnrollUser(caClient, wallet, mspOrg1, userId, 'admin');
+      await registerAndEnrollUser(caClient, wallet, mspOrg1, userId, 'hosp1admin');
     } else {
       const ccp = buildCCPHosp2();
       const caClient = buildCAClient(FabricCAServices, ccp, 'ca.hosp2.lithium.com');
-      await registerAndEnrollUser(caClient, wallet, mspOrg2, userId, 'admin');
+      await registerAndEnrollUser(caClient, wallet, mspOrg2, userId, 'hosp2admin');
     }
-    console.log(`Successfully registered doctor . Use doctorId ${userId} to login above.`);
-    const response = `Successfully registered doctor . Use doctorId ${userId} to login above.`;
+    console.log('Successfully registered doctor.');
+    const response = 'Successfully registered doctor.';
     return response;
   } catch (error) {
     console.error(`Failed to register user + ${userId} + : ${error}`);

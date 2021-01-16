@@ -2,7 +2,7 @@
  * @author Jathin Sreenivas
  * @email jathin.sreenivas@stud.fra-uas.de
  * @create date 2020-12-26 13:26:42
- * @modify date 2021-01-01 11:10:31
+ * @modify date 2021-01-11 15:32:45
  * @desc Referenced from https://github.com/hyperledger/fabric-samples/tree/master/test-application/javascript
  */
 
@@ -76,16 +76,15 @@ exports.registerAndEnrollUser = async (caClient, wallet, orgMspId, userId, admin
     // Check to see if we've already enrolled the user
     const userIdentity = await wallet.get(userId);
     if (userIdentity) {
-      console.log(`An identity for the user ${userId} already exists in the wallet`);
-      return;
+      console.log('An identity for the user ${userId} already exists in the wallet');
+      throw new Error('An identity for the user ${userId} already exists in the wallet');
     }
 
     // Must use an admin to register a new user
     const adminIdentity = await wallet.get(adminUserId);
     if (!adminIdentity) {
       console.log('An identity for the admin user does not exist in the wallet');
-      console.log('Enroll the admin user before retrying');
-      return;
+      throw new Error('An identity for the admin user does not exist in the wallet');
     }
 
     // build a user object for authenticating with the CA
@@ -115,5 +114,6 @@ exports.registerAndEnrollUser = async (caClient, wallet, orgMspId, userId, admin
     console.log(`Successfully registered and enrolled user ${userId} and imported it into the wallet`);
   } catch (error) {
     console.error(`Failed to register user : ${error}`);
+    throw new Error('Failed to register user');
   }
 };
