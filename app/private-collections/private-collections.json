@@ -1,0 +1,39 @@
+[
+    {
+      "name": "hosp1-hosp2-PrivateCollection",
+      "policy": "OR('hosp1MSP.member', 'hosp2MSP.member')",
+      "requiredPeerCount": 0,
+      "maxPeerCount": 1,
+      "blockToLive":0,
+      "memberOnlyRead": true,
+      "memberOnlyWrite": false,
+      "endorsementPolicy": {
+       "signaturePolicy": "OR('hosp1MSP.member', 'hosp2MSP.member')"
+     }
+   },
+    {
+      "name": "hosp1-PrivateCollection",
+      "policy": "OR('hosp1MSP.member')",
+      "requiredPeerCount": 0,
+      "maxPeerCount": 1,
+      "blockToLive":0,
+      "memberOnlyRead": true,
+      "memberOnlyWrite": false,
+      "endorsementPolicy": {
+        "signaturePolicy": "OR('hosp1MSP.member')"
+      }
+    },
+    {
+      "name": "hosp2-PrivateCollection",
+      "policy": "OR('hosp2MSP.member')",
+      "requiredPeerCount": 0,
+      "maxPeerCount": 1,
+      "blockToLive":0,
+      "memberOnlyRead": true,
+      "memberOnlyWrite": false,
+      "endorsementPolicy": {
+        "signaturePolicy": "OR('hosp2MSP.member')"
+      }
+    }
+]
+   

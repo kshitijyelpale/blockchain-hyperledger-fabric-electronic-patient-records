@@ -368,7 +368,7 @@ CC_SRC_PATH="NA"
 # endorsement policy defaults to "NA". This would allow chaincodes to use the majority default policy.
 CC_END_POLICY="NA"
 # collection configuration defaults to "NA"
-CC_COLL_CONFIG="NA"
+CC_COLL_CONFIG="../private-collections/private-collections.json"
 # chaincode init function defaults to "NA"
 CC_INIT_FCN="NA"
 # use this as the default docker-compose yaml definition
