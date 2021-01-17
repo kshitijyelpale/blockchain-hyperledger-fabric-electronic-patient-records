@@ -42,9 +42,6 @@ if [ "$CC_SRC_PATH" = "NA" ]; then
   if [ "$CC_NAME" = "patient" ]; then
     println $'\e[0;32m'patient-asset-transfer$'\e[0m' chaincode
     CC_SRC_PATH="../patient-asset-transfer"
-  elif [ "$CC_NAME" = "doctor" ]; then
-    println $'\e[0;32m'patient-asset-transfer-doctor$'\e[0m' chaincode
-    CC_SRC_PATH="../patient-asset-transfer-doctor"
   else
     fatalln "The chaincode name ${CC_NAME} is not supported by this script. Supported chaincode names are: patient, etc.,"
   fi

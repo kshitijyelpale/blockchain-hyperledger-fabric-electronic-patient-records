@@ -4,7 +4,9 @@
 
 'use strict';
 
-const PatientContract = require('./lib/patient-contract');
+const PatientContract = require('./lib/patient-contract.js');
+const DoctorContract = require('./lib/doctor-contract.js');
 
-module.exports.PatientContract = PatientContract;
-module.exports.contracts = [ PatientContract ];
+//module.exports.PatientContract = PatientContract;
+//module.exports.DoctorContract = DoctorContract;
+module.exports.contracts = [ DoctorContract, PatientContract ];
