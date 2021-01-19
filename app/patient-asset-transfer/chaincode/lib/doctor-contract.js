@@ -2,7 +2,7 @@
  * @author Varsha Kamath
  * @email varsha.kamath@stud.fra-uas.de
  * @create date 2020-12-14 21:50:38
- * @modify date 2021-01-07 15:30:00
+ * @modify date 2021-01-19 22:30:00
  * @desc [Smartcontract to create, read, update and delete patient details in legder]
  */
 /*
@@ -31,6 +31,7 @@ class DoctorContract extends Contract {
                 diagnosis: 'High Cholesterol',
                 treatment: 'Vasolip 10 mg everyday',
                 followUp: '6 Months',
+                password: '',
             },
             {
                 firstName: 'Max',
@@ -45,6 +46,7 @@ class DoctorContract extends Contract {
                 diagnosis: 'Esophagitis',
                 treatment: 'omeprazole 40 mg for 10 days before food',
                 followUp: '2 Weeks',
+                password: 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad',
             },
             {
                 firstName: 'Johannes',
@@ -59,6 +61,7 @@ class DoctorContract extends Contract {
                 diagnosis: 'Hypertension',
                 treatment: 'CORBIS 5 mg one per day',
                 followUp: '2 Weeks',
+                password: '',
             },
             {
                 firstName: 'Torben',
@@ -73,6 +76,7 @@ class DoctorContract extends Contract {
                 diagnosis: 'Diabetes Mellitus',
                 treatment: 'PRINIVIL TABS 20 MG (LISINOPRIL), HUMULIN INJ 70/30 20 units after breakfast',
                 followUp: '4 Weeks',
+                password: '',
             },
             {
                 firstName: 'Lisa',
@@ -87,6 +91,7 @@ class DoctorContract extends Contract {
                 diagnosis: 'Osteoarthritis',
                 treatment: 'ULTRADAY 40 mg twice per day',
                 followUp: '2 Weeks',
+                password: '',
             },
             {
                 firstName: 'Harry',
@@ -101,6 +106,7 @@ class DoctorContract extends Contract {
                 diagnosis: 'Periarthritis',
                 treatment: 'Hydrocortisone 20 ml injection',
                 followUp: '4 Weeks',
+                password: '',
             },
         ];
 
@@ -156,10 +162,6 @@ class DoctorContract extends Contract {
         let newTreatment = args.newTreatment;
         let newFollowUp = args.newFollowUp;
 
-        const exists = await this.patientExists(ctx, patientId);
-        if (!exists) {
-            throw new Error(`The patient ${patientId} does not exist`);
-        }
         const patient = await this.readPatient(ctx, patientId)
         if (newSymptoms !== null && newSymptoms !== '')
             patient.symptoms = newSymptoms;
