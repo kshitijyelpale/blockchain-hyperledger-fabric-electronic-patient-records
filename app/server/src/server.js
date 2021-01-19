@@ -2,7 +2,7 @@
  * @author Jathin Sreenivas
  * @email jathin.sreenivas@stud.fra-uas.de
  * @create date 2020-12-26 11:31:42
- * @modify date 2021-01-11 16:22:38
+ * @modify date 2021-01-19 16:24:31
  * @desc NodeJS APIs to interact with the fabric network.
  * @desc Look into API docs for the documentation of the routes
  */
@@ -51,6 +51,19 @@ app.post('/login', async (req, res) => {
   }
 });
 
+const validateRole = (roles, reqRole, res) => {
+  roles = roles.split('|');
+  if (reqRole.length === 0 || roles.length === 0 || !roles.includes(reqRole)) {
+    // user's role is not authorized
+    return res.sendStatus(401).json({message: 'Unauthorized'});
+  }
+};
+
+const capitalize = (s) => {
+  if (typeof s !== 'string') return '';
+  return s.charAt(0).toUpperCase() + s.slice(1);
+};
+
 const authenticateJWT = (req, res, next) => {
   const authHeader = req.headers.authorization;
 
@@ -74,8 +87,10 @@ const authenticateJWT = (req, res, next) => {
  * @description Retrives all the patient data
  */
 app.get('/patients/_all', async (req, res) => {
+  const userRole = req.headers.role;
+  await validateRole('doctor|admin', userRole, res);
   const networkObj = await network.connectToNetwork('hosp1admin');
-  const response = await network.invoke(networkObj, true, 'queryAllPatients', '');
+  const response = await network.invoke(networkObj, true, capitalize(userRole) + 'Contract:queryAllPatients', '');
   const parsedResponse = await JSON.parse(response);
   res.status(200).send(parsedResponse);
 });
@@ -87,6 +102,8 @@ app.get('/patients/_all', async (req, res) => {
  * @description Adds the doctor to the wallet
  */
 app.post('/doctors/register', authenticateJWT, async (req, res) => {
+  const userRole = req.headers.role;
+  await validateRole('admin', userRole, res);
   const doctorId = req.body.doctorId;
   const hospitalId = req.body.hospitalId;
   // const userPasswd = req.body.userPasswd;
@@ -105,6 +122,8 @@ app.post('/doctors/register', authenticateJWT, async (req, res) => {
  * @description Adds the patient to the ledger via the patient chaincode.
  */
 app.post('/patients/register', authenticateJWT, async (req, res) => {
+  const userRole = req.headers.role;
+  await validateRole('admin', userRole, res);
   // TODO: take admin id instead of doctor
   const networkObj = await network.connectToNetwork('hosp1admin');
   // delete req.body['doctorId'];
@@ -114,7 +133,7 @@ app.post('/patients/register', authenticateJWT, async (req, res) => {
   }
   req.body = JSON.stringify(req.body);
   const args = [req.body];
-  response = await network.invoke(networkObj, false, 'createPatient', args);
+  response = await network.invoke(networkObj, false, capitalize(userRole) + 'Contract:createPatient', args);
   (response.error) ? res.status(400).send(response.error) : res.status(201).send(getMessage(false, 'Successfully registered Patient.'));
 });
 
@@ -125,11 +144,13 @@ app.post('/patients/register', authenticateJWT, async (req, res) => {
  * @description Retrives the patient object for the patientID. Connects to the network using DoctorID in body.
  */
 app.get('/patients/:patientId', authenticateJWT, async (req, res) => {
+  const userRole = req.headers.role;
+  await validateRole('patient|doctor', userRole, res);
   const patientId = req.params.patientId;
 
   const networkObj = await network.connectToNetwork('hosp1admin');
 
-  const response = await network.invoke(networkObj, true, 'readPatient', patientId);
+  const response = await network.invoke(networkObj, true, capitalize(userRole) + 'Contract:readPatient', patientId);
 
   (response.error) ? res.status(400).send(response.error) : res.status(200).send(JSON.parse(response));
 });
@@ -141,13 +162,15 @@ app.get('/patients/:patientId', authenticateJWT, async (req, res) => {
  * @description Updates the patient medical details, to be used only by doctors.
  */
 app.patch('/patients/:patientId/details/medical', authenticateJWT, async (req, res) => {
+  const userRole = req.headers.role;
+  await validateRole('doctor', userRole, res);
   let args = req.body;
   args.patientId = req.params.patientId;
   args= [JSON.stringify(args)];
 
   // TODO: Connect to network using patientID from req auth. Dependency external DB
   const networkObj = await network.connectToNetwork('hosp1admin');
-  const response = await network.invoke(networkObj, false, 'updatePatientMedicalDetails', args);
+  const response = await network.invoke(networkObj, false, capitalize(userRole) + 'Contract:updatePatientMedicalDetails', args);
 
   (response.error) ? res.status(500).send(response.error) : res.status(200).send(getMessage(false, 'Successfully Updated Patient.'));
 });
@@ -160,13 +183,15 @@ app.patch('/patients/:patientId/details/medical', authenticateJWT, async (req, r
  * @description Updates the patient personal details, to be used only by patient themselves.
  */
 app.patch('/patients/:patientId/details/personal', authenticateJWT, async (req, res) => {
+  const userRole = req.headers.role;
+  await validateRole('patient', userRole, res);
   let args = req.body;
   args.patientId = req.params.patientId;
   args= [JSON.stringify(args)];
 
   // TODO: Connect to network using patientID from req auth. Dependency external DB
   const networkObj = await network.connectToNetwork('hosp1admin');
-  const response = await network.invoke(networkObj, false, 'updatePatientPersonalDetails', args);
+  const response = await network.invoke(networkObj, false, capitalize(userRole) + 'Contract:updatePatientPersonalDetails', args);
 
   (response.error) ? res.status(500).send(response.error) : res.status(200).send(getMessage(false, 'Successfully Updated Patient.'));
 });
@@ -179,11 +204,13 @@ app.patch('/patients/:patientId/details/personal', authenticateJWT, async (req, 
  * @description Updates the patient personal details, to be used only by patient themselves.
  */
 app.get('/patients/:patientId/history', authenticateJWT, async (req, res) => {
+  const userRole = req.headers.role;
+  await validateRole('patient|doctor', userRole, res);
   const patientId = req.params.patientId;
 
   // TODO: Connect to network using patientID from req auth. Dependency external DB
   const networkObj = await network.connectToNetwork('hosp1admin');
-  const response = await network.invoke(networkObj, true, 'getPatientHistory', patientId);
+  const response = await network.invoke(networkObj, true, capitalize(userRole) + 'Contract:getPatientHistory', patientId);
 
   const parsedResponse = await JSON.parse(response);
   (response.error) ? res.status(400).send(response.error) : res.status(200).send(parsedResponse);
