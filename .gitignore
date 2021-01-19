@@ -18,6 +18,3 @@ bin/
 config/
 docs/ReadMe/readme-website/node_modules
 docs/ReadMe/readme-website/.docusaurus
-app/server/node_modules
-app/patient-asset-transfer/application-javascript/node_modules
-app/patient-asset-transfer/chaincode/node_modules
