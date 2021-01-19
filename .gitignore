@@ -19,3 +19,9 @@ bin/
 config/
 docs/ReadMe/readme-website/node_modules
 docs/ReadMe/readme-website/.docusaurus
+app/server/package-lock.json
+app/server/node_modules
+app/patient-asset-transfer/application-javascript/node_modules
+app/patient-asset-transfer/application-javascript/package-lock.json
+app/patient-asset-transfer/chaincode/node_modules
+app/patient-asset-transfer/chaincode/package-lock.json
