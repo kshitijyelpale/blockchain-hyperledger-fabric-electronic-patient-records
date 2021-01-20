@@ -64,12 +64,14 @@ class PatientContract extends Contract {
         let patientId = args.patientId;
         let newPassword = args.newPassword;
 
-        const patient = await this.readPatient(ctx, patientId);
-        if (newPassword !== null && newPassword !== '')
+        if (newPassword !== null && newPassword !== '') {
+            const patient = await this.readPatient(ctx, patientId);
             patient.password = crypto.createHash('sha256').update(newPassword).digest('hex');
-
-        const buffer = Buffer.from(JSON.stringify(patient));
-        await ctx.stub.putState(patientId, buffer);
+            const buffer = Buffer.from(JSON.stringify(patient));
+            await ctx.stub.putState(patientId, buffer);
+        }
+        else
+            throw new Error(`Empty or null values should not be passed for newPassword parameter`);
     }
 
     //Returns the patient's password
