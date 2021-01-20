@@ -4,7 +4,7 @@
     "description": "Patient application implemented in JavaScript",
     "scripts": {
         "start": "./node_modules/nodemon/bin/nodemon.js src/server.js",
-        "lint":"eslint .",
+        "lint": "eslint .",
         "api-doc": "cd ../../docs/API/ && npm start",
         "readme-doc": "cd ../../docs/ReadMe/readme-website && yarn run start"
     },

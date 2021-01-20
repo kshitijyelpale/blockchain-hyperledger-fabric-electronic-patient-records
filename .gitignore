@@ -11,7 +11,6 @@ sample-scripts/.DS_Store
 .DS_Store
 .DS_Store
 docs/API/node_modules/
-app/patient-application/server/node_modules/
 sample-scripts/.DS_Store
 app/.vscode/settings.json
 app/patient-asset-transfer/application-javascript/wallet/
