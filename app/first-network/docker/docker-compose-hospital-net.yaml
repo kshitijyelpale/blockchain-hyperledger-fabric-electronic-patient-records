@@ -8,7 +8,10 @@ version: '2'
 volumes:
   orderer.lithium.com:
   peer0.hosp1.lithium.com:
+  peer1.hosp1.lithium.com:
   peer0.hosp2.lithium.com:
+  peer1.hosp2.lithium.com:
+  peer2.hosp2.lithium.com:
 
 networks:
   hospital:
@@ -65,7 +68,7 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
-      # Peer specific variabes
+      # Peer specific variables
       - CORE_PEER_ID=peer0.hosp1.lithium.com
       - CORE_PEER_ADDRESS=peer0.hosp1.lithium.com:7051
       - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
@@ -86,6 +89,44 @@ services:
     networks:
       - hospital
 
+  peer1.hosp1.lithium.com:
+    container_name: peer1.hosp1.lithium.com
+    image: hyperledger/fabric-peer:$IMAGE_TAG
+    environment:
+      #Generic peer variables
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      # the following setting starts chaincode containers on the same
+      # bridge network as the peers
+      # https://docs.docker.com/compose/networking/
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_hospital
+      - FABRIC_LOGGING_SPEC=INFO
+      #- FABRIC_LOGGING_SPEC=DEBUG
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      # Peer specific variables
+      - CORE_PEER_ID=peer1.hosp1.lithium.com
+      - CORE_PEER_ADDRESS=peer1.hosp1.lithium.com:7151
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:7151
+      - CORE_PEER_CHAINCODEADDRESS=peer1.hosp1.lithium.com:7152
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7152
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.hosp1.lithium.com:7151
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.hosp1.lithium.com:7151
+      - CORE_PEER_LOCALMSPID=hosp1MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../organizations/peerOrganizations/hosp1.lithium.com/peers/peer1.hosp1.lithium.com/msp:/etc/hyperledger/fabric/msp
+      - ../organizations/peerOrganizations/hosp1.lithium.com/peers/peer1.hosp1.lithium.com/tls:/etc/hyperledger/fabric/tls
+      - peer1.hosp1.lithium.com:/var/hyperledger/production
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    ports:
+      - 7151:7151
+    networks:
+      - hospital
+
   peer0.hosp2.lithium.com:
     container_name: peer0.hosp2.lithium.com
     image: hyperledger/fabric-peer:$IMAGE_TAG
@@ -103,7 +144,7 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
-      # Peer specific variabes
+      # Peer specific variables
       - CORE_PEER_ID=peer0.hosp2.lithium.com
       - CORE_PEER_ADDRESS=peer0.hosp2.lithium.com:9051
       - CORE_PEER_LISTENADDRESS=0.0.0.0:9051
@@ -121,5 +162,81 @@ services:
     command: peer node start
     ports:
       - 9051:9051
+    networks:
+      - hospital
+
+  peer1.hosp2.lithium.com:
+    container_name: peer1.hosp2.lithium.com
+    image: hyperledger/fabric-peer:$IMAGE_TAG
+    environment:
+      #Generic peer variables
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      # the following setting starts chaincode containers on the same
+      # bridge network as the peers
+      # https://docs.docker.com/compose/networking/
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_hospital
+      - FABRIC_LOGGING_SPEC=INFO
+      #- FABRIC_LOGGING_SPEC=DEBUG
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      # Peer specific variables
+      - CORE_PEER_ID=peer1.hosp2.lithium.com
+      - CORE_PEER_ADDRESS=peer1.hosp2.lithium.com:9151
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:9151
+      - CORE_PEER_CHAINCODEADDRESS=peer1.hosp2.lithium.com:9152
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:9152
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.hosp2.lithium.com:9151
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.hosp2.lithium.com:9151
+      - CORE_PEER_LOCALMSPID=hosp2MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../organizations/peerOrganizations/hosp2.lithium.com/peers/peer1.hosp2.lithium.com/msp:/etc/hyperledger/fabric/msp
+      - ../organizations/peerOrganizations/hosp2.lithium.com/peers/peer1.hosp2.lithium.com/tls:/etc/hyperledger/fabric/tls
+      - peer1.hosp2.lithium.com:/var/hyperledger/production
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    ports:
+      - 9151:9151
+    networks:
+      - hospital
+
+  peer2.hosp2.lithium.com:
+    container_name: peer2.hosp2.lithium.com
+    image: hyperledger/fabric-peer:$IMAGE_TAG
+    environment:
+      #Generic peer variables
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      # the following setting starts chaincode containers on the same
+      # bridge network as the peers
+      # https://docs.docker.com/compose/networking/
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_hospital
+      - FABRIC_LOGGING_SPEC=INFO
+      #- FABRIC_LOGGING_SPEC=DEBUG
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      # Peer specific variables
+      - CORE_PEER_ID=peer2.hosp2.lithium.com
+      - CORE_PEER_ADDRESS=peer2.hosp2.lithium.com:9251
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:9251
+      - CORE_PEER_CHAINCODEADDRESS=peer2.hosp2.lithium.com:9252
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:9252
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer2.hosp2.lithium.com:9251
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer2.hosp2.lithium.com:9251
+      - CORE_PEER_LOCALMSPID=hosp2MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../organizations/peerOrganizations/hosp2.lithium.com/peers/peer2.hosp2.lithium.com/msp:/etc/hyperledger/fabric/msp
+      - ../organizations/peerOrganizations/hosp2.lithium.com/peers/peer2.hosp2.lithium.com/tls:/etc/hyperledger/fabric/tls
+      - peer2.hosp2.lithium.com:/var/hyperledger/production
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    ports:
+      - 9251:9251
     networks:
       - hospital
