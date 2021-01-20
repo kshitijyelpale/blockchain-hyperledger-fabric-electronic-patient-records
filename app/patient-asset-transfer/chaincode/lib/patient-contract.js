@@ -2,7 +2,7 @@
  * @author Varsha Kamath
  * @email varsha.kamath@stud.fra-uas.de
  * @create date 2020-12-14 21:50:38
- * @modify date 2021-01-07 15:30:00
+ * @modify date 2021-01-19 22:30:00
  * @desc [Smartcontract to create, read, update and delete patient details in legder]
  */
 /*
@@ -13,6 +13,7 @@
 
 const { Contract } = require('fabric-contract-api');
 let Patient = require('./Patient.js');
+var crypto = require('crypto');
 
 class PatientContract extends Contract {
 
@@ -40,10 +41,6 @@ class PatientContract extends Contract {
         let newAddress = args.newAddress;
         let newAllergies = args.newAllergies;
 
-        const exists = await this.patientExists(ctx, patientId);
-        if (!exists) {
-            throw new Error(`The patient ${patientId} does not exist`);
-        }
         const patient = await this.readPatient(ctx, patientId)
         if (newPhoneNumber !== null && newPhoneNumber !== '')
             patient.phoneNumber = newPhoneNumber;
@@ -59,6 +56,29 @@ class PatientContract extends Contract {
 
         const buffer = Buffer.from(JSON.stringify(patient));
         await ctx.stub.putState(patientId, buffer);
+    }
+
+    //This function is to update patient password. This function should be called by patient.
+    async updatePatientPassword(ctx, args) {
+        args = JSON.parse(args);
+        let patientId = args.patientId;
+        let newPassword = args.newPassword;
+
+        if (newPassword !== null && newPassword !== '') {
+            const patient = await this.readPatient(ctx, patientId);
+            patient.password = crypto.createHash('sha256').update(newPassword).digest('hex');
+            const buffer = Buffer.from(JSON.stringify(patient));
+            await ctx.stub.putState(patientId, buffer);
+        }
+        else
+            throw new Error(`Empty or null values should not be passed for newPassword parameter`);
+    }
+
+    //Returns the patient's password
+    async getPatientPassword(ctx, patientId) {
+        const patient = await this.readPatient(ctx, patientId);
+        const password = patient.password;
+        return password;
     }
 
     //Retrieves patient medical history based on patientId
