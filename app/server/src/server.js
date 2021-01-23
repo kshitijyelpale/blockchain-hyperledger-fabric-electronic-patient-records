@@ -70,6 +70,10 @@ const authenticateJWT = (req, res, next) => {
   if (authHeader) {
     const token = authHeader.split(' ')[1];
 
+    if (token === '' || token === 'null') {
+      return res.status(401).send('Unauthorized request');
+    }
+
     jwt.verify(token, 'hosp1lithium', (err, user) => {
       if (err) {
         return res.sendStatus(403);
@@ -78,7 +82,7 @@ const authenticateJWT = (req, res, next) => {
       next();
     });
   } else {
-    res.sendStatus(401);
+    return res.status(401).send('Unauthorized request');
   }
 };
 
