@@ -12,22 +12,34 @@ import { DoctorComponent } from './doctor/doctor.component';
 import { AuthService } from './core/auth/auth.service';
 import { AuthGuard } from './core/auth/auth.guard';
 import { TokenInterceptorService } from './core/auth/token-interceptor.service';
+import { ToolbarButtonComponent, ToolbarLinkComponent, ToolbarComponent } from './sidebar';
+import { SearchComboComponent, SearchService, SearchTextComponent } from './search';
+import { AdminService } from './admin/admin.service';
+import { PatientService } from './patient/patient.service';
+import { DoctorService } from './doctor/doctor.service';
+
+const components = [
+  AppComponent,
+  LoginComponent,
+  AdminComponent,
+  PatientComponent,
+  DoctorComponent,
+  ToolbarComponent,
+  ToolbarButtonComponent,
+  ToolbarLinkComponent,
+  SearchComboComponent,
+  SearchTextComponent
+];
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    LoginComponent,
-    AdminComponent,
-    PatientComponent,
-    DoctorComponent
-  ],
+  declarations: [...components],
   imports: [
     BrowserModule,
     FormsModule,
     HttpClientModule,
     AppRoutingModule
   ],
-  providers: [ AuthService, AuthGuard,
+  providers: [ AuthService, AuthGuard, SearchService, AdminService, PatientService, DoctorService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptorService,

@@ -13,6 +13,9 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const morgan = require('morgan');
 const jwt = require('jsonwebtoken');
+// const https = require('https');
+// const fs = require('fs');
+// const path = require('path');
 
 const network = require('../../patient-asset-transfer/application-javascript/app.js');
 
@@ -23,6 +26,15 @@ app.use(cors());
 
 app.listen(3001, () => console.log('Backend server running on 3001'));
 
+// TODO: We can start the server with https so encryption will be done for the data transferred ove the network
+// TODO: followed this link https://timonweb.com/javascript/running-expressjs-server-over-https/ to create certificate and added in the code
+/* https.createServer({
+  key: fs.readFileSync(path.join(__dirname, 'ssl', 'server.key')),
+  cert: fs.readFileSync(path.join(__dirname, 'ssl', 'server.cert')),
+}, app)
+  .listen(3001, function() {
+    console.log('Backend server running on 3001! Go to https://localhost:3001/');
+  });*/
 
 const getMessage = (isError, message) => {
   if (isError) {
@@ -41,7 +53,11 @@ app.post('/login', async (req, res) => {
 
   if (user) {
     // Generate an access token
-    const accessToken = jwt.sign({username: 'hosp1admin', role: 'admin'}, 'hosp1lithium');
+    const accessToken = jwt.sign(
+      {username: 'hosp1admin', role: 'admin'},
+      'hosp1lithium',
+      {expiresIn: '15m'}, // TODO: mention value in the environment file '.env'
+    );
     res.status(200);
     res.json({
       accessToken,
