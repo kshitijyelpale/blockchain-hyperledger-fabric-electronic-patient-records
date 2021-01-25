@@ -71,7 +71,7 @@ const validateRole = (roles, reqRole, res) => {
   roles = roles.split('|');
   if (reqRole.length === 0 || roles.length === 0 || !roles.includes(reqRole)) {
     // user's role is not authorized
-    return res.sendStatus(401).json({message: 'Unauthorized'});
+    return res.sendStatus(401).json({message: 'Unauthorized role'});
   }
 };
 
