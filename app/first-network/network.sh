@@ -283,6 +283,8 @@ function networkUp() {
 
   IMAGE_TAG=$IMAGETAG docker-compose ${COMPOSE_FILES} up -d 2>&1
 
+  docker-compose -f "${COMPOSE_FILE_REDIS}" up -d
+
   docker ps -a
   if [ $? -ne 0 ]; then
     fatalln "Unable to start network"
@@ -327,7 +329,7 @@ function deployCC() {
 # Tear down running network
 function networkDown() {
   # stop org3 containers also in addition to org1 and org2, in case we were running sample to add org3
-  docker-compose -f $COMPOSE_FILE_BASE -f $COMPOSE_FILE_COUCH -f $COMPOSE_FILE_CA down --volumes --remove-orphans
+  docker-compose -f $COMPOSE_FILE_BASE -f $COMPOSE_FILE_COUCH -f $COMPOSE_FILE_CA -f $COMPOSE_FILE_REDIS down --volumes --remove-orphans
   docker-compose -f $COMPOSE_FILE_COUCH_ORG3 -f $COMPOSE_FILE_ORG3 down --volumes --remove-orphans
   # Don't remove the generated artifacts -- note, the ledgers are always removed
   if [ "$MODE" != "restart" ]; then
@@ -394,6 +396,9 @@ IMAGETAG="latest"
 CA_IMAGETAG="latest"
 # default database
 DATABASE="couchdb"
+
+# Set necessary variables
+COMPOSE_FILE_REDIS=docker/docker-compose-redis.yaml
 
 # Parse commandline args
 
