@@ -2,7 +2,7 @@
  * @author Jathin Sreenivas
  * @email jathin.sreenivas@stud.fra-uas.de
  * @create date 2020-12-26 13:26:42
- * @modify date 2021-01-11 16:02:40
+ * @modify date 2021-01-27 22:45:30
  * @desc The file which interacts with the fabric network.
  */
 
@@ -117,11 +117,15 @@ exports.invoke = async function(networkObj, isQuery, func, args) {
 
 /**
  * @author Jathin Sreenivas
- * @param  {string} hospitalId representing the hospital to which the user/doctor has to be created
- * @param  {string} userId patientID or doctorID
- * @description Creates a patient/doctor and adds to the wallet to the given hospital
+ * @param  {string} attributes JSON string in which userId, hospitalId and role must be present.
+ * @description For patient attributes also contain the patient object
+ * @description Creates a patient/doctor and adds to the wallet to the given hospitalId
  */
-exports.registerUser = async function(hospitalId, userId) {
+exports.registerUser = async function(attributes) {
+  const attrs = JSON.parse(attributes);
+  const hospitalId = attrs.hospitalId;
+  const userId = attrs.userId;
+
   if (!userId || !hospitalId) {
     const response = {};
     response.error = 'Error! You need to fill all fields before you can register!';
@@ -130,17 +134,18 @@ exports.registerUser = async function(hospitalId, userId) {
 
   try {
     const wallet = await buildWallet(Wallets, walletPath);
+    // TODO: Must be handled in a config file instead of using if
     if (hospitalId === 1) {
       const ccp = buildCCPHosp1();
       const caClient = buildCAClient(FabricCAServices, ccp, 'ca.hosp1.lithium.com');
-      await registerAndEnrollUser(caClient, wallet, mspOrg1, userId, 'hosp1admin');
+      await registerAndEnrollUser(caClient, wallet, mspOrg1, userId, 'hosp1admin', attributes);
     } else {
       const ccp = buildCCPHosp2();
       const caClient = buildCAClient(FabricCAServices, ccp, 'ca.hosp2.lithium.com');
-      await registerAndEnrollUser(caClient, wallet, mspOrg2, userId, 'hosp2admin');
+      await registerAndEnrollUser(caClient, wallet, mspOrg2, userId, 'hosp2admin', attributes);
     }
-    console.log('Successfully registered doctor.');
-    const response = 'Successfully registered doctor.';
+    console.log('Successfully registered user.');
+    const response = 'Successfully registered user.';
     return response;
   } catch (error) {
     console.error(`Failed to register user + ${userId} + : ${error}`);
@@ -150,4 +155,54 @@ exports.registerUser = async function(hospitalId, userId) {
   }
 };
 
+/**
+ * @param  {NetworkObj} networkObj The object which is generated when connectToNetwork is executed
+ * @param  {String} hospitalId
+ * @return {JSON} Returns an JSON array consisting of all doctor object.
+ * @description Retrieves all the users(doctors) based on user type(doctor) and hospitalId
+ */
+exports.getAllDoctorsByHospitalId = async function(networkObj, hospitalId) {
+  // Get the User from the identity context
+  const users = networkObj.gateway.identityContext.user;
+  let caClient;
+  const result = [];
+  try {
+    // TODO: Must be handled in a config file instead of using if
+    if (hospitalId === 1) {
+      const ccp = buildCCPHosp1();
+      caClient = buildCAClient(FabricCAServices, ccp, 'ca.hosp1.lithium.com');
+    } else {
+      const ccp = buildCCPHosp2();
+      caClient = buildCAClient(FabricCAServices, ccp, 'ca.hosp2.lithium.com');
+    }
 
+    // Use the identity service to get the user enrolled using the respective CA
+    const idService = caClient.newIdentityService();
+    const userList = await idService.getAll(users);
+
+    // for all identities the attrs can be found
+    const identities = userList.result.identities;
+
+    for (let i = 0; i < identities.length; i++) {
+      tmp = {};
+      if (identities[i].type === 'doctor') {
+        tmp.id = identities[i].id;
+        tmp.role = identities[i].type;
+        attributes = identities[i].attrs;
+        // Doctor object will consist of firstName and lastName
+        for (let j = 0; j < attributes.length; j++) {
+          if (attributes[j].name.endsWith('Name')) {
+            tmp[attributes[j].name] = attributes[j].value;
+          }
+        }
+        result.push(tmp);
+      }
+    }
+  } catch (error) {
+    console.error(`Unable to get all doctors : ${error}`);
+    const response = {};
+    response.error = error;
+    return response;
+  }
+  return result;
+};

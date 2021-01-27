@@ -2,7 +2,7 @@
  * @author Jathin Sreenivas
  * @email jathin.sreenivas@stud.fra-uas.de
  * @create date 2020-12-26 11:31:42
- * @modify date 2021-01-19 16:24:31
+ * @modify date 2021-01-27 22:44:26
  * @desc NodeJS APIs to interact with the fabric network.
  * @desc Look into API docs for the documentation of the routes
  */
@@ -124,12 +124,12 @@ app.get('/patients/_all', async (req, res) => {
 app.post('/doctors/register', authenticateJWT, async (req, res) => {
   const userRole = req.headers.role;
   await validateRole('admin', userRole, res);
-  const doctorId = req.body.doctorId;
-  const hospitalId = req.body.hospitalId;
+  req.body = JSON.stringify(req.body);
+  const args = [req.body];
   // const userPasswd = req.body.userPasswd;
 
   // first create the identity for the voter and add to wallet
-  const response = await network.registerUser(hospitalId, doctorId);
+  const response = await network.registerUser(args);
 
   (response.error) ? res.status(400).send(response.error) : res.status(201).send(getMessage(false, response));
 });
@@ -147,12 +147,13 @@ app.post('/patients/register', authenticateJWT, async (req, res) => {
   // TODO: take admin id instead of doctor
   const networkObj = await network.connectToNetwork('hosp1admin');
   // delete req.body['doctorId'];
-  let response = await network.registerUser(req.body.hospitalId, req.body.patientId);
+  req.body.patientId = req.body.userId;
+  req.body = JSON.stringify(req.body);
+  const args = [req.body];
+  let response = await network.registerUser(args);
   if (response.error) {
     res.send(response.error);
   }
-  req.body = JSON.stringify(req.body);
-  const args = [req.body];
   response = await network.invoke(networkObj, false, capitalize(userRole) + 'Contract:createPatient', args);
   (response.error) ? res.status(400).send(response.error) : res.status(201).send(getMessage(false, 'Successfully registered Patient.'));
 });
@@ -234,6 +235,24 @@ app.get('/patients/:patientId/history', authenticateJWT, async (req, res) => {
 
   const parsedResponse = await JSON.parse(response);
   (response.error) ? res.status(400).send(response.error) : res.status(200).send(parsedResponse);
+});
+
+/**
+ * @param  {Request} req Role in the header and hospitalId in the url
+ * @param  {Response} res 200 response with array of all doctors else 500 with the error message
+ * @description Get all the doctors of the mentioned hospitalId
+ */
+app.get('/doctors/:hospitalId/_all', authenticateJWT, async (req, res) => {
+  // User role from the request header is validated
+  const userRole = req.headers.role;
+  await validateRole('patient|doctor|admin', userRole, res);
+  const hospitalId = parseInt(req.params.hospitalId);
+  // Set up and connect to Fabric Gateway
+  // TODO: Connect to network using adminId from req auth
+  const networkObj = await network.connectToNetwork('hosp1admin');
+  // Use the gateway and identity service to get all users enrolled by the CA
+  const response = await network.getAllDoctorsByHospitalId(networkObj, hospitalId);
+  (response.error) ? res.status(500).send(response.error) : res.status(200).send(response);
 });
 
 
