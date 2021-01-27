@@ -4,6 +4,7 @@ import { LoginComponent } from './login/login.component';
 import { PatientComponent } from './patient/patient.component';
 import { DoctorComponent } from './doctor/doctor.component';
 import { AdminComponent } from './admin/admin.component';
+import { AuthGuard } from './core/auth/auth.guard';
 
 const routes: Routes = [
   {
@@ -17,11 +18,13 @@ const routes: Routes = [
   },
   {
     path: 'patient',
-    component: PatientComponent
+    component: PatientComponent,
+    canActivate: [ AuthGuard ]
   },
   {
     path: 'doctor',
-    component: DoctorComponent
+    component: DoctorComponent,
+    canActivate: [ AuthGuard ]
   },
   {
     path: 'admin',

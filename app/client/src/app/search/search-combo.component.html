@@ -1,0 +1,7 @@
+<div class="input-group input-group-sm">
+  <select (change)="onSelectionChanged($event)" [ngModel]="selectedItem"
+    class="form-control custom-select">
+    <option class="placeholder" selected="selected" value="">{{placeholder}}</option>
+    <option *ngFor="let c of config" [value]="c.value">{{c.name}}</option>
+  </select>
+</div>

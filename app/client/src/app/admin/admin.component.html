@@ -1,1 +1,20 @@
-<p>admin works!</p>
+<app-toolbar text="Admin">
+  <app-toolbar-button text="Refresh" icon="refresh" (click)="refresh()"></app-toolbar-button>
+</app-toolbar>
+<br><br><br>
+
+<div class="sidebar-layout-bottom-row p-3 container-fluid">
+  <p>List of all patients.</p>
+  <table class="table table-sm">
+    <tr>
+      <th *ngFor="let column of headerNames">
+        {{column.displayName}}
+      </th>
+    </tr>
+    <!--<tr *ngFor="let singleRecord of patientRecords">
+      <td *ngFor="let columnName of headerNames">
+        {{singleRecord[columnName.keyName]}}
+      </td>
+    </tr>-->
+  </table>
+</div>

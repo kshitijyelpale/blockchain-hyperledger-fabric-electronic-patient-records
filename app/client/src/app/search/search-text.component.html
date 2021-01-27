@@ -1,0 +1,17 @@
+<form #searchForm="ngForm">
+  <div class="input-group input-group-sm">
+    <div class="input-group-prepend">
+      <span class="input-group-text" id="search-label">
+        <i class="fa fa-search"></i>
+      </span>
+    </div>
+    <input type="text" class="form-control" [placeholder]="placeholder" aria-describedby="search-label"
+           [ngModel]="searchTerm"
+           (ngModelChange)="changedSearchTerm($event, searchForm)" [pattern]="pattern" [name]="parameterName">
+    <div class="input-group-append" *ngIf="searchTerm">
+      <button class="btn bg-transparent clear" (click)="searchForm.reset()" ngbTooltip="Clear">
+        <i class="fa fa-times"></i>
+      </button>
+    </div>
+  </div>
+</form>

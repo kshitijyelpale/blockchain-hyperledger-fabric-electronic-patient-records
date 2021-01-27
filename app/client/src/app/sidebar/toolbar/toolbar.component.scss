@@ -1,0 +1,24 @@
+// @import 'theme';
+
+.toolbar {
+  // toolbar never scrolls with the body and sit right at the top below the navbar
+  position: fixed;
+  top: 56px; // $navbar-height;
+  left: 200px; // $sidebar-width;
+  right: 0;
+  display: flex;
+  padding: 1rem;
+
+  @media print {
+    left: 0;
+  }
+}
+
+.toolbar-buttons {
+  display: flex;
+  margin-left: auto;
+
+  @media print {
+    display: none;
+  }
+}
