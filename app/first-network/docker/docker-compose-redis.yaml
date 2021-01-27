@@ -6,7 +6,7 @@ networks:
 services:
   redis1:
     image: 'redis:latest'
-    container_name: redis1
+    container_name: redis.hosp1.lithium.com
     command: redis-server --requirepass hosp1lithium
     ports:
       - "6379:6379"
@@ -15,7 +15,7 @@ services:
 
   redis2:
     image: 'redis:latest'
-    container_name: redis2
+    container_name: redis.hosp2.lithium.com
     command: redis-server --requirepass hosp2lithium
     ports:
       - "6380:6379"
