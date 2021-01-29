@@ -2,7 +2,7 @@
  * @author Jathin Sreenivas
  * @email jathin.sreenivas@stud.fra-uas.de
  * @create date 2020-12-26 13:26:42
- * @modify date 2021-01-11 15:32:45
+ * @modify date 2021-01-27 22:36:23
  * @desc Referenced from https://github.com/hyperledger/fabric-samples/tree/master/test-application/javascript
  */
 
@@ -68,10 +68,11 @@ exports.enrollAdmin = async (caClient, wallet, orgMspId, adminUserId, adminUserP
  * @param  {string} orgMspId
  * @param  {string} userId
  * @param  {string} adminUserId
+ * @param  {string} attributes
  * @param  {string} affiliation
  * @description Method to create the user and enrol to the organization and adds the user to the wallet.
  */
-exports.registerAndEnrollUser = async (caClient, wallet, orgMspId, userId, adminUserId, affiliation) => {
+exports.registerAndEnrollUser = async (caClient, wallet, orgMspId, userId, adminUserId, attributes, affiliation) => {
   try {
     // Check to see if we've already enrolled the user
     const userIdentity = await wallet.get(userId);
@@ -91,16 +92,44 @@ exports.registerAndEnrollUser = async (caClient, wallet, orgMspId, userId, admin
     const provider = wallet.getProviderRegistry().getProvider(adminIdentity.type);
     const adminUser = await provider.getUserContext(adminIdentity, adminUserId);
 
+    // Get all the parameters from the JSON string
+    attributes = JSON.parse(attributes);
+    const firstName = attributes.firstName;
+    const lastName = attributes.lastName;
+    const role = attributes.role;
+
+
     // Register the user, enroll the user, and import the new identity into the wallet.
     // if affiliation is specified by client, the affiliation value must be configured in CA
+    // NOTE: Pubic key can be added into attrs
     const secret = await caClient.register({
       affiliation: affiliation,
       enrollmentID: userId,
-      role: 'client',
+      role: role,
+      attrs: [{
+        name: 'firstName',
+        value: firstName,
+        ecert: true,
+      },
+      {
+        name: 'lastName',
+        value: lastName,
+        ecert: true,
+      }],
     }, adminUser);
     const enrollment = await caClient.enroll({
       enrollmentID: userId,
       enrollmentSecret: secret,
+      attrs: [{
+        name: 'firstName',
+        value: firstName,
+        ecert: true,
+      },
+      {
+        name: 'lastName',
+        value: lastName,
+        ecert: true,
+      }],
     });
     const x509Identity = {
       credentials: {
