@@ -2,7 +2,7 @@
  * @author Jathin Sreenivas
  * @email jathin.sreenivas@stud.fra-uas.de
  * @create date 2020-12-26 13:26:42
- * @modify date 2021-01-27 22:45:30
+ * @modify date 2021-01-29 21:01:58
  * @desc The file which interacts with the fabric network.
  */
 
@@ -144,8 +144,8 @@ exports.registerUser = async function(attributes) {
       const caClient = buildCAClient(FabricCAServices, ccp, 'ca.hosp2.lithium.com');
       await registerAndEnrollUser(caClient, wallet, mspOrg2, userId, 'hosp2admin', attributes);
     }
-    console.log('Successfully registered user.');
-    const response = 'Successfully registered user.';
+    console.log(`Successfully registered user: + ${userId}`);
+    const response = 'Successfully registered user: '+ userId;
     return response;
   } catch (error) {
     console.error(`Failed to register user + ${userId} + : ${error}`);
