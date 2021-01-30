@@ -140,20 +140,14 @@ class PrimaryContract extends Contract {
 
                 if (isHistory && isHistory === true) {
                     jsonRes.Timestamp = res.value.timestamp;
-                    try {
-                        jsonRes.Value = JSON.parse(res.value.value.toString('utf8'));
-                    } catch (err) {
-                        console.log(err);
-                        jsonRes.Value = res.value.value.toString('utf8');
-                    }
-                } else {
-                    jsonRes.Key = res.value.key;
-                    try {
-                        jsonRes.Record = JSON.parse(res.value.value.toString('utf8'));
-                    } catch (err) {
-                        console.log(err);
-                        jsonRes.Record = res.value.value.toString('utf8');
-                    }
+                }
+                jsonRes.Key = res.value.key;
+
+                try {
+                    jsonRes.Record = JSON.parse(res.value.value.toString('utf8'));
+                } catch (err) {
+                    console.log(err);
+                    jsonRes.Record = res.value.value.toString('utf8');
                 }
                 allResults.push(jsonRes);
             }

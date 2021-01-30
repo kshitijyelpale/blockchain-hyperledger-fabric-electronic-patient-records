@@ -27,7 +27,8 @@ class AdminContract extends PrimaryContract {
     async createPatient(ctx, args) {
         args = JSON.parse(args);
 
-        let newPatient = await new Patient(args.patientId, args.firstName, args.lastName, args.age, args.phoneNumber, args.emergPhoneNumber, args.address, args.bloodGroup, args.allergies);
+        let newPatient = await new Patient(args.patientId, args.firstName, args.lastName, args.age, args.phoneNumber,
+            args.emergPhoneNumber, args.address, args.bloodGroup, args.allergies);
         const exists = await this.patientExists(ctx, newPatient.patientId);
         if (exists) {
             throw new Error(`The patient ${newPatient.patientId} already exists`);
@@ -62,17 +63,8 @@ class AdminContract extends PrimaryContract {
         queryString.selector.lastName = lastName;
         const buffer = await this.getQueryResultForQueryString(ctx, JSON.stringify(queryString));
         let asset = JSON.parse(buffer.toString());
-        for (var i = 0; i < asset.length; i++) {
-            var obj = asset[i];
-            asset[i] = ({
-                patientId: obj.Key,
-                firstName: obj.Record.firstName,
-                lastName: obj.Record.lastName,
-                phoneNumber: obj.Record.phoneNumber,
-                emergPhoneNumber: obj.Record.emergPhoneNumber
-            });
-        }
-        return asset;
+
+        return this.fetchLimitedFields(asset);
     }
 
     //Read patients based on firstName
@@ -83,33 +75,30 @@ class AdminContract extends PrimaryContract {
         queryString.selector.firstName = firstName;
         const buffer = await this.getQueryResultForQueryString(ctx, JSON.stringify(queryString));
         let asset = JSON.parse(buffer.toString());
-        for (var i = 0; i < asset.length; i++) {
-            var obj = asset[i];
-            asset[i] = ({
-                patientId: obj.Key,
-                firstName: obj.Record.firstName,
-                lastName: obj.Record.lastName,
-                phoneNumber: obj.Record.phoneNumber,
-                emergPhoneNumber: obj.Record.emergPhoneNumber
-            });
-        }
-        return asset;
+
+        return this.fetchLimitedFields(asset);
     }
 
     //Retrieves all patients details
     async queryAllPatients(ctx) {
         let resultsIterator = await ctx.stub.getStateByRange('', '');
         let asset = await this.getAllPatientResults(resultsIterator, false);
-        for (var i = 0; i < asset.length; i++) {
-            var obj = asset[i];
-            asset[i] = ({
+
+        return this.fetchLimitedFields(asset);
+    }
+
+    fetchLimitedFields = asset => {
+        for (let i = 0; i < asset.length; i++) {
+            const obj = asset[i];
+            asset[i] = {
                 patientId: obj.Key,
                 firstName: obj.Record.firstName,
                 lastName: obj.Record.lastName,
                 phoneNumber: obj.Record.phoneNumber,
                 emergPhoneNumber: obj.Record.emergPhoneNumber
-            });
+            };
         }
+
         return asset;
     }
 }

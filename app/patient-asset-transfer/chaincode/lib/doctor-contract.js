@@ -11,17 +11,9 @@
 'use strict';
 
 let Patient = require('./Patient.js');
-const PrimaryContract = require('./primary-contract.js');
+const AdminContract = require('./admin-contract.js');
 
-class DoctorContract extends PrimaryContract {
-
-    //Returns the last patientId in the set
-    async getLatestPatientId(ctx) {
-        let allResults = await this.queryAllPatients(ctx);
-        let data = JSON.parse(allResults);
-        let lastPatientId = data[data.length - 1].Key;
-        return lastPatientId;
-    }
+class DoctorContract extends AdminContract {
 
     //Read patient details based on patientId
     async readPatient(ctx, patientId) {
@@ -73,83 +65,31 @@ class DoctorContract extends PrimaryContract {
 
     //Read patients based on lastname
     async queryPatientsByLastName(ctx, lastName) {
-        let queryString = {};
-        queryString.selector = {};
-        queryString.selector.docType = 'patient';
-        queryString.selector.lastName = lastName;
-        const buffer = await this.getQueryResultForQueryString(ctx, JSON.stringify(queryString));
-        let asset = JSON.parse(buffer.toString());
-        for (var i = 0; i < asset.length; i++) {
-            var obj = asset[i];
-            asset[i] = ({
-                patientId: obj.Key,
-                firstName: obj.Record.firstName,
-                lastName: obj.Record.lastName,
-                bloodGroup: obj.Record.bloodGroup,
-                allergies: obj.Record.allergies,
-                symptoms: obj.Record.symptoms,
-                diagnosis: obj.Record.diagnosis,
-                treatment: obj.Record.treatment,
-                followUp: obj.Record.followUp
-            });
-        }
-        return asset;
+        return await super.queryPatientsByLastName(ctx, lastName);
     }
 
     //Read patients based on firstName
     async queryPatientsByFirstName(ctx, firstName) {
-        let queryString = {};
-        queryString.selector = {};
-        queryString.selector.docType = 'patient';
-        queryString.selector.firstName = firstName;
-        const buffer = await this.getQueryResultForQueryString(ctx, JSON.stringify(queryString));
-        let asset = JSON.parse(buffer.toString());
-        for (var i = 0; i < asset.length; i++) {
-            var obj = asset[i];
-            asset[i] = ({
-                patientId: obj.Key,
-                firstName: obj.Record.firstName,
-                lastName: obj.Record.lastName,
-                bloodGroup: obj.Record.bloodGroup,
-                allergies: obj.Record.allergies,
-                symptoms: obj.Record.symptoms,
-                diagnosis: obj.Record.diagnosis,
-                treatment: obj.Record.treatment,
-                followUp: obj.Record.followUp
-            });
-        }
-        return asset;
+        return await super.queryPatientsByFirstName(ctx, firstName);
     }
 
     //Retrieves patient medical history based on patientId
     async getPatientHistory(ctx, patientId) {
         let resultsIterator = await ctx.stub.getHistoryForKey(patientId);
         let asset = await this.getAllPatientResults(resultsIterator, true);
-        for (var i = 0; i < asset.length; i++) {
-            var obj = asset[i];
-            asset[i] = ({
-                Timestamp: obj.Timestamp,
-                patientId: patientId,
-                firstName: obj.Value.firstName,
-                lastName: obj.Value.lastName,
-                bloodGroup: obj.Value.bloodGroup,
-                allergies: obj.Value.allergies,
-                symptoms: obj.Value.symptoms,
-                diagnosis: obj.Value.diagnosis,
-                treatment: obj.Value.treatment,
-                followUp: obj.Value.followUp
-            });
-        }
-        return asset;
+
+        return this.fetchLimitedFields(asset, true);
     }
 
     //Retrieves all patients details
     async queryAllPatients(ctx) {
-        let resultsIterator = await ctx.stub.getStateByRange('', '');
-        let asset = await this.getAllPatientResults(resultsIterator, false);
-        for (var i = 0; i < asset.length; i++) {
-            var obj = asset[i];
-            asset[i] = ({
+        return await super.queryAllPatients(ctx);
+    }
+
+    fetchLimitedFields = (asset, includeTimeStamp = false) => {
+        for (let i = 0; i < asset.length; i++) {
+            const obj = asset[i];
+            asset[i] = {
                 patientId: obj.Key,
                 firstName: obj.Record.firstName,
                 lastName: obj.Record.lastName,
@@ -159,9 +99,13 @@ class DoctorContract extends PrimaryContract {
                 diagnosis: obj.Record.diagnosis,
                 treatment: obj.Record.treatment,
                 followUp: obj.Record.followUp
-            });
+            };
+            if (includeTimeStamp) {
+                asset[i].Timestamp = obj.Timestamp;
+            }
         }
+
         return asset;
-    }
+    };
 }
 module.exports = DoctorContract;
