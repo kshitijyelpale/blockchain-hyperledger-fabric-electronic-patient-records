@@ -1,1 +1,75 @@
-<p>login works!</p>
+<div class="py-5">
+  <div class="row">
+    <div class="col-md-6 mx-auto">
+      <span class="anchor" id="formLogin"></span>
+
+      <!-- form card login -->
+      <div class="card rounded-0">
+        <div class="card-header">
+          <h3 class="mb-0">Login</h3>
+        </div>
+        <div class="card-body">
+          <form #loginForm="ngForm" class="form">
+            <div class="form-group">
+              <label for="role">Role</label>
+              <select name="role" class="form-control rounded-1" required placeholder="Select a user role"
+                [(ngModel)]="role" (ngModelChange)="roleChanged()">
+                <option value="admin">Admin</option>
+                <option value="doctor">Doctor</option>
+                <option value="patient">Patient</option>
+              </select>
+            </div>
+            <div class="form-group mt-3" *ngIf="showHospList">
+              <label for="hospitalName">Hospital</label>
+              <select name="hospital" class="form-control rounded-1" required placeholder="Select a hospital you belong"
+                [(ngModel)]="hospitalName">
+                <option value="hosp1">Hospital 1</option>
+                <option value="hosp2">Hospital 2</option>
+              </select>
+            </div>
+            <div class="form-group mt-3">
+              <label for="name">Username</label>
+              <input type="text" name="username" class="form-control rounded-1" required
+                [(ngModel)]="username">
+            </div>
+            <div class="form-group mt-3" *ngIf="showHospList">
+              <label for="password">Password</label>
+              <input type="password" name="password" class="form-control rounded-1" required
+                [(ngModel)]="pwd">
+            </div>
+            <button type="button" class="btn btn-success float-right mt-5" [disabled]="loginForm.invalid"
+                    (click)="showHospList ? loginUser() : loginPatient(patientPassword)">
+              Login
+            </button>
+          </form>
+        </div>
+        <!--/card-block-->
+      </div>
+      <!-- /form card login -->
+    </div>
+  </div>
+</div>
+
+<ng-template #patientPassword let-close="close" let-dismiss="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title">
+      <i class="fa fa-university mr-2"></i>Password
+    </h4>
+    <button type="button" class="close" aria-label="Close" (click)="dismiss('Cross click')">
+      <span aria-hidden="true">x</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Enter password for authentication</p>
+    <div class="form-group">
+      <input type="password" name="password" class="form-control rounded-1" required
+             [(ngModel)]="pwd">
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" id="patientPwd" class="btn btn-danger" [disabled]="!pwd" (click)="close('Confirm password')">
+      Confirm Password
+    </button>
+    <button type="button" class="btn btn-outline-dark" (click)="dismiss('Cancel click')">Cancel</button>
+  </div>
+</ng-template>

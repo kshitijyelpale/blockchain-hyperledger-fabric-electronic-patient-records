@@ -14,6 +14,9 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const morgan = require('morgan');
 const jwt = require('jsonwebtoken');
+// const https = require('https');
+// const fs = require('fs');
+// const path = require('path');
 
 // Express Application init
 const app = express();
@@ -28,12 +31,26 @@ const patientRoutes = require('./patient-routes');
 const doctorRoutes = require('./doctor-routes');
 const adminRoutes = require('./admin-routes');
 
+// TODO: We can start the server with https so encryption will be done for the data transferred ove the network
+// TODO: followed this link https://timonweb.com/javascript/running-expressjs-server-over-https/ to create certificate and added in the code
+/* https.createServer({
+  key: fs.readFileSync(path.join(__dirname, 'ssl', 'server.key')),
+  cert: fs.readFileSync(path.join(__dirname, 'ssl', 'server.cert')),
+}, app)
+  .listen(3001, function() {
+    console.log('Backend server running on 3001! Go to https://localhost:3001/');
+  });*/
+  
 // TODO: to move to utils.
 const authenticateJWT = (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (authHeader) {
     const token = authHeader.split(' ')[1];
+
+    if (token === '' || token === 'null') {
+      return res.status(401).send('Unauthorized request');
+    }
 
     jwt.verify(token, 'hosp1lithium', (err, user) => {
       if (err) {
@@ -43,7 +60,7 @@ const authenticateJWT = (req, res, next) => {
       next();
     });
   } else {
-    res.sendStatus(401);
+    return res.status(401).send('Unauthorized request');
   }
 };
 
@@ -51,7 +68,7 @@ const authenticateJWT = (req, res, next) => {
 app.post('/login', async (req, res) => {
   // Read username and password from request body
   const {username, password} = req.body;
-
+  
   // Filter user from the users array by username and password
   const user = username === 'hosp1admin' && password === 'hosp1lithium';
 
@@ -79,4 +96,3 @@ app.patch('/patients/:patientId/details/medical', authenticateJWT, doctorRoutes.
 app.get('/patients/:patientId', authenticateJWT, patientRoutes.getPatientById);
 app.patch('/patients/:patientId/details/personal', authenticateJWT, patientRoutes.updatePatientPersonalDetails);
 app.get('/patients/:patientId/history', authenticateJWT, patientRoutes.getPatientHistoryById);
-

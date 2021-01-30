@@ -1,0 +1,23 @@
+version: '2'
+
+networks:
+  hospital:
+
+services:
+  redis1:
+    image: 'redis:latest'
+    container_name: redis.hosp1.lithium.com
+    command: redis-server --requirepass hosp1lithium
+    ports:
+      - "6379:6379"
+    networks:
+      - hospital
+
+  redis2:
+    image: 'redis:latest'
+    container_name: redis.hosp2.lithium.com
+    command: redis-server --requirepass hosp2lithium
+    ports:
+      - "6380:6379"
+    networks:
+      - hospital

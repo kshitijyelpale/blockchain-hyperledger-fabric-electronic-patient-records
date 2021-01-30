@@ -14,9 +14,14 @@
         <a class="nav-link" routerLink="/doctor" routerLinkActive="active">doctor</a>
       </li>
     </ul>
-    <ul class="navbar-nav">
-      <a class="nav-link" routerLink="/login" routerLinkActive="active">Login</a>
-      <a class="nav-link" routerLink="/admin" routerLinkActive="active">Register</a>
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link" *ngIf="!authService.loggedIn()" routerLink="/login" routerLinkActive="active">Login</a>
+        <a class="nav-link" style="cursor: pointer" *ngIf="authService.loggedIn()"
+          (click)="authService.logoutUser()">
+          Logout
+        </a>
+      </li>
     </ul>
   </div>
 </nav>

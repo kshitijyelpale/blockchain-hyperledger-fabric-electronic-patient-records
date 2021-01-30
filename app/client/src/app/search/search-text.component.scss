@@ -1,0 +1,9 @@
+.help {
+    padding-left: 0.25rem;
+}
+
+.clear {
+  margin-left: -28px; // TODO: Need to investigate to handle this better
+  z-index: 100;
+  box-shadow: none;
+}
