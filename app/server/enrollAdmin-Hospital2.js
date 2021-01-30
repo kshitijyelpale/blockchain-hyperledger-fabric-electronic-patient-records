@@ -2,7 +2,7 @@
  * @author Jathin Sreenivas
  * @email jathin.sreenivas@stud.fra-uas.de
  * @create date 2020-12-26 13:26:42
- * @modify date 2021-01-06 20:00:10
+ * @modify date 2021-01-30 12:22:11
  * @desc Execute this file to create and enroll an admin at Hospital 2.
  */
 
@@ -19,9 +19,9 @@ const mspHosp2 = 'hosp2MSP';
 const walletPath = path.join(__dirname, '../patient-asset-transfer/application-javascript/wallet');
 
 /**
- *
+ * @description This functions enrolls the admin of Hospital 2
  */
-async function main() {
+exports.enrollAdminHosp2 = async function() {
   try {
     // build an in memory object with the network configuration (also known as a connection profile)
     const ccp = buildCCPHosp2();
@@ -41,6 +41,4 @@ async function main() {
     console.error(`Failed to enroll admin user ' + ${adminHospital2} + : ${error}`);
     process.exit(1);
   }
-}
-
-main();
+};

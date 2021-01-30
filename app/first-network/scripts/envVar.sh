@@ -29,7 +29,7 @@ setGlobals() {
   else
     USING_ORG="${OVERRIDE_ORG}"
   fi
-  infoln "Using organization ${USING_ORG}"
+  infoln "Using Hospital ${USING_ORG}"
   if [ $USING_ORG -eq 1 ]; then
     export CORE_PEER_LOCALMSPID="hosp1MSP"
     export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_HOSP1_CA
@@ -47,7 +47,7 @@ setGlobals() {
     export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/hosp3.lithium.com/users/Admin@hosp3.lithium.com/msp
     export CORE_PEER_ADDRESS=localhost:11051
   else
-    errorln "ORG Unknown"
+    errorln "HOSP Unknown"
   fi
 
   if [ "$VERBOSE" == "true" ]; then
