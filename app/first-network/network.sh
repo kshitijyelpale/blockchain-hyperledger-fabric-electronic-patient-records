@@ -372,7 +372,7 @@ CC_END_POLICY="NA"
 # collection configuration defaults to "NA"
 CC_COLL_CONFIG="../private-collections/private-collections.json"
 # chaincode init function defaults to "NA"
-CC_INIT_FCN="NA"
+CC_INIT_FCN="initLedger"
 # use this as the default docker-compose yaml definition
 COMPOSE_FILE_BASE=docker/docker-compose-hospital-net.yaml
 # docker-compose.yaml file if you are using couchdb
