@@ -2,12 +2,12 @@
  * @author Jathin Sreenivas
  * @email jathin.sreenivas@stud.fra-uas.de
  * @create date 2021-01-27 12:44:37
- * @modify date 2021-01-27 16:07:06
+ * @modify date 2021-01-29 21:56:49
  * @desc Paient specific methods - API documentation in http://localhost:3002/ swagger editor.
  */
 
 // Bring common classes into scope, and Fabric SDK network class
-const {capitalize, getMessage, validateRole} = require('../utils.js');
+const {ROLE_DOCTOR, ROLE_PATIENT, capitalize, getMessage, validateRole} = require('../utils.js');
 const network = require('../../patient-asset-transfer/application-javascript/app.js');
 
 
@@ -19,7 +19,7 @@ const network = require('../../patient-asset-transfer/application-javascript/app
 exports.getPatientById = async (req, res) => {
   // User role from the request header is validated
   const userRole = req.headers.role;
-  await validateRole('patient|doctor', userRole, res);
+  await validateRole([ROLE_DOCTOR, ROLE_PATIENT], userRole, res);
   const patientId = req.params.patientId;
   // Set up and connect to Fabric Gateway
   // TODO: Connect to network using patientID from req auth
@@ -37,7 +37,7 @@ exports.getPatientById = async (req, res) => {
 exports.updatePatientPersonalDetails = async (req, res) => {
   // User role from the request header is validated
   const userRole = req.headers.role;
-  await validateRole('patient', userRole, res);
+  await validateRole([ROLE_PATIENT], userRole, res);
   // The request present in the body is converted into a single json string
   let args = req.body;
   args.patientId = req.params.patientId;
@@ -58,7 +58,7 @@ exports.updatePatientPersonalDetails = async (req, res) => {
 exports.getPatientHistoryById = async (req, res) => {
   // User role from the request header is validated
   const userRole = req.headers.role;
-  await validateRole('patient|doctor', userRole, res);
+  await validateRole([ROLE_DOCTOR, ROLE_PATIENT], userRole, res);
   const patientId = req.params.patientId;
   // Set up and connect to Fabric Gateway
   // TODO: Connect to network using patientID from req auth

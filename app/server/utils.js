@@ -2,9 +2,13 @@
  * @author Jathin Sreenivas
  * @email jathin.sreenivas@stud.fra-uas.de
  * @create date 2021-01-27 15:50:20
- * @modify date 2021-01-27 16:10:11
+ * @modify date 2021-01-30 10:20:43
  * @desc Utils methods
  */
+
+exports.ROLE_ADMIN = 'admin';
+exports.ROLE_DOCTOR = 'doctor';
+exports.ROLE_PATIENT = 'patient';
 
 /**
  * @param  {Boolean} isError Returns a success msg if False else a success message
@@ -29,10 +33,9 @@ exports.getMessage = function(isError, message) {
  * @example roles - 'patient|doctor' reqRole - 'admin' returns 401
  */
 exports.validateRole = async function(roles, reqRole, res) {
-  roles = roles.split('|');
   if (!reqRole || !roles || reqRole.length === 0 || roles.length === 0 || !roles.includes(reqRole)) {
     // user's role is not authorized
-    return res.sendStatus(401).json({message: 'Unauthorized'});
+    return res.sendStatus(401).json({message: 'Unauthorized Role'});
   }
 };
 

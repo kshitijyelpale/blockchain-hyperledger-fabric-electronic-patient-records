@@ -2,12 +2,12 @@
  * @author Jathin Sreenivas
  * @email jathin.sreenivas@stud.fra-uas.de
  * @create date 2021-01-27 12:47:10
- * @modify date 2021-01-27 15:49:10
+ * @modify date 2021-01-29 21:58:07
  * @desc Admin specific methods - API documentation in http://localhost:3002/ swagger editor.
  */
 
 // Bring common classes into scope, and Fabric SDK network class
-const {capitalize, getMessage, validateRole} = require('../utils.js');
+const {ROLE_ADMIN, ROLE_DOCTOR, capitalize, getMessage, validateRole} = require('../utils.js');
 const network = require('../../patient-asset-transfer/application-javascript/app.js');
 
 /**
@@ -18,7 +18,7 @@ const network = require('../../patient-asset-transfer/application-javascript/app
 exports.createPatient = async (req, res) => {
   // User role from the request header is validated
   const userRole = req.headers.role;
-  await validateRole('admin', userRole, res);
+  await validateRole([ROLE_ADMIN], userRole, res);
   // Set up and connect to Fabric Gateway
   // TODO: Connect to network using adminId from req auth
   const networkObj = await network.connectToNetwork('hosp1admin');
@@ -43,7 +43,7 @@ exports.createPatient = async (req, res) => {
 exports.createDoctor = async (req, res) => {
   // User role from the request header is validated
   const userRole = req.headers.role;
-  await validateRole('admin', userRole, res);
+  await validateRole([ROLE_ADMIN], userRole, res);
   const doctorId = req.body.doctorId;
   const hospitalId = req.body.hospitalId;
   // Enrol and register the user with the CA and adds the user to the wallet.
@@ -59,7 +59,7 @@ exports.createDoctor = async (req, res) => {
 exports.getAllPatients = async (req, res) => {
   // User role from the request header is validated
   const userRole = req.headers.role;
-  await validateRole('doctor|admin', userRole, res);
+  await validateRole([ROLE_ADMIN, ROLE_DOCTOR], userRole, res);
   // Set up and connect to Fabric Gateway
   // TODO: Connect to network using adminId from req auth
   const networkObj = await network.connectToNetwork('hosp1admin');
