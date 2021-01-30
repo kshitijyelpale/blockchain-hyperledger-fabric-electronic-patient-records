@@ -9,13 +9,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-class Patient { 
- 
-    constructor(patientId, firstName, lastName, age, phoneNumber, emergPhoneNumber, address, bloodGroup, allergies, symptoms, diagnosis, treatment, followUp)
+class Patient {
+
+    constructor(patientId, firstName, lastName, password, age, phoneNumber, emergPhoneNumber, address, bloodGroup,
+                allergies = '', symptoms = '', diagnosis = '', treatment = '', followUp = '')
     {
         this.patientId = patientId;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.password = password;
         this.age = age;
         this.phoneNumber = phoneNumber;
         this.emergPhoneNumber = emergPhoneNumber;
