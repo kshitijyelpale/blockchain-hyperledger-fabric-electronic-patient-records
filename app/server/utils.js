@@ -26,7 +26,7 @@ exports.getMessage = function(isError, message) {
 };
 
 /**
- * @param  {String} roles The roles delimited by | against which the validation needs to be done
+ * @param  {string[]} roles The roles delimited by | against which the validation needs to be done
  * @param  {String} reqRole The role to be validated
  * @param  {Response} res 401 is reqRole is not present n roles
  * @description Validation of the role
