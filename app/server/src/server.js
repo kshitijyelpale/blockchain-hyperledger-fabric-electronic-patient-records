@@ -40,7 +40,7 @@ const adminRoutes = require('./admin-routes');
   .listen(3001, function() {
     console.log('Backend server running on 3001! Go to https://localhost:3001/');
   });*/
-  
+
 // TODO: to move to utils.
 const authenticateJWT = (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -68,7 +68,7 @@ const authenticateJWT = (req, res, next) => {
 app.post('/login', async (req, res) => {
   // Read username and password from request body
   const {username, password} = req.body;
-  
+
   // Filter user from the users array by username and password
   const user = username === 'hosp1admin' && password === 'hosp1lithium';
 

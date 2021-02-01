@@ -1,7 +1,8 @@
+const fs = require('fs');
+
 const {enrollAdminHosp1} = require('./enrollAdmin-Hospital1');
 const {enrollAdminHosp2} = require('./enrollAdmin-Hospital2');
 const {enrollRegisterUser} = require('./registerUser');
-const fs = require('fs');
 
 
 /**
@@ -18,9 +19,8 @@ async function initLedger() {
     }
   } catch (err) {
     console.log(err);
-    return;
   }
-};
+}
 
 /**
  * @description Function to initialise the backend server, enrolls and regsiter the admins and initLedger patients.
@@ -30,7 +30,7 @@ async function main() {
   await enrollAdminHosp1();
   await enrollAdminHosp2();
   await initLedger();
-};
+}
 
 
 main();
