@@ -17,13 +17,23 @@ import { SearchComboComponent, SearchService, SearchTextComponent } from './sear
 import { AdminService } from './admin/admin.service';
 import { PatientService } from './patient/patient.service';
 import { DoctorService } from './doctor/doctor.service';
+import { PatientRegisterComponent } from './patient/patient-register/patient-register.component';
+import { DoctorRegisterComponent } from './doctor/doctor-register/doctor-register.component';
+import { PatientHistoryComponent } from './patient/patient-history/patient-history.component';
+import { PatientDetailsMedicalEditComponent } from './patient/patient-details-medical-edit/patient-details-medical-edit.component';
+import { PatientDetailsPersonalEditComponent } from './patient/patient-details-personal-edit/patient-details-personal-edit.component';
 
 const components = [
   AppComponent,
   LoginComponent,
   AdminComponent,
   PatientComponent,
+  PatientRegisterComponent,
+  PatientHistoryComponent,
+  PatientDetailsMedicalEditComponent,
+  PatientDetailsPersonalEditComponent,
   DoctorComponent,
+  DoctorRegisterComponent,
   ToolbarComponent,
   ToolbarButtonComponent,
   ToolbarLinkComponent,
