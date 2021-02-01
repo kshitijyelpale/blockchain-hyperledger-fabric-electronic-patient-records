@@ -349,6 +349,10 @@ function networkDown() {
     docker run --rm -v $(pwd):/data busybox sh -c 'cd /data && rm -rf channel-artifacts log.txt *.tar.gz'
 
   fi
+
+  # Remove files from wallet
+  rm -rf ../patient-asset-transfer/application-javascript/wallet/
+  infoln "The wallet has cleared."
 }
 
 # Obtain the OS and Architecture string that will be used to select the correct

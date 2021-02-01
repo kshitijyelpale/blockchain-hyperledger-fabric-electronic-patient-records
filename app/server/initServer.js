@@ -31,6 +31,8 @@ async function clearWallet() {
     const walletPath = path.join(__dirname, '../patient-asset-transfer/application-javascript/wallet');
 
     fs.readdir(walletPath, (err, files) => {
+      if (files && files.length === 0) return;
+
       if (err) throw err;
 
       for (const file of files) {
@@ -40,7 +42,7 @@ async function clearWallet() {
         });
       }
 
-      console.log('Wallet has cleared.');
+      console.log('The wllet has cleared.');
     });
   } catch (err) {
     console.error(err);
