@@ -2,12 +2,12 @@
  * @author Jathin Sreenivas
  * @email jathin.sreenivas@stud.fra-uas.de
  * @create date 2021-01-27 12:44:37
- * @modify date 2021-01-29 21:56:49
+ * @modify date 2021-02-02 16:13:32
  * @desc Paient specific methods - API documentation in http://localhost:3002/ swagger editor.
  */
 
 // Bring common classes into scope, and Fabric SDK network class
-const {ROLE_DOCTOR, ROLE_PATIENT, capitalize, getMessage, validateRole} = require('../utils.js');
+const {ROLE_ADMIN, ROLE_DOCTOR, ROLE_PATIENT, capitalize, getMessage, validateRole} = require('../utils.js');
 const network = require('../../patient-asset-transfer/application-javascript/app.js');
 
 
@@ -67,4 +67,22 @@ exports.getPatientHistoryById = async (req, res) => {
   const response = await network.invoke(networkObj, true, capitalize(userRole) + 'Contract:getPatientHistory', patientId);
   const parsedResponse = await JSON.parse(response);
   (response.error) ? res.status(400).send(response.error) : res.status(200).send(parsedResponse);
+};
+
+/**
+ * @param  {Request} req Role in the header and hospitalId in the url
+ * @param  {Response} res 200 response with array of all doctors else 500 with the error message
+ * @description Get all the doctors of the mentioned hospitalId
+ */
+exports.getDoctorsByHospitalId = async (req, res) => {
+  // User role from the request header is validated
+  const userRole = req.headers.role;
+  await validateRole([ROLE_PATIENT, ROLE_ADMIN], userRole, res);
+  const hospitalId = parseInt(req.params.hospitalId);
+  // Set up and connect to Fabric Gateway
+  // TODO: Connect to network using adminId from req auth
+  const networkObj = await network.connectToNetwork('hosp1admin');
+  // Use the gateway and identity service to get all users enrolled by the CA
+  const response = await network.getAllDoctorsByHospitalId(networkObj, hospitalId);
+  (response.error) ? res.status(500).send(response.error) : res.status(200).send(response);
 };
