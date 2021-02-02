@@ -22,6 +22,7 @@ import { DoctorRegisterComponent } from './doctor/doctor-register/doctor-registe
 import { PatientHistoryComponent } from './patient/patient-history/patient-history.component';
 import { PatientDetailsMedicalEditComponent } from './patient/patient-details-medical-edit/patient-details-medical-edit.component';
 import { PatientDetailsPersonalEditComponent } from './patient/patient-details-personal-edit/patient-details-personal-edit.component';
+import { DoctorListForPatientComponent } from './doctor/doctor-list-for-patient/doctor-list-for-patient.component';
 
 const components = [
   AppComponent,
@@ -32,6 +33,7 @@ const components = [
   PatientHistoryComponent,
   PatientDetailsMedicalEditComponent,
   PatientDetailsPersonalEditComponent,
+  DoctorListForPatientComponent,
   DoctorComponent,
   DoctorRegisterComponent,
   ToolbarComponent,
