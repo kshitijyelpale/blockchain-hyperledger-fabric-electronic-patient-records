@@ -1,1 +1,48 @@
-<p>doctor-new works!</p>
+<app-toolbar text="Create Doctor">
+  <app-toolbar-button text="Refresh" icon="refresh" (click)="refresh()"></app-toolbar-button>
+</app-toolbar>
+<br><br><br>
+
+<div class="sidebar-layout-bottom-row p-3 container-fluid">
+  <div class="row">
+    <div class="offset-xl-3 col-xl-6 col-sm-8">
+      <div class="card">
+        <div class="card-body">
+          <p>Please fill out doctor details. All fields are required.</p>
+          <form #registerDoctor="ngForm" (ngSubmit)="save()" class="form-horizontal form-standard" [formGroup]="form">
+            <fieldset class="mb-3">
+              <div class="form-group">
+                <label for="firstName">First name</label>
+                <input type="text" class="form-control" name="firstName" formControlName="firstName"
+                  placeholder="Enter your first name.">
+              </div>
+              <div class="form-group">
+                <label for="lastName">Last name</label>
+                <input type="text" class="form-control" name="firstName" formControlName="lastName"
+                  placeholder="Enter your first name.">
+              </div>
+              <div class="form-group">
+                <label for="hospital">Hospital</label>
+                <ng-select name="hospital" formControlName="hospital" [items]="hospitalList" bindLabel="name"
+                  bindValue="id" placeholder="Select hospital you belong.">
+                </ng-select>
+              </div>
+              <div class="form-group">
+                <label for="speciality">Speciality</label>
+                <input type="text" class="form-control" name="speciality" formControlName="speciality"
+                  placeholder="Enter your speciality.">
+              </div>
+              <div class="form-group form-buttons">
+                <button class="btn btn-primary mr-2" type="submit" [disabled]="registerDoctor.invalid">Save</button>
+                <a [routerLink]="['/admin']" class="btn btn-secondary">Cancel</a>
+              </div>
+              <div *ngIf="error">
+                <p class="alert alert-danger">{{error.message}}</p>
+              </div>
+            </fieldset>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
