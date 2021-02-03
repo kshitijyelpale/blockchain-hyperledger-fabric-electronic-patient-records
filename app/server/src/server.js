@@ -3,7 +3,7 @@
  * @author Jathin Sreenivas
  * @email jathin.sreenivas@stud.fra-uas.de
  * @create date 2020-12-26 11:31:42
- * @modify date 2021-02-03 18:00:58
+ * @modify date 2021-02-03 19:54:17
  * @desc NodeJS APIs to interact with the fabric network.
  * @desc Look into API docs for the documentation of the routes
  */
@@ -55,8 +55,6 @@ const authenticateJWT = (req, res, next) => {
     if (token === '' || token === 'null') {
       return res.status(401).send('Unauthorized request');
     }
-    console.log(req.session.PASSWORD);
-    console.log(req.session.USERNAME);
     jwt.verify(token, req.session.PASSWORD, (err, user) => {
       if (err) {
         return res.sendStatus(403);
