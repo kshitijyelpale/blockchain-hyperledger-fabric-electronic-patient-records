@@ -3,7 +3,7 @@
  * @author Jathin Sreenivas
  * @email jathin.sreenivas@stud.fra-uas.de
  * @create date 2021-01-27 15:50:20
- * @modify date 2021-02-03 17:55:00
+ * @modify date 2021-02-03 23:03:13
  * @desc Utils methods
  */
 const redis = require('redis');
@@ -66,8 +66,6 @@ exports.createRedisClient = async function(hospitalId) {
     redisUrl = 'redis://127.0.0.1:6380';
     redisPassword = 'hosp2lithium';
   }
-  console.log(redisUrl);
-  console.log(redisPassword);
   const redisClient = redis.createClient(redisUrl);
   redisClient.AUTH(redisPassword);
   // NOTE: Node Redis currently doesn't natively support promises
