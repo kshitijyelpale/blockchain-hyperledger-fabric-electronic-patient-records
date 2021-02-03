@@ -3,7 +3,7 @@
  * @author Jathin Sreenivas
  * @email jathin.sreenivas@stud.fra-uas.de
  * @create date 2021-01-27 12:47:10
- * @modify date 2021-02-03 18:01:29
+ * @modify date 2021-02-03 23:08:46
  * @desc Admin specific methods - API documentation in http://localhost:3002/ swagger editor.
  */
 
@@ -52,7 +52,11 @@ exports.createDoctor = async (req, res) => {
   (await redisClient).SET(userId, password);
   // Enrol and register the user with the CA and adds the user to the wallet.
   const response = await network.registerUser(args);
-  (response.error) ? res.status(400).send(response.error) : res.status(201).send(getMessage(false, response));
+  if (response.error) {
+    (await redisClient).DEL(userId);
+    res.status(400).send(response.error);
+  }
+  res.status(201).send(getMessage(false, response));
 };
 
 /**
