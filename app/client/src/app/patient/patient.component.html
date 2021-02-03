@@ -1,1 +1,45 @@
-<p>patient works!</p>
+<app-toolbar text="Patient">
+  <app-toolbar-link text="View history" icon="refresh" routerLink="history"></app-toolbar-link>
+  <app-toolbar-link text="View doctors" icon="refresh" routerLink="doctors/list"></app-toolbar-link>
+  <app-toolbar-button text="Refresh" icon="refresh" (click)="refresh()"></app-toolbar-button>
+</app-toolbar>
+<br><br><br>
+
+<div class="sidebar-layout-bottom-row p-3 container-fluid">
+  <div class="row">
+    <div class="col-xl-6 col-sm-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Details</h5>
+          <table *ngIf="patientRecord !== undefined">
+            <span>
+              <tr>
+                <td class="labels"><strong>Patient ID</strong></td>
+                <td>{{patientRecord.patientId}}</td>
+              </tr>
+              <tr>
+                <td class="labels"><strong>First Name</strong></td>
+                <td>{{patientRecord.firstName}}</td>
+              </tr>
+              <tr>
+                <td class="labels"><strong>Last Name</strong></td>
+                <td>{{patientRecord.lastName}}</td>
+              </tr>
+              <tr>
+                <td class="labels"><strong>Contact number</strong></td>
+                <td>{{patientRecord.phoneNumber}}</td>
+              </tr>
+              <tr>
+                <td class="labels"><strong>Emergency number</strong></td>
+                <td>{{patientRecord.emergPhoneNumber}}</td>
+              </tr>
+            </span>
+          </table>
+          <div *ngIf="patientRecord === undefined">
+            <p>You are not authorized to view patient details.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
