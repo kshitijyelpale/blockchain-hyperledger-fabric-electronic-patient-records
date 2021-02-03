@@ -2,7 +2,7 @@
  * @author Jathin Sreenivas
  * @email jathin.sreenivas@stud.fra-uas.de
  * @create date 2021-01-27 12:44:51
- * @modify date 2021-01-29 21:57:18
+ * @modify date 2021-02-03 16:44:39
  * @desc Doctor specific methods - API documentation in http://localhost:3002/ swagger editor.
  */
 
@@ -25,7 +25,7 @@ exports.updatePatientMedicalDetails = async (req, res) => {
   args= [JSON.stringify(args)];
   // Set up and connect to Fabric Gateway
   // TODO: Connect to network using patientID from req auth
-  const networkObj = await network.connectToNetwork('hosp1admin');
+  const networkObj = await network.connectToNetwork(req.session.USERNAME);
   // Invoke the smart contract function
   const response = await network.invoke(networkObj, false, capitalize(userRole) + 'Contract:updatePatientMedicalDetails', args);
   (response.error) ? res.status(500).send(response.error) : res.status(200).send(getMessage(false, 'Successfully Updated Patient.'));

@@ -1,10 +1,13 @@
+/* eslint-disable new-cap */
 /**
  * @author Jathin Sreenivas
  * @email jathin.sreenivas@stud.fra-uas.de
  * @create date 2021-01-27 15:50:20
- * @modify date 2021-01-30 10:20:43
+ * @modify date 2021-02-03 17:55:00
  * @desc Utils methods
  */
+const redis = require('redis');
+const util = require('util');
 
 exports.ROLE_ADMIN = 'admin';
 exports.ROLE_DOCTOR = 'doctor';
@@ -47,4 +50,28 @@ exports.validateRole = async function(roles, reqRole, res) {
 exports.capitalize = function(s) {
   if (typeof s !== 'string') return '';
   return s.charAt(0).toUpperCase() + s.slice(1);
+};
+
+/**
+ * @param  {int} hospitalId
+ * @description Creates a redis client based on the hospitalID and allows promisify methods using util
+ */
+exports.createRedisClient = async function(hospitalId) {
+  // TODO: Handle using config file
+  let redisPassword;
+  if (hospitalId === 1) {
+    redisUrl = 'redis://127.0.0.1:6379';
+    redisPassword = 'hosp1lithium';
+  } else {
+    redisUrl = 'redis://127.0.0.1:6380';
+    redisPassword = 'hosp2lithium';
+  }
+  console.log(redisUrl);
+  console.log(redisPassword);
+  const redisClient = redis.createClient(redisUrl);
+  redisClient.AUTH(redisPassword);
+  // NOTE: Node Redis currently doesn't natively support promises
+  // Util node package to promisify the get function of the client redis
+  redisClient.get = util.promisify(redisClient.get);
+  return redisClient;
 };

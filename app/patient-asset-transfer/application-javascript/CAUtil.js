@@ -2,7 +2,7 @@
  * @author Jathin Sreenivas
  * @email jathin.sreenivas@stud.fra-uas.de
  * @create date 2020-12-26 13:26:42
- * @modify date 2021-01-27 22:36:23
+ * @modify date 2021-02-03 16:25:46
  * @desc Referenced from https://github.com/hyperledger/fabric-samples/tree/master/test-application/javascript
  */
 
@@ -105,7 +105,10 @@ exports.registerAndEnrollUser = async (caClient, wallet, orgMspId, userId, admin
     const secret = await caClient.register({
       affiliation: affiliation,
       enrollmentID: userId,
-      role: role,
+      // NOTE: Role must be client, other roles access is denied
+      // TODO: Check if other roles access can be granted in the ca config files of the organizations.
+      // Changes to be made in fabric-ca-server-config.yaml ?? hf.Registrar.Roles and maps
+      role: 'client',
       attrs: [{
         name: 'firstName',
         value: firstName,
@@ -114,6 +117,11 @@ exports.registerAndEnrollUser = async (caClient, wallet, orgMspId, userId, admin
       {
         name: 'lastName',
         value: lastName,
+        ecert: true,
+      },
+      {
+        name: 'role',
+        value: role,
         ecert: true,
       }],
     }, adminUser);
@@ -128,6 +136,11 @@ exports.registerAndEnrollUser = async (caClient, wallet, orgMspId, userId, admin
       {
         name: 'lastName',
         value: lastName,
+        ecert: true,
+      },
+      {
+        name: 'role',
+        value: role,
         ecert: true,
       }],
     });

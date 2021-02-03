@@ -25,7 +25,9 @@
         "morgan": "^1.9.1",
         "nodemon": "^1.19.1",
         "concurrently": "^5.2.0",
-        "jsonwebtoken": "^8.5.1"
+        "jsonwebtoken": "^8.5.1",
+        "redis": "^3.0.2",
+        "express-session": "^1.17.1"
     },
     "devDependencies": {
         "eslint": "^7.16.0",
