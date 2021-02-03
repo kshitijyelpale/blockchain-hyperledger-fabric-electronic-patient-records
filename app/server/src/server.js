@@ -3,7 +3,7 @@
  * @author Jathin Sreenivas
  * @email jathin.sreenivas@stud.fra-uas.de
  * @create date 2020-12-26 11:31:42
- * @modify date 2021-02-03 19:54:17
+ * @modify date 2021-02-03 23:41:18
  * @desc NodeJS APIs to interact with the fabric network.
  * @desc Look into API docs for the documentation of the routes
  */
@@ -16,6 +16,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const morgan = require('morgan');
 const jwt = require('jsonwebtoken');
+const jwtSecretToken = 'password';
 // const https = require('https');
 // const fs = require('fs');
 // const path = require('path');
@@ -33,7 +34,7 @@ app.listen(3001, () => console.log('Backend server running on 3001'));
 const patientRoutes = require('./patient-routes');
 const doctorRoutes = require('./doctor-routes');
 const adminRoutes = require('./admin-routes');
-const {ROLE_DOCTOR, ROLE_ADMIN, ROLE_PATIENT, createRedisClient, getMessage} = require('../utils');
+const {ROLE_DOCTOR, ROLE_ADMIN, ROLE_PATIENT, createRedisClient} = require('../utils');
 
 // TODO: We can start the server with https so encryption will be done for the data transferred ove the network
 // TODO: followed this link https://timonweb.com/javascript/running-expressjs-server-over-https/ to create certificate and added in the code
@@ -55,7 +56,7 @@ const authenticateJWT = (req, res, next) => {
     if (token === '' || token === 'null') {
       return res.status(401).send('Unauthorized request');
     }
-    jwt.verify(token, req.session.PASSWORD, (err, user) => {
+    jwt.verify(token, jwtSecretToken, (err, user) => {
       if (err) {
         return res.sendStatus(403);
       }
@@ -89,10 +90,8 @@ app.post('/login', async (req, res) => {
 
   if (user) {
     // Generate an access token
-    const accessToken = jwt.sign({username: username, role: req.params.role}, password);
+    const accessToken = jwt.sign({username: username, role: req.params.role}, jwtSecretToken);
     // Once the password is matched a session is created with the username and password
-    req.session.USERNAME = username;
-    req.session.PASSWORD = password;
     res.status(200);
     res.json({
       accessToken,
@@ -102,18 +101,6 @@ app.post('/login', async (req, res) => {
   }
 });
 
-/**
- * @description Destroys the session, the variables username and password are removed
- */
-app.post('/logout', async (req, res) => {
-  // Destroy the session variables
-  req.session.destroy((err) => {
-    if (err) {
-      res.status(400).send(getMessage(true, err));
-    }
-  });
-  res.status(200).send(getMessage(false, 'Logout Successfull'));
-});
 
 // //////////////////////////////// Admin Routes //////////////////////////////////////
 app.post('/doctors/register', authenticateJWT, adminRoutes.createDoctor);
