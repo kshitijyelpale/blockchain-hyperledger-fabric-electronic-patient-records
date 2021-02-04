@@ -1,8 +1,10 @@
+/* eslint-disable new-cap */
 const fs = require('fs');
-
 const {enrollAdminHosp1} = require('./enrollAdmin-Hospital1');
 const {enrollAdminHosp2} = require('./enrollAdmin-Hospital2');
 const {enrollRegisterUser} = require('./registerUser');
+
+const redis = require('redis');
 
 
 /**
@@ -21,6 +23,26 @@ async function initLedger() {
     console.log(err);
   }
 }
+/**
+ * @description Init the redis db with the admins credentials
+ */
+async function initRedis() {
+  let redisUrl = 'redis://127.0.0.1:6379';
+  let redisPassword = 'hosp1lithium';
+  let redisClient = redis.createClient(redisUrl);
+  redisClient.AUTH(redisPassword);
+  redisClient.SET('hosp1admin', redisPassword);
+  redisClient.QUIT();
+
+  redisUrl = 'redis://127.0.0.1:6380';
+  redisPassword = 'hosp2lithium';
+  redisClient = redis.createClient(redisUrl);
+  redisClient.AUTH(redisPassword);
+  redisClient.SET('hosp2admin', redisPassword);
+  console.log('Done');
+  redisClient.QUIT();
+  return;
+}
 
 /**
  * @description Function to initialise the backend server, enrolls and regsiter the admins and initLedger patients.
@@ -30,6 +52,7 @@ async function main() {
   await enrollAdminHosp1();
   await enrollAdminHosp2();
   await initLedger();
+  await initRedis();
 }
 
 

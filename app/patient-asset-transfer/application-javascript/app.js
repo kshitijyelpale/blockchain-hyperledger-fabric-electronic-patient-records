@@ -2,7 +2,7 @@
  * @author Jathin Sreenivas
  * @email jathin.sreenivas@stud.fra-uas.de
  * @create date 2020-12-26 13:26:42
- * @modify date 2021-01-29 21:01:58
+ * @modify date 2021-02-03 16:33:45
  * @desc The file which interacts with the fabric network.
  */
 
@@ -66,7 +66,7 @@ exports.connectToNetwork = async function(doctorID) {
       network: network,
       gateway: gateway,
     };
-
+    console.log('Succesfully connected to the network.');
     return networkObj;
   } catch (error) {
     console.log(`Error processing transaction. ${error}`);
@@ -74,9 +74,6 @@ exports.connectToNetwork = async function(doctorID) {
     const response = {};
     response.error = error;
     return response;
-  } finally {
-    console.log('Succesfully connected to the network.');
-    // gateway.disconnect();
   }
 };
 
@@ -185,13 +182,13 @@ exports.getAllDoctorsByHospitalId = async function(networkObj, hospitalId) {
 
     for (let i = 0; i < identities.length; i++) {
       tmp = {};
-      if (identities[i].type === 'doctor') {
+      if (identities[i].type === 'client') {
         tmp.id = identities[i].id;
         tmp.role = identities[i].type;
         attributes = identities[i].attrs;
         // Doctor object will consist of firstName and lastName
         for (let j = 0; j < attributes.length; j++) {
-          if (attributes[j].name.endsWith('Name')) {
+          if (attributes[j].name.endsWith('Name') || attributes[j].name === 'role') {
             tmp[attributes[j].name] = attributes[j].value;
           }
         }
@@ -204,5 +201,9 @@ exports.getAllDoctorsByHospitalId = async function(networkObj, hospitalId) {
     response.error = error;
     return response;
   }
-  return result;
+  return result.filter(
+    function(result) {
+      return result.role === 'doctor';
+    },
+  );
 };
