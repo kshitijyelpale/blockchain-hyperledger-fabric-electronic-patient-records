@@ -90,7 +90,7 @@ app.post('/login', async (req, res) => {
     const userRole = req.headers.role;
     let value = crypto.createHash('sha256').update(password).digest('hex');
     const networkObj = await network.connectToNetwork(req.headers.username);
-    const response = await network.invoke(networkObj, true, capitalize(userRole) + 'Contract:getPatientPassword', username);
+    const response = await network.invoke(networkObj, true, capitalize(userRole) + 'Contract:getPatientPassword', req.headers.username);
     if(response.error)
       res.status(400).send(response.error);
     else {
