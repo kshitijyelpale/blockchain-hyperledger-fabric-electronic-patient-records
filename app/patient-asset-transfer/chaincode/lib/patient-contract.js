@@ -2,7 +2,7 @@
  * @author Varsha Kamath
  * @email varsha.kamath@stud.fra-uas.de
  * @create date 2020-12-14 21:50:38
- * @modify date 2021-01-26 13:30:00
+ * @modify date 2021-02-05 20:15:21
  * @desc [Patient Smartcontract to read, update and delete patient details in legder]
  */
 /*
@@ -13,6 +13,7 @@
 let Patient = require('./Patient.js');
 const crypto = require('crypto');
 const PrimaryContract = require('./primary-contract.js');
+const { Context } = require('fabric-contract-api');
 
 class PatientContract extends PrimaryContract {
 
@@ -38,7 +39,8 @@ class PatientContract extends PrimaryContract {
             symptoms: asset.symptoms,
             diagnosis: asset.diagnosis,
             treatment: asset.treatment,
-            followUp: asset.followUp
+            followUp: asset.followUp,
+            permissionGranted: asset.permissionGranted
         });
         return asset;
     }
@@ -133,6 +135,49 @@ class PatientContract extends PrimaryContract {
         }
 
         return asset;
+    };
+    /**
+     * @author Jathin Sreenivas
+     * @param  {Context} ctx
+     * @param  {JSON} args containing patientId and doctorId
+     * @description Add the doctor to the permissionGranted array
+     */
+    async grantAccessToDoctor(ctx, args) {
+        args = JSON.parse(args);
+        let patientId = args.patientId;
+        let doctorId = args.doctorId;
+
+        // Get the patient asset from world state
+        const patient = await this.readPatient(ctx, patientId);
+        // unique doctorIDs in permissionGranted 
+        if (!patient.permissionGranted.includes(doctorId)) {
+            patient.permissionGranted.push(doctorId);
+        }
+        const buffer = Buffer.from(JSON.stringify(patient));
+        // Update the ledger with updated permissionGranted
+        await ctx.stub.putState(patientId, buffer);
+    };
+
+    /**
+     * @author Jathin Sreenivas
+     * @param  {Context} ctx
+     * @param  {JSON} args containing patientId and doctorId
+     * @description Remove the doctor from the permissionGranted array
+     */
+    async revokeAccessFromDoctor(ctx, args) {
+        args = JSON.parse(args);
+        let patientId = args.patientId;
+        let doctorId = args.doctorId;
+
+        // Get the patient asset from world state
+        const patient = await this.readPatient(ctx, patientId);
+        // Remove the doctor if existing
+        if (patient.permissionGranted.includes(doctorId)) {
+            patient.permissionGranted = patient.permissionGranted.filter(doctor => doctor !== doctorId);
+        }
+        const buffer = Buffer.from(JSON.stringify(patient));
+        // Update the ledger with updated permissionGranted
+        await ctx.stub.putState(patientId, buffer);
     };
 }
 module.exports = PatientContract;

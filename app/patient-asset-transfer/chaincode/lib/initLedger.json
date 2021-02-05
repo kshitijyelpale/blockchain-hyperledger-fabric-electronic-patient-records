@@ -12,7 +12,8 @@
         "diagnosis": "High Cholesterol",
         "treatment": "Vasolip 10 mg everyday",
         "followUp": "6 Months",
-        "password": ""
+        "password": "",
+        "permissionGranted": ["hosp1admin", "hosp2admin"]
     },
     {
         "firstName": "Max",
@@ -27,7 +28,8 @@
         "diagnosis": "Esophagitis",
         "treatment": "omeprazole 40 mg for 10 days before food",
         "followUp": "2 Weeks",
-        "password": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+        "password": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+        "permissionGranted": ["hosp1admin", "hosp2admin"]
     },
     {
         "firstName": "Johannes",
@@ -42,7 +44,8 @@
         "diagnosis": "Hypertension",
         "treatment": "CORBIS 5 mg one per day",
         "followUp": "2 Weeks",
-        "password": ""
+        "password": "",
+        "permissionGranted": ["hosp1admin", "hosp2admin"]
     },
     {
         "firstName": "Torben",
@@ -57,7 +60,8 @@
         "diagnosis": "Diabetes Mellitus",
         "treatment": "PRINIVIL TABS 20 MG (LISINOPRIL), HUMULIN INJ 70/30 20 units after breakfast",
         "followUp": "4 Weeks",
-        "password": ""
+        "password": "",
+        "permissionGranted": ["hosp1admin", "hosp2admin"]
     },
     {
         "firstName": "Lisa",
@@ -72,7 +76,8 @@
         "diagnosis": "Osteoarthritis",
         "treatment": "ULTRADAY 40 mg twice per day",
         "followUp": "2 Weeks",
-        "password": ""
+        "password": "",
+        "permissionGranted": ["hosp1admin", "hosp2admin"]
     },
     {
         "firstName": "Harry",
@@ -87,6 +92,7 @@
         "diagnosis": "Periarthritis",
         "treatment": "Hydrocortisone 20 ml injection",
         "followUp": "4 Weeks",
-        "password": ""
+        "password": "",
+        "permissionGranted": ["hosp1admin", "hosp2admin"]
     }
 ]

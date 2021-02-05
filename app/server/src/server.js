@@ -3,7 +3,7 @@
  * @author Jathin Sreenivas
  * @email jathin.sreenivas@stud.fra-uas.de
  * @create date 2020-12-26 11:31:42
- * @modify date 2021-02-03 23:41:18
+ * @modify date 2021-02-04 16:39:05
  * @desc NodeJS APIs to interact with the fabric network.
  * @desc Look into API docs for the documentation of the routes
  */
@@ -11,7 +11,6 @@
 
 // Classes for Node Express
 const express = require('express');
-const session = require('express-session');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const morgan = require('morgan');
@@ -27,7 +26,6 @@ app.use(morgan('combined'));
 app.use(bodyParser.json());
 app.use(cors());
 
-app.use(session({secret: 'APasswordWhichIsKnownOnlyToBlockchainOperator'}));
 app.listen(3001, () => console.log('Backend server running on 3001'));
 
 // Bring key classes into scope
@@ -115,3 +113,5 @@ app.get('/patients/:patientId', authenticateJWT, patientRoutes.getPatientById);
 app.patch('/patients/:patientId/details/personal', authenticateJWT, patientRoutes.updatePatientPersonalDetails);
 app.get('/patients/:patientId/history', authenticateJWT, patientRoutes.getPatientHistoryById);
 app.get('/doctors/:hospitalId/_all', authenticateJWT, patientRoutes.getDoctorsByHospitalId);
+app.patch('/patients/:patientId/grant/:doctorId', patientRoutes.grantAccessToDoctor);
+app.patch('/patients/:patientId/revoke/:doctorId', patientRoutes.revokeAccessFromDoctor);
