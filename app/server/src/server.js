@@ -74,10 +74,10 @@ const authenticateJWT = (req, res, next) => {
  */
 app.post('/login', async (req, res) => {
   // Read username and password from request body
-  const {username, password, hospitalId} = req.body;
+  const {username, password, hospitalId, role} = req.body;
   let user;
   // using get instead of redis GET for async
-  if (req.headers.role === ROLE_DOCTOR || req.headers.role === ROLE_ADMIN) {
+  if (role === ROLE_DOCTOR || role === ROLE_ADMIN) {
     // Create a redis client based on the hospital ID
     const redisClient = await createRedisClient(hospitalId);
     // Async get
@@ -86,15 +86,14 @@ app.post('/login', async (req, res) => {
     user = value === password;
     redisClient.quit();
   }
-  if (req.headers.role === ROLE_PATIENT) {
-    const userRole = req.headers.role;
+  if (role === ROLE_PATIENT) {
     let value = crypto.createHash('sha256').update(password).digest('hex');
-    const networkObj = await network.connectToNetwork(req.headers.username);
-    const response = await network.invoke(networkObj, true, capitalize(userRole) + 'Contract:getPatientPassword', req.headers.username);
+    const networkObj = await network.connectToNetwork(username);
+    const response = await network.invoke(networkObj, true, capitalize(role) + 'Contract:getPatientPassword', username);
     if(response.error)
       res.status(400).send(response.error);
     else {
-      user = response == value;
+      user = response.toString('utf8') === value;
     }
   }
 
