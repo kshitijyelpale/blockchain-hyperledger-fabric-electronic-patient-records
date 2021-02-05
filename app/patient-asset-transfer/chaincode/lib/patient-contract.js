@@ -38,7 +38,8 @@ class PatientContract extends PrimaryContract {
             symptoms: asset.symptoms,
             diagnosis: asset.diagnosis,
             treatment: asset.treatment,
-            followUp: asset.followUp
+            followUp: asset.followUp,
+            password: asset.password
         });
         return asset;
     }

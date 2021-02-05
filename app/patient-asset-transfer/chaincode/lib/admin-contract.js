@@ -27,8 +27,12 @@ class AdminContract extends PrimaryContract {
     async createPatient(ctx, args) {
         args = JSON.parse(args);
 
+        if (args.password === null || args.password === '') {
+            throw new Error(`Empty or null values should not be passed for password parameter`);
+        }
+
         let newPatient = await new Patient(args.patientId, args.firstName, args.lastName, args.age, args.phoneNumber,
-            args.emergPhoneNumber, args.address, args.bloodGroup, args.allergies);
+            args.emergPhoneNumber, args.address, args.bloodGroup, args.allergies, args.password);
         const exists = await this.patientExists(ctx, newPatient.patientId);
         if (exists) {
             throw new Error(`The patient ${newPatient.patientId} already exists`);
