@@ -11,7 +11,7 @@
           <p>Please fill out patient details. All fields are required.</p>
           <form #registerPatient="ngForm" (ngSubmit)="save()" class="form-horizontal form-standard" [formGroup]="form">
             <fieldset class="mb-3">
-              <ng-container *ngIf="isPatient()">
+              <ng-container *ngIf="isPatient() || isNew()">
                 <div class="form-group">
                   <label for="firstName">First name</label>
                   <input type="text" class="form-control" name="firstName" formControlName="firstName"
@@ -78,7 +78,11 @@
               </ng-container>
               <div class="form-group form-buttons">
                 <button class="btn btn-primary mr-2" type="submit" [disabled]="registerPatient.invalid">Save</button>
-                <a [routerLink]="[isNew()? '/admin' : '..']" class="btn btn-secondary">Cancel</a>
+                <a [routerLink]="[isNew() ? '/admin/' + getAdminUsername() : '/patient/' + patientId]"
+                  class="btn btn-secondary">
+                  Cancel
+                </a>
+                <button class="btn btn-danger" type="button" (click)="findInvalidControls()"></button>
               </div>
               <div *ngIf="error">
                 <p class="alert alert-danger">{{error.message}}</p>

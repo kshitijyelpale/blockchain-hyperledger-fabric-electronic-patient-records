@@ -16,10 +16,10 @@ import {AuthService} from '../../core/auth/auth.service';
 export class PatientEditComponent implements OnInit {
   public form: FormGroup;
   public error: any = null;
-  private patientId: any;
   public title = '';
   public currentUrl = '';
   public previousUrl = '';
+  public patientId: any;
 
   public bloodGroupTypes = [
     {id: 'a+', name: 'A +'},
@@ -43,7 +43,7 @@ export class PatientEditComponent implements OnInit {
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       address: ['', Validators.required],
-      age: ['', [ Validators.required, Validators.min(0), Validators.max(150)]],
+      age: ['', [ Validators.required, Validators.min(0), Validators.max(150), Validators.maxLength(3)]],
       phoneNumber: ['', Validators.required],
       emergPhoneNumber: ['', Validators.required],
       bloodGroup: ['', Validators.required],
@@ -59,21 +59,23 @@ export class PatientEditComponent implements OnInit {
     this.route.params
       .subscribe((params: Params) => {
         this.patientId = params.self;
-        this.setTitle();
-        if (this.isNew()) {
-          this.refresh();
-        }
-        else {
-          this.patientService.getPatientByKey(this.patientId).subscribe(x => {
-            const data = x as PatientRecord;
-            this.loadRecord(data);
-          });
-        }
+        this.refresh();
       });
   }
 
   public refresh(): void {
-    this.form.reset();
+    this.setTitle();
+    if (this.isNew()) {
+      this.form.reset();
+      this.clearValidators();
+    }
+    else {
+      this.patientService.getPatientByKey(this.patientId).subscribe(x => {
+        const data = x as PatientRecord;
+        this.loadRecord(data);
+      });
+    }
+    console.log(this.form.controls);
   }
 
   public isNew(): boolean {
@@ -82,22 +84,40 @@ export class PatientEditComponent implements OnInit {
 
   public isPatient(): boolean {
     // TODO: remove admin from this condition at the end of web app development
-    return this.authService.getRole() === RoleEnum.PATIENT || this.authService.getRole() === RoleEnum.ADMIN;
+    return this.authService.getRole() === RoleEnum.PATIENT;
   }
+
   public isDoctor(): boolean {
     // TODO: remove admin from this condition at the end of web app development
-    return this.authService.getRole() === RoleEnum.DOCTOR || this.authService.getRole() === RoleEnum.ADMIN;
+    return this.authService.getRole() === RoleEnum.DOCTOR;
+  }
+
+  public getAdminUsername(): string {
+    return this.authService.getUsername();
   }
 
   public save(): void {
     console.log(this.form.value);
   }
 
+  public findInvalidControls(): void {
+    const invalid = [];
+    const controls = this.form.controls;
+    for (const name in controls) {
+      if (controls[name].invalid) {
+        invalid.push(name);
+      }
+    }
+    console.log(invalid);
+  }
+
+
   private setTitle(): void {
-    this.title = this.isNew() ? 'Create' : 'Edit' + ' Patient';
+    this.title = (this.isNew() ? 'Create' : 'Edit') + ' Patient';
   }
 
   private loadRecord(record: PatientRecord): void {
+    this.clearValidators();
     if (this.isPatient()) {
       this.form.patchValue({
         firstName: record.firstName,
@@ -116,6 +136,29 @@ export class PatientEditComponent implements OnInit {
         treatment: record.treatment,
         followUp: record.followUp
       });
+    }
+
+  }
+
+  private clearValidators(): void {
+    if (this.isPatient() || this.isNew()) {
+      this.form.get('allergies')?.clearValidators();
+      this.form.get('symptoms')?.clearValidators();
+      this.form.get('diagnosis')?.clearValidators();
+      this.form.get('treatment')?.clearValidators();
+      this.form.get('followUp')?.clearValidators();
+    }
+    else {
+      this.form.get('firstName')?.clearValidators();
+      this.form.get('lastName')?.clearValidators();
+      this.form.get('address')?.clearValidators();
+      this.form.get('age')?.clearValidators();
+      this.form.get('phoneNumber')?.clearValidators();
+      this.form.get('emergPhoneNumber')?.clearValidators();
+    }
+
+    if (!this.isNew()) {
+      this.form.get('bloodGroup')?.clearValidators();
     }
   }
 }

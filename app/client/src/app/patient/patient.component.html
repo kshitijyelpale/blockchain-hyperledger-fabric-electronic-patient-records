@@ -2,7 +2,7 @@
   <app-toolbar-link *ngIf="isPatient()" text="Edit personal details" icon="edit"
     [routerLink]="['/patient/edit/', patientID]">
   </app-toolbar-link>
-  <app-toolbar-link *ngIf="isPatient()" text="Edit medical details" icon="edit"
+  <app-toolbar-link *ngIf="isDoctor()" text="Edit medical details" icon="edit"
     [routerLink]="['/patient/edit/', patientID]">
   </app-toolbar-link>
   <app-toolbar-link *ngIf="isPatient()" text="View doctors" icon="user-md" routerLink="doctors/list"></app-toolbar-link>
