@@ -18,7 +18,7 @@ import { SearchComboComponent, SearchService, SearchTextComponent } from './sear
 import { AdminService } from './admin/admin.service';
 import { PatientService } from './patient/patient.service';
 import { DoctorService } from './doctor/doctor.service';
-import { PatientRegisterComponent } from './patient/patient-register/patient-register.component';
+import { PatientEditComponent } from './patient/patient-register/patient-edit.component';
 import { DoctorRegisterComponent } from './doctor/doctor-register/doctor-register.component';
 import { PatientHistoryComponent } from './patient/patient-history/patient-history.component';
 import { PatientDetailsMedicalEditComponent } from './patient/patient-details-medical-edit/patient-details-medical-edit.component';
@@ -30,7 +30,7 @@ const components = [
   LoginComponent,
   AdminComponent,
   PatientComponent,
-  PatientRegisterComponent,
+  PatientEditComponent,
   PatientHistoryComponent,
   PatientDetailsMedicalEditComponent,
   PatientDetailsPersonalEditComponent,

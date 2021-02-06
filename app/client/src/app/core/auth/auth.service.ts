@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router} from '@angular/router';
 
-import {HospitalUser, User} from '../../User';
+import { HospitalUser, User } from '../../User';
 
 @Injectable({
   providedIn: 'root'
