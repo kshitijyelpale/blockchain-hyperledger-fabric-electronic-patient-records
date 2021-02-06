@@ -16,6 +16,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const jwt = require('jsonwebtoken');
 const jwtSecretToken = 'password';
+const crypto = require('crypto');
 // const https = require('https');
 // const fs = require('fs');
 // const path = require('path');
@@ -32,7 +33,8 @@ app.listen(3001, () => console.log('Backend server running on 3001'));
 const patientRoutes = require('./patient-routes');
 const doctorRoutes = require('./doctor-routes');
 const adminRoutes = require('./admin-routes');
-const {ROLE_DOCTOR, ROLE_ADMIN, ROLE_PATIENT, createRedisClient} = require('../utils');
+const {ROLE_DOCTOR, ROLE_ADMIN, ROLE_PATIENT, createRedisClient, capitalize} = require('../utils');
+const network = require('../../patient-asset-transfer/application-javascript/app.js');
 
 // TODO: We can start the server with https so encryption will be done for the data transferred ove the network
 // TODO: followed this link https://timonweb.com/javascript/running-expressjs-server-over-https/ to create certificate and added in the code
@@ -70,10 +72,10 @@ const authenticateJWT = (req, res, next) => {
  */
 app.post('/login', async (req, res) => {
   // Read username and password from request body
-  const {username, password, hospitalId} = req.body;
+  const {username, password, hospitalId, role} = req.body;
   let user;
   // using get instead of redis GET for async
-  if (req.headers.role === ROLE_DOCTOR || req.headers.role === ROLE_ADMIN) {
+  if (role === ROLE_DOCTOR || role === ROLE_ADMIN) {
     // Create a redis client based on the hospital ID
     const redisClient = await createRedisClient(hospitalId);
     // Async get
@@ -82,8 +84,15 @@ app.post('/login', async (req, res) => {
     user = value === password;
     redisClient.quit();
   }
-  if (req.headers.role === ROLE_PATIENT) {
-
+  if (role === ROLE_PATIENT) {
+    let value = crypto.createHash('sha256').update(password).digest('hex');
+    const networkObj = await network.connectToNetwork(username);
+    const response = await network.invoke(networkObj, true, capitalize(role) + 'Contract:getPatientPassword', username);
+    if(response.error)
+      res.status(400).send(response.error);
+    else {
+      user = response.toString('utf8') === value;
+    }
   }
 
   if (user) {

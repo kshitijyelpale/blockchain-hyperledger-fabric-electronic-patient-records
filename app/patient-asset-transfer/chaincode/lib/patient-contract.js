@@ -40,7 +40,8 @@ class PatientContract extends PrimaryContract {
             diagnosis: asset.diagnosis,
             treatment: asset.treatment,
             followUp: asset.followUp,
-            permissionGranted: asset.permissionGranted
+            permissionGranted: asset.permissionGranted,
+            password: asset.password
         });
         return asset;
     }
