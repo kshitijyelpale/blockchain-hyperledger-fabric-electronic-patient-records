@@ -31,8 +31,16 @@ class AdminContract extends PrimaryContract {
             throw new Error(`Empty or null values should not be passed for password parameter`);
         }
 
-        let newPatient = await new Patient(args.patientId, args.firstName, args.lastName, args.age, args.phoneNumber,
-            args.emergPhoneNumber, args.address, args.bloodGroup, args.allergies, args.password);
+        // Generally we create patient id by ourself so if patient id is not present in the request then fetch last id
+        // from ledger and increment it by one. Since we follow patient id pattern as "PID0", "PID1", ...
+        // 'slice' method omits first three letters and take number
+        if (args.patientId === null || args.patientId === '') {
+             const lastId = this.getLatestPatientId(ctx).slice(3);
+            args.patientId = 'PID' + parseInt(lastId) + 1;
+        }
+
+        let newPatient = await new Patient(args.patientId, args.firstName, args.lastName, args.password, args.age,
+            args.phoneNumber, args.emergPhoneNumber, args.address, args.bloodGroup, args.changedBy, args.allergies);
         const exists = await this.patientExists(ctx, newPatient.patientId);
         if (exists) {
             throw new Error(`The patient ${newPatient.patientId} already exists`);

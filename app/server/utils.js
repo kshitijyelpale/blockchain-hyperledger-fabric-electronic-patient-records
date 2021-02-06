@@ -16,15 +16,16 @@ exports.ROLE_PATIENT = 'patient';
 /**
  * @param  {Boolean} isError Returns a success msg if False else a success message
  * @param  {String} message Content of the message
+ * @param  {JSON} otherInfo Some extra information which can be sent to client.
  * @return {JSON} Json message
  * @description Return a simple JSON message based on success or failure
  * @example returns {success:message} or {error:message}
  */
-exports.getMessage = function(isError, message) {
+exports.getMessage = function(isError, message, otherInfo = {}) {
   if (isError) {
-    return {error: message};
+    return {error: message, info: otherinfo};
   } else {
-    return {success: message};
+    return {success: message, info: otherinfo};
   }
 };
 

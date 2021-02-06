@@ -41,7 +41,6 @@ export class LoginComponent implements OnInit {
   }
 
   public loginUser(): void {
-    console.log(this.role + this.username + this.pwd + this.hospitalId);
     switch (this.role) {
       case RoleEnum.ADMIN:
         this.authService.loginAdminUser(new HospitalUser(this.role, this.hospitalId, this.username, this.pwd))
@@ -74,7 +73,6 @@ export class LoginComponent implements OnInit {
   }
 
   private afterSuccessfulLogin(res: any): void {
-    console.log(res);
     localStorage.setItem(BrowserStorageFields.TOKEN, res.accessToken);
     const role = this.role;
     localStorage.setItem(BrowserStorageFields.USER_ROLE, this.role);

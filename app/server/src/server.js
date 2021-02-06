@@ -137,5 +137,5 @@ app.get('/patients/:patientId', authenticateJWT, patientRoutes.getPatientById);
 app.patch('/patients/:patientId/details/personal', authenticateJWT, patientRoutes.updatePatientPersonalDetails);
 app.get('/patients/:patientId/history', authenticateJWT, patientRoutes.getPatientHistoryById);
 app.get('/doctors/:hospitalId/_all', authenticateJWT, patientRoutes.getDoctorsByHospitalId);
-app.patch('/patients/:patientId/grant/:doctorId', patientRoutes.grantAccessToDoctor);
-app.patch('/patients/:patientId/revoke/:doctorId', patientRoutes.revokeAccessFromDoctor);
+app.patch('/patients/:patientId/grant/:doctorId', authenticateJWT, patientRoutes.grantAccessToDoctor);
+app.patch('/patients/:patientId/revoke/:doctorId', authenticateJWT, patientRoutes.revokeAccessFromDoctor);

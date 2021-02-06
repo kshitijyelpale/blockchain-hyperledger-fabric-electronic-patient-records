@@ -49,23 +49,32 @@ class DoctorContract extends AdminContract {
     async updatePatientMedicalDetails(ctx, args) {
         args = JSON.parse(args);
         let patientId = args.patientId;
-        let newSymptoms = args.newSymptoms;
-        let newDiagnosis = args.newDiagnosis;
-        let newTreatment = args.newTreatment;
-        let newFollowUp = args.newFollowUp;
+        let newSymptoms = args.symptoms;
+        let newDiagnosis = args.diagnosis;
+        let newTreatment = args.treatment;
+        let newFollowUp = args.followUp;
+        let updatedBy = args.changedBy;
 
         const patient = await this.readPatient(ctx, patientId)
-        if (newSymptoms !== null && newSymptoms !== '')
+        if (newSymptoms !== null && newSymptoms !== '') {
             patient.symptoms = newSymptoms;
+        }
 
-        if (newDiagnosis !== null && newDiagnosis !== '')
+        if (newDiagnosis !== null && newDiagnosis !== '') {
             patient.diagnosis = newDiagnosis;
+        }
 
-        if (newTreatment !== null && newTreatment !== '')
+        if (newTreatment !== null && newTreatment !== '') {
             patient.treatment = newTreatment;
+        }
 
-        if (newFollowUp !== null && newFollowUp !== '')
+        if (newFollowUp !== null && newFollowUp !== '') {
             patient.followUp = newFollowUp;
+        }
+
+        if (updatedBy !== null && updatedBy !== '') {
+            patient.changedBy = updatedBy;
+        }
 
         const buffer = Buffer.from(JSON.stringify(patient));
         await ctx.stub.putState(patientId, buffer);
@@ -109,6 +118,7 @@ class DoctorContract extends AdminContract {
                 followUp: obj.Record.followUp
             };
             if (includeTimeStamp) {
+                asset[i].changedBy = obj.Record.changedBy;
                 asset[i].Timestamp = obj.Timestamp;
             }
         }
@@ -116,7 +126,7 @@ class DoctorContract extends AdminContract {
         return asset;
     };
 
-    
+
     /**
      * @author Jathin Sreenivas
      * @param  {Context} ctx
