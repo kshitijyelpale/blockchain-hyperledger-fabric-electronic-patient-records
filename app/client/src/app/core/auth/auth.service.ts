@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router} from '@angular/router';
 
 import { HospitalUser, User } from '../../User';
+import { BrowserStorageFields } from '../../utils';
 
 @Injectable({
   providedIn: 'root'
@@ -18,28 +19,33 @@ export class AuthService {
   }
 
   public loginDoctorUser(doctorUser: HospitalUser): any {
-    return this.http.post<any>(this.loginUrl + '/doctor', doctorUser);
+    return this.http.post<any>(this.loginUrl, doctorUser);
   }
 
   public loginPatientUser(patientUser: User): any {
-    return this.http.post<any>(this.loginUrl + '/patient', patientUser);
+    return this.http.post<any>(this.loginUrl, patientUser);
   }
 
   public logoutUser(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
+    localStorage.removeItem(BrowserStorageFields.TOKEN);
+    localStorage.removeItem(BrowserStorageFields.USER_ROLE);
+    localStorage.removeItem(BrowserStorageFields.USERNAME);
     this.router.navigate(['/login']);
   }
 
   public loggedIn(): boolean {
-    return !!localStorage.getItem('token');
+    return !!localStorage.getItem(BrowserStorageFields.TOKEN);
   }
 
   public getToken(): string | null {
-    return localStorage.getItem('token');
+    return localStorage.getItem(BrowserStorageFields.TOKEN);
   }
 
   public getRole(): string {
-    return localStorage.getItem('role') as string;
+    return localStorage.getItem(BrowserStorageFields.USER_ROLE) as string;
+  }
+
+  public getUsername(): string {
+    return localStorage.getItem(BrowserStorageFields.USERNAME) as string;
   }
 }

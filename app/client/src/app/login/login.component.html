@@ -22,9 +22,9 @@
             <div class="form-group mt-3" *ngIf="showHospList">
               <label for="hospitalName">Hospital</label>
               <select name="hospital" class="form-control rounded-1" required placeholder="Select a hospital you belong"
-                [(ngModel)]="hospitalName">
-                <option value="hosp1">Hospital 1</option>
-                <option value="hosp2">Hospital 2</option>
+                [(ngModel)]="hospitalId">
+                <option value="1">Hospital 1</option>
+                <option value="2">Hospital 2</option>
               </select>
             </div>
             <div class="form-group mt-3">
@@ -32,13 +32,16 @@
               <input type="text" name="username" class="form-control rounded-1" required
                 [(ngModel)]="username">
             </div>
-            <div class="form-group mt-3" *ngIf="showHospList">
+            <div class="form-group mt-3">
               <label for="password">Password</label>
               <input type="password" name="password" class="form-control rounded-1" required
                 [(ngModel)]="pwd">
             </div>
-            <button type="button" class="btn btn-success float-right mt-5" [disabled]="loginForm.invalid"
-                    (click)="showHospList ? loginUser() : loginPatient(patientPassword)">
+            <div *ngIf="error">
+              <p class="alert alert alert-danger">{{error.message}}</p>
+            </div>
+            <button type="button" class="btn btn-success float-right mt-2" [disabled]="loginForm.invalid"
+                    (click)="loginUser()">
               Login
             </button>
           </form>

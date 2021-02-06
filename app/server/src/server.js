@@ -72,7 +72,8 @@ const authenticateJWT = (req, res, next) => {
  */
 app.post('/login', async (req, res) => {
   // Read username and password from request body
-  const {username, password, hospitalId, role, newPassword} = req.body;
+  let {username, password, hospitalId, role, newPassword} = req.body;
+  hospitalId = parseInt(hospitalId);
   let user;
   // using get instead of redis GET for async
   if (role === ROLE_DOCTOR || role === ROLE_ADMIN) {
@@ -86,7 +87,7 @@ app.post('/login', async (req, res) => {
   }
   if (role === ROLE_PATIENT) {
     const networkObj = await network.connectToNetwork(username);
-    if(newPassword == null || newPassword == ''){
+    if(newPassword == null || newPassword === ''){
       let value = crypto.createHash('sha256').update(password).digest('hex');
       const response = await network.invoke(networkObj, true, capitalize(role) + 'Contract:getPatientPassword', username);
       if(response.error)

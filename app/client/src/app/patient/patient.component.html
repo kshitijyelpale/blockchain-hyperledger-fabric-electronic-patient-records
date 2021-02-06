@@ -31,13 +31,43 @@
                 <td class="labels"><strong>Last Name</strong></td>
                 <td>{{patientRecord.lastName}}</td>
               </tr>
+              <ng-container *ngIf="isPatient()">
+                <tr>
+                  <td class="labels"><strong>Contact number</strong></td>
+                  <td>{{patientRecord.phoneNumber}}</td>
+                </tr>
+                <tr>
+                  <td class="labels"><strong>Emergency number</strong></td>
+                  <td>{{patientRecord.emergPhoneNumber}}</td>
+                </tr>
+                <tr>
+                  <td class="labels"><strong>Address</strong></td>
+                  <td>{{patientRecord.address}}</td>
+                </tr>
+              </ng-container>
               <tr>
-                <td class="labels"><strong>Contact number</strong></td>
-                <td>{{patientRecord.phoneNumber}}</td>
+                <td class="labels"><strong>Blood Group</strong></td>
+                <td>{{patientRecord.bloodGroup}}</td>
               </tr>
               <tr>
-                <td class="labels"><strong>Emergency number</strong></td>
-                <td>{{patientRecord.emergPhoneNumber}}</td>
+                <td class="labels"><strong>Allergies</strong></td>
+                <td>{{patientRecord.allergies}}</td>
+              </tr>
+              <tr>
+                <td class="labels"><strong>Symptoms</strong></td>
+                <td>{{patientRecord.symptoms}}</td>
+              </tr>
+              <tr>
+                <td class="labels"><strong>Diagnosis</strong></td>
+                <td>{{patientRecord.diagnosis}}</td>
+              </tr>
+              <tr>
+                <td class="labels"><strong>Treatment</strong></td>
+                <td>{{patientRecord.treatment}}</td>
+              </tr>
+              <tr>
+                <td class="labels"><strong>Follow up period</strong></td>
+                <td>{{patientRecord.followUp}}</td>
               </tr>
             </span>
           </table>

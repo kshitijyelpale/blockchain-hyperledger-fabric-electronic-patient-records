@@ -3,6 +3,8 @@ import { ActivatedRoute, Params } from '@angular/router';
 
 import { PatientService } from '../patient.service';
 import { DisplayVal, PatientRecord, PatientViewRecord } from '../patient';
+import {RoleEnum} from '../../utils';
+import {AuthService} from '../../core/auth/auth.service';
 
 @Component({
   selector: 'app-patient-history',
@@ -11,29 +13,37 @@ import { DisplayVal, PatientRecord, PatientViewRecord } from '../patient';
 })
 export class PatientHistoryComponent implements OnInit {
   public patientID: any;
-  patientRecordHistory: Array<PatientViewRecord> = [];
+  public patientRecordHistory: Array<PatientViewRecord> = [];
+  public data: any;
   headerNames = [
-    new DisplayVal('patientId', 'Patient Id'),
+    new DisplayVal(PatientViewRecord.prototype.patientId, 'Patient Id'),
     new DisplayVal('date', 'Date '),
-    new DisplayVal('firstName', 'First Name'),
-    new DisplayVal('lastName', 'Last Name'),
-    new DisplayVal('address', 'Address'),
-    new DisplayVal('age', 'Age'),
-    new DisplayVal('phoneNumber', 'Contact number'),
-    new DisplayVal('allergies', 'Allergies'),
-    new DisplayVal('diagnosis', 'Diagnosis'),
-    new DisplayVal('symptoms', 'Symptoms'),
-    new DisplayVal('treatment', 'Treatment'),
-    new DisplayVal('followUp', 'Followup duration'),
-    new DisplayVal('emergPhoneNumber', 'Emergency number')
+    new DisplayVal(PatientViewRecord.prototype.firstName, 'First Name'),
+    new DisplayVal(PatientViewRecord.prototype.lastName, 'Last Name'),
+    new DisplayVal(PatientViewRecord.prototype.age, 'Age'),
   ];
 
   constructor(
     private readonly route: ActivatedRoute,
-    private readonly patientService: PatientService
+    private readonly patientService: PatientService,
+    private readonly authService: AuthService
   ) { }
 
   ngOnInit(): void {
+    if (this.isPatient()) {
+      this.headerNames.push(
+        new DisplayVal(PatientViewRecord.prototype.address, 'Address'),
+        new DisplayVal(PatientViewRecord.prototype.phoneNumber, 'Contact number'),
+        new DisplayVal(PatientViewRecord.prototype.emergPhoneNumber, 'Emergency number')
+      );
+    }
+    this.headerNames.push(
+      new DisplayVal(PatientViewRecord.prototype.allergies, 'Allergies'),
+      new DisplayVal(PatientViewRecord.prototype.diagnosis, 'Diagnosis'),
+      new DisplayVal(PatientViewRecord.prototype.symptoms, 'Symptoms'),
+      new DisplayVal(PatientViewRecord.prototype.treatment, 'Treatment'),
+      new DisplayVal(PatientViewRecord.prototype.followUp, 'Followup duration')
+    );
     this.route.params
       .subscribe((params: Params) => {
         this.patientID = params.patientId;
@@ -43,13 +53,14 @@ export class PatientHistoryComponent implements OnInit {
 
   public refresh(): void {
     this.patientService.getPatientHistoryByKey(this.patientID).subscribe(x => {
-      console.log(x);
-      const data: PatientRecord = JSON.parse(JSON.stringify(x[0]));
-      console.log('data:=>>>>>>>' + typeof data);
-      console.log(data.timestamp);
+      this.data = x;
       // this.patientRecordHistory = data.map((y: PatientRecord) => new PatientViewRecord(y));
-      console.log('history');
       // console.log(this.patientRecordHistory);
     });
+  }
+
+  public isPatient(): boolean {
+    // TODO: remove admin from this condition at the end of web app development
+    return this.authService.getRole() === RoleEnum.PATIENT || this.authService.getRole() === RoleEnum.ADMIN;
   }
 }

@@ -3,6 +3,12 @@ export enum RoleEnum {
   PATIENT = 'patient',
   DOCTOR = 'doctor'
 }
+
+export enum BrowserStorageFields {
+  TOKEN= 'token',
+  USER_ROLE = 'role',
+  USERNAME = 'username'
+}
 export class Utils {
 
   public static encode(data: string): string {

@@ -5,16 +5,39 @@
 
 <div class="sidebar-layout-bottom-row p-3 container-fluid">
   <p>History of a patient.</p>
-  <table class="table table-sm">
-    <tr>
-      <th *ngFor="let column of headerNames">
-        {{column.displayName}}
-      </th>
-    </tr>
-    <!--<tr *ngFor="let singleRecord of [patientRecordHistory]">
-      <td *ngFor="let columnName of headerNames">
-        {{singleRecord[columnName.keyName]}}
-      </td>
-    </tr>-->
-  </table>
+  <div class="table-responsive-lg">
+    <table class="table table-hover">
+      <thead class="thread-light">
+        <tr>
+          <th *ngFor="let column of headerNames" scope="col">
+            {{column.displayName}}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <!--<tr *ngFor="let singleRecord of [patientRecordHistory]">
+          <td *ngFor="let columnName of headerNames">
+            {{singleRecord[columnName.keyName]}}
+          </td>
+        </tr>-->
+        <tr *ngFor="let singleRecord of data">
+          <td>{{singleRecord.patientId}}</td>
+          <td>{{singleRecord.date}}</td>
+          <td>{{singleRecord.firstName}}</td>
+          <td>{{singleRecord.lastName}}</td>
+          <td>{{singleRecord.age}}</td>
+          <ng-container *ngIf="isPatient()">
+            <td>{{singleRecord.address}}</td>
+            <td>{{singleRecord.phoneNumber}}</td>
+            <td>{{singleRecord.emergPhoneNumber}}</td>
+          </ng-container>
+          <td>{{singleRecord.allergies}}</td>
+          <td>{{singleRecord.diagnosis}}</td>
+          <td>{{singleRecord.symptoms}}</td>
+          <td>{{singleRecord.treatment}}</td>
+          <td>{{singleRecord.followUp}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

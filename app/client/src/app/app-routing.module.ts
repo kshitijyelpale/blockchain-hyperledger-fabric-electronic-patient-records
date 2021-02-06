@@ -64,7 +64,7 @@ const routes: Routes = [
     canActivate: [ AuthGuard ]
   },
   {
-    path: 'admin',
+    path: 'admin/:adminId',
     component: AdminComponent
   }
 ];
