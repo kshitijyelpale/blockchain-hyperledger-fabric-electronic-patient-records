@@ -41,7 +41,8 @@ class PatientContract extends PrimaryContract {
             treatment: asset.treatment,
             followUp: asset.followUp,
             permissionGranted: asset.permissionGranted,
-            password: asset.password
+            password: asset.password,
+            pwdTemp: asset.pwdTemp
         });
         return asset;
     }
@@ -93,15 +94,20 @@ class PatientContract extends PrimaryContract {
 
         const patient = await this.readPatient(ctx, patientId);
         patient.password = crypto.createHash('sha256').update(newPassword).digest('hex');
+        if(patient.pwdTemp){
+            patient.pwdTemp = false;
+        }
         const buffer = Buffer.from(JSON.stringify(patient));
         await ctx.stub.putState(patientId, buffer);
     }
 
     //Returns the patient's password
     async getPatientPassword(ctx, patientId) {
-        const patient = await this.readPatient(ctx, patientId);
-
-        return patient.password;
+        let patient = await this.readPatient(ctx, patientId);
+        patient = ({
+            password: patient.password,
+            pwdTemp: patient.pwdTemp})
+        return patient;
     }
 
     //Retrieves patient medical history based on patientId

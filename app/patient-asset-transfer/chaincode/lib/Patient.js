@@ -30,6 +30,7 @@ class Patient {
         this.diagnosis = diagnosis;
         this.treatment = treatment;
         this.followUp = followUp;
+        this.pwdTemp = true;
         return this;
     }
 }
