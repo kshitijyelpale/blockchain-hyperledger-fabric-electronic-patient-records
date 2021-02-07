@@ -1,0 +1,17 @@
+POST http://localhost:3001/doctors/register
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imhvc3AxYWRtaW4iLCJpYXQiOjE2MTI3MTIxMTZ9.lz4jjGy_x_XiHyTcX5RRzv2N8GVLFPoCHn1lTO2dtGo
+Role: admin
+
+{
+  "firstName": "abc",
+  "lastName": "xyz",
+  "hospitalId": 1,
+  "speciality": "versatile"
+}
+
+###
+PATCH http://localhost:3001/patients/PID1/grant/DOC1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlBJRDEiLCJpYXQiOjE2MTI3MTU1MTF9.2ixeG9-uPWPNYJSCja84bkRCmMnhOd3V3gwrkEPkxGc
+Role: patient

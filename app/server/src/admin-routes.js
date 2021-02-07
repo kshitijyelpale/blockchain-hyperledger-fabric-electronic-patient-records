@@ -27,7 +27,7 @@ exports.createPatient = async (req, res) => {
   // from ledger and increment it by one. Since we follow patient id pattern as "PID0", "PID1", ...
   // 'slice' method omits first three letters and take number
   if (!('patientId' in req.body) || req.body.patientId === null || req.body.patientId === '') {
-    let lastId = await network.invoke(networkObj, true, capitalize(userRole) + 'Contract:getLatestPatientId');
+    const lastId = await network.invoke(networkObj, true, capitalize(userRole) + 'Contract:getLatestPatientId');
     req.body.patientId = 'PID' + (parseInt(lastId.slice(3)) + 1);
   }
 
@@ -48,10 +48,10 @@ exports.createPatient = async (req, res) => {
   }
 
   // Enrol and register the user with the CA and adds the user to the wallet.
-  const userData = JSON.stringify({ hospitalId: (req.headers.username).slice(4,5), userId:req.body.patientId});
-  let registerUserRes = await network.registerUser(userData);
+  const userData = JSON.stringify({hospitalId: (req.headers.username).slice(4, 5), userId: req.body.patientId});
+  const registerUserRes = await network.registerUser(userData);
   if (registerUserRes.error) {
-    const deletedResult = await network.invoke(networkObj, false, capitalize(userRole) + 'Contract:deletePatient', req.body.patientId);
+    await network.invoke(networkObj, false, capitalize(userRole) + 'Contract:deletePatient', req.body.patientId);
     res.send(registerUserRes.error);
   }
 
@@ -94,7 +94,8 @@ exports.getAllPatients = async (req, res) => {
   // Set up and connect to Fabric Gateway using the username in header
   const networkObj = await network.connectToNetwork(req.headers.username);
   // Invoke the smart contract function
-  const response = await network.invoke(networkObj, true, capitalize(userRole) + 'Contract:queryAllPatients');
+  const response = await network.invoke(networkObj, true, capitalize(userRole) + 'Contract:queryAllPatients',
+    userRole === ROLE_DOCTOR ? req.headers.username : '');
   const parsedResponse = await JSON.parse(response);
   res.status(200).send(parsedResponse);
 };

@@ -17,8 +17,6 @@ export class PatientEditComponent implements OnInit {
   public form: FormGroup;
   public error: any = null;
   public title = '';
-  public currentUrl = '';
-  public previousUrl = '';
   public patientId: any;
   public newPatientData: any;
 
@@ -48,11 +46,11 @@ export class PatientEditComponent implements OnInit {
       phoneNumber: ['', Validators.required],
       emergPhoneNumber: ['', Validators.required],
       bloodGroup: ['', Validators.required],
-      allergies: ['', Validators.required],
-      symptoms: ['', Validators.required],
-      diagnosis: ['', Validators.required],
-      treatment: ['', Validators.required],
-      followUp: ['', Validators.required]
+      allergies: [''],
+      symptoms: [''],
+      diagnosis: [''],
+      treatment: [''],
+      followUp: ['']
     });
   }
 
@@ -68,7 +66,6 @@ export class PatientEditComponent implements OnInit {
     this.setTitle();
     if (this.isNew()) {
       this.form.reset();
-      this.clearValidators();
     }
     else {
       this.patientService.getPatientByKey(this.patientId).subscribe(x => {
@@ -76,7 +73,7 @@ export class PatientEditComponent implements OnInit {
         this.loadRecord(data);
       });
     }
-    console.log(this.form.controls);
+    this.error = null;
   }
 
   public isNew(): boolean {
@@ -84,12 +81,10 @@ export class PatientEditComponent implements OnInit {
   }
 
   public isPatient(): boolean {
-    // TODO: remove admin from this condition at the end of web app development
     return this.authService.getRole() === RoleEnum.PATIENT;
   }
 
   public isDoctor(): boolean {
-    // TODO: remove admin from this condition at the end of web app development
     return this.authService.getRole() === RoleEnum.DOCTOR;
   }
 
@@ -98,12 +93,27 @@ export class PatientEditComponent implements OnInit {
   }
 
   public save(): void {
-    console.log(this.form.value);
     if (this.isNew()) {
       this.patientService.createPatient(this.form.value).subscribe(x => {
-        console.log(x);
-        this.newPatientData.id = x.id;
-        this.newPatientData.password = x.password;
+        this.newPatientData = x;
+      });
+    }
+    else if (this.isPatient()) {
+      this.patientService.updatePatientPersonalDetails(this.patientId, this.form.value).subscribe(x => {
+        const response = x;
+        if (response.error) {
+          this.error = response.error;
+        }
+        this.router.navigate(['/', 'patient', this.patientId]);
+      });
+    }
+    else {
+      this.patientService.updatePatientMedicalDetails(this.patientId, this.form.value).subscribe(x => {
+        const response = x;
+        if (response.error) {
+          this.error = response.error;
+        }
+        this.router.navigate(['/', 'patient', this.patientId]);
       });
     }
   }
@@ -121,7 +131,7 @@ export class PatientEditComponent implements OnInit {
 
   public reset(): void {
     this.newPatientData = null;
-    this.router.navigate(['..']);
+    this.router.navigate(['/', 'admin', this.getAdminUsername()]);
   }
 
 
@@ -150,28 +160,14 @@ export class PatientEditComponent implements OnInit {
         followUp: record.followUp
       });
     }
-
   }
 
   private clearValidators(): void {
-    if (this.isPatient() || this.isNew()) {
-      this.form.get('allergies')?.clearValidators();
-      this.form.get('symptoms')?.clearValidators();
-      this.form.get('diagnosis')?.clearValidators();
-      this.form.get('treatment')?.clearValidators();
-      this.form.get('followUp')?.clearValidators();
+    // tslint:disable-next-line:forin
+    for (const key in this.form.controls) {
+      this.form.get(key)?.clearValidators();
+      this.form.get(key)?.updateValueAndValidity();
     }
-    else {
-      this.form.get('firstName')?.clearValidators();
-      this.form.get('lastName')?.clearValidators();
-      this.form.get('address')?.clearValidators();
-      this.form.get('age')?.clearValidators();
-      this.form.get('phoneNumber')?.clearValidators();
-      this.form.get('emergPhoneNumber')?.clearValidators();
-    }
-
-    if (!this.isNew()) {
-      this.form.get('bloodGroup')?.clearValidators();
-    }
+    // this.findInvalidControls();
   }
 }

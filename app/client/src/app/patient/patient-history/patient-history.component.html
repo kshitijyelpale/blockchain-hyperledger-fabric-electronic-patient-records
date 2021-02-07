@@ -20,9 +20,9 @@
             {{singleRecord[columnName.keyName]}}
           </td>
         </tr>-->
-        <tr *ngFor="let singleRecord of data">
-          <td>{{singleRecord.patientId}}</td>
+        <tr *ngFor="let singleRecord of patientRecordHistory">
           <td>{{singleRecord.date}}</td>
+          <td>{{singleRecord.changedBy}}</td>
           <td>{{singleRecord.firstName}}</td>
           <td>{{singleRecord.lastName}}</td>
           <td>{{singleRecord.age}}</td>

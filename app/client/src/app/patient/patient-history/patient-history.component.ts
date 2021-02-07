@@ -16,8 +16,8 @@ export class PatientHistoryComponent implements OnInit {
   public patientRecordHistory: Array<PatientViewRecord> = [];
   public data: any;
   headerNames = [
-    new DisplayVal(PatientViewRecord.prototype.patientId, 'Patient Id'),
-    new DisplayVal('date', 'Date '),
+    new DisplayVal(PatientViewRecord.prototype.date, 'Date'),
+    new DisplayVal(PatientViewRecord.prototype.changedBy, 'Last changed by'),
     new DisplayVal(PatientViewRecord.prototype.firstName, 'First Name'),
     new DisplayVal(PatientViewRecord.prototype.lastName, 'Last Name'),
     new DisplayVal(PatientViewRecord.prototype.age, 'Age'),
@@ -53,9 +53,8 @@ export class PatientHistoryComponent implements OnInit {
 
   public refresh(): void {
     this.patientService.getPatientHistoryByKey(this.patientID).subscribe(x => {
-      this.data = x;
-      // this.patientRecordHistory = data.map((y: PatientRecord) => new PatientViewRecord(y));
-      // console.log(this.patientRecordHistory);
+      this.data = x as Array<PatientRecord>;
+      this.patientRecordHistory = this.data.map((y: PatientRecord) => new PatientViewRecord(y));
     });
   }
 
