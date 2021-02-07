@@ -18,9 +18,8 @@ class AdminContract extends PrimaryContract {
     //Returns the last patientId in the set
     async getLatestPatientId(ctx) {
         let allResults = await this.queryAllPatients(ctx);
-        let data = JSON.parse(allResults);
-        let lastPatientId = data[data.length - 1].Key;
-        return lastPatientId;
+
+        return allResults[allResults.length - 1].patientId;
     }
 
     //Create patient in the ledger
@@ -29,14 +28,6 @@ class AdminContract extends PrimaryContract {
 
         if (args.password === null || args.password === '') {
             throw new Error(`Empty or null values should not be passed for password parameter`);
-        }
-
-        // Generally we create patient id by ourself so if patient id is not present in the request then fetch last id
-        // from ledger and increment it by one. Since we follow patient id pattern as "PID0", "PID1", ...
-        // 'slice' method omits first three letters and take number
-        if (args.patientId === null || args.patientId === '') {
-             const lastId = this.getLatestPatientId(ctx).slice(3);
-            args.patientId = 'PID' + parseInt(lastId) + 1;
         }
 
         let newPatient = await new Patient(args.patientId, args.firstName, args.lastName, args.password, args.age,
@@ -65,6 +56,15 @@ class AdminContract extends PrimaryContract {
             emergPhoneNumber: asset.emergPhoneNumber
         });
         return asset;
+    }
+
+    //Delete patient from the ledger based on patientId
+    async deletePatient(ctx, patientId) {
+        const exists = await this.patientExists(ctx, patientId);
+        if (!exists) {
+            throw new Error(`The patient ${patientId} does not exist`);
+        }
+        await ctx.stub.deleteState(patientId);
     }
 
     //Read patients based on lastname

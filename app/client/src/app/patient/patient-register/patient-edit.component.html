@@ -76,13 +76,21 @@
                          placeholder="Enter follow up duration.">
                 </div>
               </ng-container>
+              <div *ngIf="newPatientData">
+                <p class="alert alert-success">New patient's credentials.</p>
+                <p class="alert alert-success">{{newPatientData.id}}</p>
+                <p class="alert alert-success">{{newPatientData.password}}</p>
+              </div>
               <div class="form-group form-buttons">
-                <button class="btn btn-primary mr-2" type="submit" [disabled]="registerPatient.invalid">Save</button>
-                <a [routerLink]="[isNew() ? '/admin/' + getAdminUsername() : '/patient/' + patientId]"
-                  class="btn btn-secondary">
-                  Cancel
-                </a>
-                <button class="btn btn-danger" type="button" (click)="findInvalidControls()"></button>
+                <ng-container *ngIf="!newPatientData">
+                  <button class="btn btn-primary mr-2" type="submit" [disabled]="registerPatient.invalid">Save</button>
+                  <a [routerLink]="[isNew() ? '/admin/' + getAdminUsername() : '/patient/' + patientId]"
+                    class="btn btn-secondary">
+                    Cancel
+                  </a>
+                </ng-container>
+                  <button *ngIf="newPatientData" class="btn btn-secondary" type="button" (click)="reset()">OK</button>
+                  <button class="btn btn-danger" type="button" (click)="findInvalidControls()">TEST</button>
               </div>
               <div *ngIf="error">
                 <p class="alert alert-danger">{{error.message}}</p>
@@ -94,3 +102,27 @@
     </div>
   </div>
 </div>
+
+<ng-template #successfulRegistration let-close="close" let-dismiss="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title">
+      <i class="fa fa-university mr-2"></i>New patient's user id and password
+    </h4>
+    <button type="button" class="close" aria-label="Close" (click)="dismiss('Cross click')">
+      <span aria-hidden="true">x</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Enter password for authentication</p>
+    <!--<div class="form-group">
+      <input type="password" name="password" class="form-control rounded-1" required
+             [(ngModel)]="pwd">
+    </div>-->
+  </div>
+  <div class="modal-footer">
+    <button type="button" id="patientPwd" class="btn btn-danger" (click)="close('Confirm password')">
+      Confirm Password
+    </button>
+    <button type="button" class="btn btn-outline-dark" (click)="dismiss('Cancel click')">Cancel</button>
+  </div>
+</ng-template>

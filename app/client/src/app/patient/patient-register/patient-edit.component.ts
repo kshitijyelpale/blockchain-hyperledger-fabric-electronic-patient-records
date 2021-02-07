@@ -20,6 +20,7 @@ export class PatientEditComponent implements OnInit {
   public currentUrl = '';
   public previousUrl = '';
   public patientId: any;
+  public newPatientData: any;
 
   public bloodGroupTypes = [
     {id: 'a+', name: 'A +'},
@@ -98,6 +99,13 @@ export class PatientEditComponent implements OnInit {
 
   public save(): void {
     console.log(this.form.value);
+    if (this.isNew()) {
+      this.patientService.createPatient(this.form.value).subscribe(x => {
+        console.log(x);
+        this.newPatientData.id = x.id;
+        this.newPatientData.password = x.password;
+      });
+    }
   }
 
   public findInvalidControls(): void {
@@ -109,6 +117,11 @@ export class PatientEditComponent implements OnInit {
       }
     }
     console.log(invalid);
+  }
+
+  public reset(): void {
+    this.newPatientData = null;
+    this.router.navigate(['..']);
   }
 
 
