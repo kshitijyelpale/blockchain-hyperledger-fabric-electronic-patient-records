@@ -48,6 +48,7 @@ class DoctorContract extends AdminContract {
     //This function is to update patient medical details. This function should be called by only doctor.
     async updatePatientMedicalDetails(ctx, args) {
         args = JSON.parse(args);
+        let isDataChanged = false;
         let patientId = args.patientId;
         let newSymptoms = args.symptoms;
         let newDiagnosis = args.diagnosis;
@@ -56,25 +57,31 @@ class DoctorContract extends AdminContract {
         let updatedBy = args.changedBy;
 
         const patient = await this.readPatient(ctx, patientId)
-        if (newSymptoms !== null && newSymptoms !== '') {
+        if (newSymptoms !== null && newSymptoms !== '' && patient.symptoms !== newSymptoms) {
             patient.symptoms = newSymptoms;
+            isDataChanged = true;
         }
 
-        if (newDiagnosis !== null && newDiagnosis !== '') {
+        if (newDiagnosis !== null && newDiagnosis !== '' && patient.diagnosis !== newDiagnosis) {
             patient.diagnosis = newDiagnosis;
+            isDataChanged = true;
         }
 
-        if (newTreatment !== null && newTreatment !== '') {
+        if (newTreatment !== null && newTreatment !== '' && patient.treatment !== newTreatment) {
             patient.treatment = newTreatment;
+            isDataChanged = true;
         }
 
-        if (newFollowUp !== null && newFollowUp !== '') {
+        if (newFollowUp !== null && newFollowUp !== '' && patient.followUp !== newFollowUp) {
             patient.followUp = newFollowUp;
+            isDataChanged = true;
         }
 
         if (updatedBy !== null && updatedBy !== '') {
             patient.changedBy = updatedBy;
         }
+
+        if (isDataChanged === false) return;
 
         const buffer = Buffer.from(JSON.stringify(patient));
         await ctx.stub.putState(patientId, buffer);

@@ -59,6 +59,7 @@ class PatientContract extends PrimaryContract {
     //This function is to update patient personal details. This function should be called by patient.
     async updatePatientPersonalDetails(ctx, args) {
         args = JSON.parse(args);
+        let isDataChanged = false;
         let patientId = args.patientId;
         let newFirstname = args.firstName;
         let newLastName = args.lastName;
@@ -70,37 +71,46 @@ class PatientContract extends PrimaryContract {
         let newAllergies = args.allergies;
 
         const patient = await this.readPatient(ctx, patientId)
-        if (newFirstname !== null && newFirstname !== '') {
+        if (newFirstname !== null && newFirstname !== '' && patient.firstName !== newFirstname) {
             patient.firstName = newFirstname;
+            isDataChanged = true;
         }
 
-        if (newLastName !== null && newLastName !== '') {
+        if (newLastName !== null && newLastName !== '' && patient.lastName !== newLastName) {
             patient.lastName = newLastName;
+            isDataChanged = true;
         }
 
-        if (newAge !== null && newAge !== '') {
+        if (newAge !== null && newAge !== '' && patient.age !== newAge) {
             patient.age = newAge;
+            isDataChanged = true;
         }
 
         if (updatedBy !== null && updatedBy !== '') {
             patient.changedBy = updatedBy;
         }
 
-        if (newPhoneNumber !== null && newPhoneNumber !== '') {
+        if (newPhoneNumber !== null && newPhoneNumber !== '' && patient.phoneNumber !== newPhoneNumber) {
             patient.phoneNumber = newPhoneNumber;
+            isDataChanged = true;
         }
 
-        if (newEmergPhoneNumber !== null && newEmergPhoneNumber !== '') {
+        if (newEmergPhoneNumber !== null && newEmergPhoneNumber !== '' && patient.emergPhoneNumber !== newEmergPhoneNumber) {
             patient.emergPhoneNumber = newEmergPhoneNumber;
+            isDataChanged = true;
         }
 
-        if (newAddress !== null && newAddress !== '') {
+        if (newAddress !== null && newAddress !== '' && patient.address !== newAddress) {
             patient.address = newAddress;
+            isDataChanged = true;
         }
 
-        if (newAllergies !== null && newAllergies !== '') {
+        if (newAllergies !== null && newAllergies !== '' && patient.allergies !== newAllergies) {
             patient.allergies = newAllergies;
+            isDataChanged = true;
         }
+
+        if (isDataChanged === false) return;
 
         const buffer = Buffer.from(JSON.stringify(patient));
         await ctx.stub.putState(patientId, buffer);
