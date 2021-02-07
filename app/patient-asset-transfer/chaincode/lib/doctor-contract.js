@@ -99,8 +99,18 @@ class DoctorContract extends AdminContract {
     }
 
     //Retrieves all patients details
-    async queryAllPatients(ctx) {
-        return await super.queryAllPatients(ctx);
+    async queryAllPatients(ctx, doctorId) {
+        let resultsIterator = await ctx.stub.getStateByRange('', '');
+        let asset = await this.getAllPatientResults(resultsIterator, false);
+        const permissionedAssets = [];
+        for (let i = 0; i < asset.length; i++) {
+            const obj = asset[i];
+            if (obj.Record.permissionGranted.includes(doctorId)) {
+                permissionedAssets.push(asset[i]);
+            }
+        }
+
+        return this.fetchLimitedFields(permissionedAssets);
     }
 
     fetchLimitedFields = (asset, includeTimeStamp = false) => {
