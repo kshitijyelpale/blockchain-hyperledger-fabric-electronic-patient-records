@@ -56,8 +56,8 @@ async function enrollAndRegisterDoctors() {
       const attr = {firstName: doctors[i].firstName, lastName: doctors[i].lastName, role: 'doctor'};
       // Create a redis client and add the doctor to redis
       const redisClient = createRedisClient(doctors[i].hospitalId);
-      (await redisClient).SET('DOC'+i, 'password');
-      await enrollRegisterUser(doctors[i].hospitalId, 'DOC'+i, JSON.stringify(attr));
+      (await redisClient).SET('HOSP' + doctors[i].hospitalId + '-' + 'DOC' + i, 'password');
+      await enrollRegisterUser(doctors[i].hospitalId, 'HOSP' + doctors[i].hospitalId + '-' + 'DOC' + i, JSON.stringify(attr));
       (await redisClient).QUIT();
     }
   } catch (error) {
