@@ -87,22 +87,23 @@ app.post('/login', async (req, res) => {
   }
   if (role === ROLE_PATIENT) {
     const networkObj = await network.connectToNetwork(username);
-    if(newPassword == null || newPassword === ''){
-      let value = crypto.createHash('sha256').update(password).digest('hex');
+    if (newPassword === null || newPassword === '') {
+      const value = crypto.createHash('sha256').update(password).digest('hex');
       const response = await network.invoke(networkObj, true, capitalize(role) + 'Contract:getPatientPassword', username);
-      if(response.error)
+      if (response.error) {
         res.status(400).send(response.error);
-      else {
-      let parsedResponse = await JSON.parse(response);
-        if(parsedResponse.password.toString('utf8') == value){
-          (!parsedResponse.pwdTemp) ? user = true : res.status(200).send(getMessage(false, 'Please change the temporary password immediately.'));
+      } else {
+        const parsedResponse = await JSON.parse(response);
+        if (parsedResponse.password.toString('utf8') === value) {
+          (!parsedResponse.pwdTemp) ?
+            user = true :
+            res.status(200).send(getMessage(false, 'Please change the temporary password immediately.'));
         }
       }
-    }
-    else {
+    } else {
       let args = ({
-        patientId : username,
-        newPassword : newPassword
+        patientId: username,
+        newPassword: newPassword,
       });
       args= [JSON.stringify(args)];
       const response = await network.invoke(networkObj, false, capitalize(role) + 'Contract:updatePatientPassword', args);
