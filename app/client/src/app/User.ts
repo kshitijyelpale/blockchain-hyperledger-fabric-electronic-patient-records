@@ -11,10 +11,10 @@ export class User {
 }
 
 export class HospitalUser extends User {
-  hospital: string;
+  hospitalId: number;
 
-  constructor(role: string, hospital: string, username: string, pwd: string) {
+  constructor(role: string, hospitalId: number, username: string, pwd: string) {
     super(role, username, pwd);
-    this.hospital = hospital;
+    this.hospitalId = hospitalId;
   }
 }

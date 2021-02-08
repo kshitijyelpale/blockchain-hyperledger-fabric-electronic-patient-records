@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { PatientService } from '../patient/patient.service';
-import { DisplayVal, PatientAdminViewRecord, PatientRecord } from '../patient/patient';
+import { DisplayVal, PatientAdminViewRecord, PatientRecord, PatientViewRecord } from '../patient/patient';
 
 
 @Component({
@@ -10,11 +10,11 @@ import { DisplayVal, PatientAdminViewRecord, PatientRecord } from '../patient/pa
   styleUrls: ['./admin.component.scss']
 })
 export class AdminComponent implements OnInit {
-  patientRecords: Array<PatientAdminViewRecord> = [];
-  headerNames = [
-    new DisplayVal('patientId', 'Patient Id'),
-    new DisplayVal('firstName', 'First Name'),
-    new DisplayVal('lastName', 'Last Name')
+  public patientRecords: Array<PatientAdminViewRecord> = [];
+  public headerNames = [
+    new DisplayVal(PatientViewRecord.prototype.patientId, 'Patient Id'),
+    new DisplayVal(PatientViewRecord.prototype.firstName, 'First Name'),
+    new DisplayVal(PatientViewRecord.prototype.lastName, 'Last Name')
   ];
 
   constructor(private readonly patientService: PatientService) { }
@@ -27,7 +27,6 @@ export class AdminComponent implements OnInit {
     this.patientService.fetchAllPatients().subscribe(x => {
       const data = x as Array<PatientRecord>;
       this.patientRecords = data.map(y => new PatientAdminViewRecord(y));
-      console.log(this.patientRecords);
     });
   }
 }

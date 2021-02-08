@@ -24,7 +24,8 @@ export interface PatientRecord {
   treatment: string;
   followUp: string;
   docType: string;
-  timestamp: Timestamp;
+  changedBy: string;
+  Timestamp: Timestamp;
 }
 
 /*export interface ResRecord {
@@ -47,6 +48,7 @@ export class PatientViewRecord {
   treatment = '';
   followUp = '';
   docType = '';
+  changedBy = '';
   date = '';
 
   constructor(readonly patientRecord: PatientRecord) {
@@ -64,7 +66,8 @@ export class PatientViewRecord {
     this.treatment = patientRecord.treatment;
     this.followUp = patientRecord.followUp;
     this.docType = patientRecord.docType;
-    this.date = new Date(patientRecord.timestamp.seconds.low).toDateString();
+    this.changedBy = patientRecord.changedBy;
+    this.date = patientRecord.Timestamp ? new Date(patientRecord.Timestamp.seconds.low * 1000).toDateString() : '';
   }
 }
 
@@ -87,10 +90,10 @@ export class PatientAdminViewRecord {
 }
 
 export class DisplayVal {
-  keyName: string;
+  keyName: string | number | boolean;
   displayName: string;
 
-  constructor(key: string, value: string) {
+  constructor(key: string | number | boolean, value: string) {
     this.keyName = key;
     this.displayName = value;
   }

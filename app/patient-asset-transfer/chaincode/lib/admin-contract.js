@@ -18,9 +18,8 @@ class AdminContract extends PrimaryContract {
     //Returns the last patientId in the set
     async getLatestPatientId(ctx) {
         let allResults = await this.queryAllPatients(ctx);
-        let data = JSON.parse(allResults);
-        let lastPatientId = data[data.length - 1].Key;
-        return lastPatientId;
+
+        return allResults[allResults.length - 1].patientId;
     }
 
     //Create patient in the ledger
@@ -31,8 +30,8 @@ class AdminContract extends PrimaryContract {
             throw new Error(`Empty or null values should not be passed for password parameter`);
         }
 
-        let newPatient = await new Patient(args.patientId, args.firstName, args.lastName, args.age, args.phoneNumber,
-            args.emergPhoneNumber, args.address, args.bloodGroup, args.allergies, args.password);
+        let newPatient = await new Patient(args.patientId, args.firstName, args.lastName, args.password, args.age,
+            args.phoneNumber, args.emergPhoneNumber, args.address, args.bloodGroup, args.changedBy, args.allergies);
         const exists = await this.patientExists(ctx, newPatient.patientId);
         if (exists) {
             throw new Error(`The patient ${newPatient.patientId} already exists`);
@@ -57,6 +56,15 @@ class AdminContract extends PrimaryContract {
             emergPhoneNumber: asset.emergPhoneNumber
         });
         return asset;
+    }
+
+    //Delete patient from the ledger based on patientId
+    async deletePatient(ctx, patientId) {
+        const exists = await this.patientExists(ctx, patientId);
+        if (!exists) {
+            throw new Error(`The patient ${patientId} does not exist`);
+        }
+        await ctx.stub.deleteState(patientId);
     }
 
     //Read patients based on lastname

@@ -72,7 +72,8 @@ const authenticateJWT = (req, res, next) => {
  */
 app.post('/login', async (req, res) => {
   // Read username and password from request body
-  const {username, password, hospitalId, role, newPassword} = req.body;
+  let {username, password, hospitalId, role, newPassword} = req.body;
+  hospitalId = parseInt(hospitalId);
   let user;
   // using get instead of redis GET for async
   if (role === ROLE_DOCTOR || role === ROLE_ADMIN) {
@@ -86,22 +87,23 @@ app.post('/login', async (req, res) => {
   }
   if (role === ROLE_PATIENT) {
     const networkObj = await network.connectToNetwork(username);
-    if(newPassword == null || newPassword == ''){
-      let value = crypto.createHash('sha256').update(password).digest('hex');
+    if (newPassword === null || newPassword === '') {
+      const value = crypto.createHash('sha256').update(password).digest('hex');
       const response = await network.invoke(networkObj, true, capitalize(role) + 'Contract:getPatientPassword', username);
-      if(response.error)
+      if (response.error) {
         res.status(400).send(response.error);
-      else {
-      let parsedResponse = await JSON.parse(response);
-        if(parsedResponse.password.toString('utf8') == value){
-          (!parsedResponse.pwdTemp) ? user = true : res.status(200).send(getMessage(false, 'Please change the temporary password immediately.'));
+      } else {
+        const parsedResponse = await JSON.parse(response);
+        if (parsedResponse.password.toString('utf8') === value) {
+          (!parsedResponse.pwdTemp) ?
+            user = true :
+            res.status(200).send(getMessage(false, 'Please change the temporary password immediately.'));
         }
       }
-    }
-    else {
+    } else {
       let args = ({
-        patientId : username,
-        newPassword : newPassword
+        patientId: username,
+        newPassword: newPassword,
       });
       args= [JSON.stringify(args)];
       const response = await network.invoke(networkObj, false, capitalize(role) + 'Contract:updatePatientPassword', args);
@@ -136,5 +138,5 @@ app.get('/patients/:patientId', authenticateJWT, patientRoutes.getPatientById);
 app.patch('/patients/:patientId/details/personal', authenticateJWT, patientRoutes.updatePatientPersonalDetails);
 app.get('/patients/:patientId/history', authenticateJWT, patientRoutes.getPatientHistoryById);
 app.get('/doctors/:hospitalId/_all', authenticateJWT, patientRoutes.getDoctorsByHospitalId);
-app.patch('/patients/:patientId/grant/:doctorId', patientRoutes.grantAccessToDoctor);
-app.patch('/patients/:patientId/revoke/:doctorId', patientRoutes.revokeAccessFromDoctor);
+app.patch('/patients/:patientId/grant/:doctorId', authenticateJWT, patientRoutes.grantAccessToDoctor);
+app.patch('/patients/:patientId/revoke/:doctorId', authenticateJWT, patientRoutes.revokeAccessFromDoctor);

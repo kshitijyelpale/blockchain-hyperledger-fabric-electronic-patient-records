@@ -22,6 +22,7 @@ exports.updatePatientMedicalDetails = async (req, res) => {
   await validateRole([ROLE_DOCTOR], userRole, res);
   let args = req.body;
   args.patientId = req.params.patientId;
+  args.changedBy = req.headers.username;
   args= [JSON.stringify(args)];
   // Set up and connect to Fabric Gateway
   // TODO: Connect to network using patientID from req auth

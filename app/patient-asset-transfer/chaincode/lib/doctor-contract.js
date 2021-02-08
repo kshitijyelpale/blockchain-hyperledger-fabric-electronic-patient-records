@@ -48,24 +48,40 @@ class DoctorContract extends AdminContract {
     //This function is to update patient medical details. This function should be called by only doctor.
     async updatePatientMedicalDetails(ctx, args) {
         args = JSON.parse(args);
+        let isDataChanged = false;
         let patientId = args.patientId;
-        let newSymptoms = args.newSymptoms;
-        let newDiagnosis = args.newDiagnosis;
-        let newTreatment = args.newTreatment;
-        let newFollowUp = args.newFollowUp;
+        let newSymptoms = args.symptoms;
+        let newDiagnosis = args.diagnosis;
+        let newTreatment = args.treatment;
+        let newFollowUp = args.followUp;
+        let updatedBy = args.changedBy;
 
         const patient = await this.readPatient(ctx, patientId)
-        if (newSymptoms !== null && newSymptoms !== '')
+        if (newSymptoms !== null && newSymptoms !== '' && patient.symptoms !== newSymptoms) {
             patient.symptoms = newSymptoms;
+            isDataChanged = true;
+        }
 
-        if (newDiagnosis !== null && newDiagnosis !== '')
+        if (newDiagnosis !== null && newDiagnosis !== '' && patient.diagnosis !== newDiagnosis) {
             patient.diagnosis = newDiagnosis;
+            isDataChanged = true;
+        }
 
-        if (newTreatment !== null && newTreatment !== '')
+        if (newTreatment !== null && newTreatment !== '' && patient.treatment !== newTreatment) {
             patient.treatment = newTreatment;
+            isDataChanged = true;
+        }
 
-        if (newFollowUp !== null && newFollowUp !== '')
+        if (newFollowUp !== null && newFollowUp !== '' && patient.followUp !== newFollowUp) {
             patient.followUp = newFollowUp;
+            isDataChanged = true;
+        }
+
+        if (updatedBy !== null && updatedBy !== '') {
+            patient.changedBy = updatedBy;
+        }
+
+        if (isDataChanged === false) return;
 
         const buffer = Buffer.from(JSON.stringify(patient));
         await ctx.stub.putState(patientId, buffer);
@@ -90,8 +106,18 @@ class DoctorContract extends AdminContract {
     }
 
     //Retrieves all patients details
-    async queryAllPatients(ctx) {
-        return await super.queryAllPatients(ctx);
+    async queryAllPatients(ctx, doctorId) {
+        let resultsIterator = await ctx.stub.getStateByRange('', '');
+        let asset = await this.getAllPatientResults(resultsIterator, false);
+        const permissionedAssets = [];
+        for (let i = 0; i < asset.length; i++) {
+            const obj = asset[i];
+            if (obj.Record.permissionGranted.includes(doctorId)) {
+                permissionedAssets.push(asset[i]);
+            }
+        }
+
+        return this.fetchLimitedFields(permissionedAssets);
     }
 
     fetchLimitedFields = (asset, includeTimeStamp = false) => {
@@ -109,6 +135,7 @@ class DoctorContract extends AdminContract {
                 followUp: obj.Record.followUp
             };
             if (includeTimeStamp) {
+                asset[i].changedBy = obj.Record.changedBy;
                 asset[i].Timestamp = obj.Timestamp;
             }
         }
@@ -116,7 +143,7 @@ class DoctorContract extends AdminContract {
         return asset;
     };
 
-    
+
     /**
      * @author Jathin Sreenivas
      * @param  {Context} ctx

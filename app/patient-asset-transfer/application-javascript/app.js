@@ -88,7 +88,7 @@ exports.connectToNetwork = async function(doctorID) {
  * @return {string} response error otherwise
  * @description A common function to interact with the ledger
  */
-exports.invoke = async function(networkObj, isQuery, func, args) {
+exports.invoke = async function(networkObj, isQuery, func, args= '') {
   try {
     if (isQuery === true) {
       const response = await networkObj.contract.evaluateTransaction(func, args);
@@ -120,7 +120,7 @@ exports.invoke = async function(networkObj, isQuery, func, args) {
  */
 exports.registerUser = async function(attributes) {
   const attrs = JSON.parse(attributes);
-  const hospitalId = attrs.hospitalId;
+  const hospitalId = parseInt(attrs.hospitalId);
   const userId = attrs.userId;
 
   if (!userId || !hospitalId) {

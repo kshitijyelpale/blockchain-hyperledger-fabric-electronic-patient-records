@@ -14,7 +14,7 @@ const crypto = require('crypto');
 class Patient {
 
     constructor(patientId, firstName, lastName, password, age, phoneNumber, emergPhoneNumber, address, bloodGroup,
-                allergies = '', symptoms = '', diagnosis = '', treatment = '', followUp = '')
+        changedBy = '', allergies = '', symptoms = '', diagnosis = '', treatment = '', followUp = '')
     {
         this.patientId = patientId;
         this.firstName = firstName;
@@ -25,6 +25,7 @@ class Patient {
         this.emergPhoneNumber = emergPhoneNumber;
         this.address = address;
         this.bloodGroup = bloodGroup;
+        this.changedBy = changedBy;
         this.allergies = allergies;
         this.symptoms = symptoms;
         this.diagnosis = diagnosis;

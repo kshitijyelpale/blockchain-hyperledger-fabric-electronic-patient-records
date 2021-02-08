@@ -13,8 +13,8 @@ export class DoctorRegisterComponent implements OnInit {
   public error: any = null;
 
   public hospitalList = [
-    {id: 'hosp1', name: 'Hospital 1'},
-    {id: 'hosp2', name: 'Hospital 2'}
+    {id: '1', name: 'Hospital 1'},
+    {id: '2', name: 'Hospital 2'}
   ];
 
   constructor(

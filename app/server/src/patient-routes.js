@@ -41,6 +41,7 @@ exports.updatePatientPersonalDetails = async (req, res) => {
   // The request present in the body is converted into a single json string
   let args = req.body;
   args.patientId = req.params.patientId;
+  args.changedBy = req.params.patientId;
   args= [JSON.stringify(args)];
   // Set up and connect to Fabric Gateway
   // TODO: Connect to network using patientID from req auth

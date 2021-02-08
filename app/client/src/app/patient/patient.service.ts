@@ -25,7 +25,7 @@ export class PatientService {
   }
 
   public createPatient(patientData: any): Observable<any> {
-    return this.http.patch(this.patientURL + '/register', patientData);
+    return this.http.post(this.patientURL + '/register', patientData);
   }
 
   public updatePatientPersonalDetails(key: string, data: any): Observable<any> {

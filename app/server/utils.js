@@ -16,15 +16,17 @@ exports.ROLE_PATIENT = 'patient';
 /**
  * @param  {Boolean} isError Returns a success msg if False else a success message
  * @param  {String} message Content of the message
+ * @param {String} id username/userId of the user
+ * @param  {String} password Password of the user
  * @return {JSON} Json message
  * @description Return a simple JSON message based on success or failure
  * @example returns {success:message} or {error:message}
  */
-exports.getMessage = function(isError, message) {
+exports.getMessage = function(isError, message, id = '', password = '') {
   if (isError) {
     return {error: message};
   } else {
-    return {success: message};
+    return {success: message, id: id, password: password};
   }
 };
 
