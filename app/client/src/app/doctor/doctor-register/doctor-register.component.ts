@@ -54,7 +54,7 @@ export class DoctorRegisterComponent implements OnInit {
       if (docRegResponse.error) {
         this.error = docRegResponse.error;
       }
-      this.router.navigate(['/', 'admin/', this.getAdminUsername()]);
+      this.router.navigate(['/', 'admin', this.getAdminUsername()]);
     });
   }
 }

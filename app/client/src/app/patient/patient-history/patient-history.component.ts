@@ -21,6 +21,7 @@ export class PatientHistoryComponent implements OnInit {
     new DisplayVal(PatientViewRecord.prototype.firstName, 'First Name'),
     new DisplayVal(PatientViewRecord.prototype.lastName, 'Last Name'),
     new DisplayVal(PatientViewRecord.prototype.age, 'Age'),
+    new DisplayVal(PatientViewRecord.prototype.bloodGroup, 'Blood Group'),
   ];
 
   constructor(

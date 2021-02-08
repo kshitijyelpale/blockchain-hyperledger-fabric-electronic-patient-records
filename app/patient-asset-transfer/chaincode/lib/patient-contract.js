@@ -178,6 +178,7 @@ class PatientContract extends PrimaryContract {
 
         return asset;
     };
+
     /**
      * @author Jathin Sreenivas
      * @param  {Context} ctx
@@ -194,6 +195,7 @@ class PatientContract extends PrimaryContract {
         // unique doctorIDs in permissionGranted
         if (!patient.permissionGranted.includes(doctorId)) {
             patient.permissionGranted.push(doctorId);
+            patient.changedBy = patientId;
         }
         const buffer = Buffer.from(JSON.stringify(patient));
         // Update the ledger with updated permissionGranted
@@ -216,6 +218,7 @@ class PatientContract extends PrimaryContract {
         // Remove the doctor if existing
         if (patient.permissionGranted.includes(doctorId)) {
             patient.permissionGranted = patient.permissionGranted.filter(doctor => doctor !== doctorId);
+            patient.changedBy = patientId;
         }
         const buffer = Buffer.from(JSON.stringify(patient));
         // Update the ledger with updated permissionGranted

@@ -72,7 +72,7 @@ const authenticateJWT = (req, res, next) => {
  */
 app.post('/login', async (req, res) => {
   // Read username and password from request body
-  let {username, password, hospitalId, role, newPassword} = req.body;
+  let {username, password, hospitalId, role} = req.body;
   hospitalId = parseInt(hospitalId);
   let user;
   // using get instead of redis GET for async
@@ -85,8 +85,11 @@ app.post('/login', async (req, res) => {
     user = value === password;
     redisClient.quit();
   }
+
   if (role === ROLE_PATIENT) {
     const networkObj = await network.connectToNetwork(username);
+    const newPassword = req.body.newPassword;
+
     if (newPassword === null || newPassword === '') {
       const value = crypto.createHash('sha256').update(password).digest('hex');
       const response = await network.invoke(networkObj, true, capitalize(role) + 'Contract:getPatientPassword', username);
@@ -97,7 +100,7 @@ app.post('/login', async (req, res) => {
         if (parsedResponse.password.toString('utf8') === value) {
           (!parsedResponse.pwdTemp) ?
             user = true :
-            res.status(200).send(getMessage(false, 'Please change the temporary password immediately.'));
+            res.status(200).send(getMessage(false, 'CHANGE_TMP_PASSWORD'));
         }
       }
     } else {
@@ -105,7 +108,7 @@ app.post('/login', async (req, res) => {
         patientId: username,
         newPassword: newPassword,
       });
-      args= [JSON.stringify(args)];
+      args = [JSON.stringify(args)];
       const response = await network.invoke(networkObj, false, capitalize(role) + 'Contract:updatePatientPassword', args);
       (response.error) ? res.status(500).send(response.error) : user = true;
     }

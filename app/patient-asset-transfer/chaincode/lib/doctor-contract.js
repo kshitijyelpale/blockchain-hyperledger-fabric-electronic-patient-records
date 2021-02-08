@@ -12,6 +12,7 @@
 
 let Patient = require('./Patient.js');
 const AdminContract = require('./admin-contract.js');
+const PatientContract = require("./patient-contract.js");
 const { Context } = require('fabric-contract-api');
 
 class DoctorContract extends AdminContract {
@@ -35,6 +36,7 @@ class DoctorContract extends AdminContract {
             patientId: patientId,
             firstName: asset.firstName,
             lastName: asset.lastName,
+            age: asset.age,
             bloodGroup: asset.bloodGroup,
             allergies: asset.allergies,
             symptoms: asset.symptoms,
@@ -56,7 +58,9 @@ class DoctorContract extends AdminContract {
         let newFollowUp = args.followUp;
         let updatedBy = args.changedBy;
 
-        const patient = await this.readPatient(ctx, patientId)
+        const patientContract = new PatientContract();
+        const patient = await patientContract.readPatient(ctx, patientId)
+
         if (newSymptoms !== null && newSymptoms !== '' && patient.symptoms !== newSymptoms) {
             patient.symptoms = newSymptoms;
             isDataChanged = true;
@@ -127,6 +131,7 @@ class DoctorContract extends AdminContract {
                 patientId: obj.Key,
                 firstName: obj.Record.firstName,
                 lastName: obj.Record.lastName,
+                age: obj.Record.age,
                 bloodGroup: obj.Record.bloodGroup,
                 allergies: obj.Record.allergies,
                 symptoms: obj.Record.symptoms,
