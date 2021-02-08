@@ -15,3 +15,9 @@ PATCH http://localhost:3001/patients/PID1/grant/HOSP2-DOC1
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlBJRDAiLCJpYXQiOjE2MTI3NDU5MTF9.K0-7Zlv5JZOyXQMjX6Mn4d4f56JAV_MwZ_Q9D8m5ec8
 Role: patient
+
+###
+GET http://localhost:3001/doctors/1/_all
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlBJRDEiLCJpYXQiOjE2MTI3OTg4NTl9._-PdwewBfKWC0DZAWSsM4gE6OWUOmaGfxHlbGXb2x6A
+Role: patient

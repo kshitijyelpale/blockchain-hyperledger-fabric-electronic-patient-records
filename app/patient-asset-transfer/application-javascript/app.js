@@ -154,7 +154,7 @@ exports.registerUser = async function(attributes) {
 
 /**
  * @param  {NetworkObj} networkObj The object which is generated when connectToNetwork is executed
- * @param  {String} hospitalId
+ * @param  {Number} hospitalId
  * @return {JSON} Returns an JSON array consisting of all doctor object.
  * @description Retrieves all the users(doctors) based on user type(doctor) and hospitalId
  */
