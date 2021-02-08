@@ -7,11 +7,17 @@
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/patient/PID0" routerLinkActive="active">patient</a>
+      <li *ngIf="isPatient()" class="nav-item">
+        <a class="nav-link" [routerLink]="['/', 'patient', getUsername()]" routerLinkActive="active"
+          [ngbTooltip]="getUsername()">Patient</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/doctor" routerLinkActive="active">doctor</a>
+      <li *ngIf="isDoctor()" class="nav-item">
+        <a class="nav-link" [routerLink]="['/', 'doctor', getUsername()]" routerLinkActive="active"
+          [ngbTooltip]="getUsername()">Doctor</a>
+      </li>
+      <li *ngIf="isAdmin()" class="nav-item">
+        <a class="nav-link" [routerLink]="['/', 'admin', getUsername()]" routerLinkActive="active"
+          [ngbTooltip]="getUsername()">Admin</a>
       </li>
     </ul>
     <ul class="navbar-nav ml-auto">

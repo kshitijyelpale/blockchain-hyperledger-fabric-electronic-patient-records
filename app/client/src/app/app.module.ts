@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -54,7 +55,8 @@ const components = [
     HttpClientModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    NgSelectModule
+    NgSelectModule,
+    NgbTooltipModule
   ],
   providers: [ AuthService, AuthGuard, SearchService, AdminService, PatientService, DoctorService,
     {
