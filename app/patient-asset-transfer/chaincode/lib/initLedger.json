@@ -13,7 +13,8 @@
         "treatment": "Vasolip 10 mg everyday",
         "followUp": "6 Months",
         "permissionGranted": ["hosp1admin", "hosp2admin"],
-        "password": "ee6affdb08c3ef9c6444816329b56250ae42a2149b3e72136251a7d8340de43b"
+        "password": "ee6affdb08c3ef9c6444816329b56250ae42a2149b3e72136251a7d8340de43b",
+        "pwdTemp": true
     },
     {
         "firstName": "Max",
@@ -29,7 +30,8 @@
         "treatment": "omeprazole 40 mg for 10 days before food",
         "followUp": "2 Weeks",
         "permissionGranted": ["hosp1admin", "hosp2admin"],
-        "password": "fd1e5d642da134218f1cc5c260feb3e4042658a35d78c4eb2fe2b2f1c7e7795b"
+        "password": "fd1e5d642da134218f1cc5c260feb3e4042658a35d78c4eb2fe2b2f1c7e7795b",
+        "pwdTemp": true
     },
     {
         "firstName": "Johannes",
@@ -45,7 +47,8 @@
         "treatment": "CORBIS 5 mg one per day",
         "followUp": "2 Weeks",
         "permissionGranted": ["hosp1admin", "hosp2admin"],
-        "password": "8c90267256e654ee3f77196ee12e952dc45cd970d030bfa069614cc2d923313c"
+        "password": "8c90267256e654ee3f77196ee12e952dc45cd970d030bfa069614cc2d923313c",
+        "pwdTemp": true
     },
     {
         "firstName": "Torben",
@@ -61,7 +64,8 @@
         "treatment": "PRINIVIL TABS 20 MG (LISINOPRIL), HUMULIN INJ 70/30 20 units after breakfast",
         "followUp": "4 Weeks",
         "permissionGranted": ["hosp1admin", "hosp2admin"],
-        "password": "31bb1dcc31812dac9deb87c014fc8e5e46013a982c2a724447d5c444aac713a7"
+        "password": "31bb1dcc31812dac9deb87c014fc8e5e46013a982c2a724447d5c444aac713a7",
+        "pwdTemp": false
     },
     {
         "firstName": "Lisa",
@@ -77,7 +81,8 @@
         "treatment": "ULTRADAY 40 mg twice per day",
         "followUp": "2 Weeks",
         "permissionGranted": ["hosp1admin", "hosp2admin"],
-        "password": "eceb33ea781e143861a75ebc6462188a8428b8fab68d123cec31614f6b5a9b58"
+        "password": "eceb33ea781e143861a75ebc6462188a8428b8fab68d123cec31614f6b5a9b58",
+        "pwdTemp": false
     },
     {
         "firstName": "Harry",
@@ -93,6 +98,7 @@
         "treatment": "Hydrocortisone 20 ml injection",
         "followUp": "4 Weeks",
         "permissionGranted": ["hosp1admin", "hosp2admin"],
-        "password": "49bb4e28642c7eee1fdb6fc3d359d80c22b5a871c441be09c103538be167a281"
+        "password": "49bb4e28642c7eee1fdb6fc3d359d80c22b5a871c441be09c103538be167a281",
+        "pwdTemp": false
     }
 ]

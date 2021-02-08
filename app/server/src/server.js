@@ -33,7 +33,7 @@ app.listen(3001, () => console.log('Backend server running on 3001'));
 const patientRoutes = require('./patient-routes');
 const doctorRoutes = require('./doctor-routes');
 const adminRoutes = require('./admin-routes');
-const {ROLE_DOCTOR, ROLE_ADMIN, ROLE_PATIENT, createRedisClient, capitalize} = require('../utils');
+const {ROLE_DOCTOR, ROLE_ADMIN, ROLE_PATIENT, createRedisClient, capitalize, getMessage} = require('../utils');
 const network = require('../../patient-asset-transfer/application-javascript/app.js');
 
 // TODO: We can start the server with https so encryption will be done for the data transferred ove the network
@@ -72,7 +72,7 @@ const authenticateJWT = (req, res, next) => {
  */
 app.post('/login', async (req, res) => {
   // Read username and password from request body
-  const {username, password, hospitalId, role} = req.body;
+  const {username, password, hospitalId, role, newPassword} = req.body;
   let user;
   // using get instead of redis GET for async
   if (role === ROLE_DOCTOR || role === ROLE_ADMIN) {
@@ -85,13 +85,27 @@ app.post('/login', async (req, res) => {
     redisClient.quit();
   }
   if (role === ROLE_PATIENT) {
-    let value = crypto.createHash('sha256').update(password).digest('hex');
     const networkObj = await network.connectToNetwork(username);
-    const response = await network.invoke(networkObj, true, capitalize(role) + 'Contract:getPatientPassword', username);
-    if(response.error)
-      res.status(400).send(response.error);
+    if(newPassword == null || newPassword == ''){
+      let value = crypto.createHash('sha256').update(password).digest('hex');
+      const response = await network.invoke(networkObj, true, capitalize(role) + 'Contract:getPatientPassword', username);
+      if(response.error)
+        res.status(400).send(response.error);
+      else {
+      let parsedResponse = await JSON.parse(response);
+        if(parsedResponse.password.toString('utf8') == value){
+          (!parsedResponse.pwdTemp) ? user = true : res.status(200).send(getMessage(false, 'Please change the temporary password immediately.'));
+        }
+      }
+    }
     else {
-      user = response.toString('utf8') === value;
+      let args = ({
+        patientId : username,
+        newPassword : newPassword
+      });
+      args= [JSON.stringify(args)];
+      const response = await network.invoke(networkObj, false, capitalize(role) + 'Contract:updatePatientPassword', args);
+      (response.error) ? res.status(500).send(response.error) : user = true;
     }
   }
 
