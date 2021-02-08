@@ -3,6 +3,7 @@ const fs = require('fs');
 const {enrollAdminHosp1} = require('./enrollAdmin-Hospital1');
 const {enrollAdminHosp2} = require('./enrollAdmin-Hospital2');
 const {enrollRegisterUser} = require('./registerUser');
+const {createRedisClient} = require('./utils');
 
 const redis = require('redis');
 
@@ -47,13 +48,17 @@ async function initRedis() {
 /**
  * @description Create doctors in both organizations based on the initDoctors JSON
  */
-async function enrolAndRegisterDoctors() {
+async function enrollAndRegisterDoctors() {
   try {
     const jsonString = fs.readFileSync('./initDoctors.json');
     const doctors = JSON.parse(jsonString);
     for (let i = 0; i < doctors.length; i++) {
       const attr = {firstName: doctors[i].firstName, lastName: doctors[i].lastName, role: 'doctor'};
+      // Create a redis client and add the doctor to redis
+      const redisClient = createRedisClient(doctors[i].hospitalId);
+      (await redisClient).SET('DOC'+i, 'password');
       await enrollRegisterUser(doctors[i].hospitalId, 'DOC'+i, JSON.stringify(attr));
+      (await redisClient).QUIT();
     }
   } catch (error) {
     console.log(error);
@@ -69,7 +74,7 @@ async function main() {
   await enrollAdminHosp2();
   await initLedger();
   await initRedis();
-  await enrolAndRegisterDoctors();
+  await enrollAndRegisterDoctors();
 }
 
 

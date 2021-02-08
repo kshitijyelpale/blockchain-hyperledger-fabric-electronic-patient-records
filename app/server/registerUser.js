@@ -2,7 +2,7 @@
  * @author Jathin Sreenivas
  * @email jathin.sreenivas@stud.fra-uas.de
  * @create date 2020-12-26 13:26:42
- * @modify date 2021-02-08 12:44:25
+ * @modify date 2021-02-08 13:16:07
  * @desc This file creates a user named 'appUser' at Hospital 1. (Just for testing. Use the API to create a patient)
  */
 
@@ -12,7 +12,7 @@ const FabricCAServices = require('fabric-ca-client');
 const path = require('path');
 const {buildCAClient, registerAndEnrollUser} = require('../patient-asset-transfer/application-javascript/CAUtil.js');
 const walletPath = path.join(__dirname, '/../patient-asset-transfer/application-javascript/wallet');
-const {buildCCPHosp1, buildWallet} = require('../patient-asset-transfer/application-javascript/AppUtil.js');
+const {buildCCPHosp1, buildCCPHosp2, buildWallet} = require('../patient-asset-transfer/application-javascript/AppUtil.js');
 let mspOrg;
 let adminUserId;
 let caClient;
@@ -27,6 +27,7 @@ exports.enrollRegisterUser = async function(hospitalId, userId, attributes) {
     // setup the wallet to hold the credentials of the application user
     const wallet = await buildWallet(Wallets, walletPath);
     hospitalId = parseInt(hospitalId);
+
     if (hospitalId === 1) {
       // build an in memory object with the network configuration (also known as a connection profile)
       const ccp = buildCCPHosp1();
