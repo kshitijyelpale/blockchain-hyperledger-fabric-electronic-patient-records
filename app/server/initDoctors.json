@@ -1,0 +1,22 @@
+[
+    {
+        "hospitalId": "1",
+        "firstName": "Brick",
+        "lastName": "Wall"
+    },
+    {
+        "hospitalId": "2",
+        "firstName": "Everhart",
+        "lastName": "Hall"
+    },
+    {
+        "hospitalId": "1",
+        "firstName": "Peter",
+        "lastName": "Leavitt"
+    },
+    {
+        "hospitalId": "2",
+        "firstName": "Jeremy",
+        "lastName": "Stone"
+    }
+]
