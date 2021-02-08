@@ -1,4 +1,4 @@
-<app-toolbar text="Admin">
+<app-toolbar text="Admin {{adminId}}">
   <app-toolbar-link text="Create Patient" icon="plus" routerLink="/patient/edit/new"></app-toolbar-link>
   <app-toolbar-link text="Create Doctor" icon="plus" routerLink="/doctor/register"></app-toolbar-link>
   <app-toolbar-button text="Refresh" icon="refresh" (click)="refresh()"></app-toolbar-button>

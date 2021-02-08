@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { PatientService } from '../patient/patient.service';
 import { DisplayVal, PatientAdminViewRecord, PatientRecord, PatientViewRecord } from '../patient/patient';
-
+import { ActivatedRoute, Params } from '@angular/router';
 
 @Component({
   selector: 'app-admin',
@@ -10,6 +10,7 @@ import { DisplayVal, PatientAdminViewRecord, PatientRecord, PatientViewRecord } 
   styleUrls: ['./admin.component.scss']
 })
 export class AdminComponent implements OnInit {
+  public adminId: any;
   public patientRecords: Array<PatientAdminViewRecord> = [];
   public headerNames = [
     new DisplayVal(PatientViewRecord.prototype.patientId, 'Patient Id'),
@@ -17,10 +18,17 @@ export class AdminComponent implements OnInit {
     new DisplayVal(PatientViewRecord.prototype.lastName, 'Last Name')
   ];
 
-  constructor(private readonly patientService: PatientService) { }
+  constructor(
+    private readonly route: ActivatedRoute,
+    private readonly patientService: PatientService
+  ) { }
 
   ngOnInit(): void {
-    this.refresh();
+    this.route.params
+      .subscribe((params: Params) => {
+        this.adminId = params.adminId;
+        this.refresh();
+      });
   }
 
   public refresh(): void {

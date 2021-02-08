@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Params } from '@angular/router';
 
 @Component({
   selector: 'app-doctor',
@@ -6,10 +7,21 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./doctor.component.scss']
 })
 export class DoctorComponent implements OnInit {
+  public doctorId: any;
 
-  constructor() { }
+  constructor(
+    private readonly route: ActivatedRoute
+  ) { }
 
   ngOnInit(): void {
+    this.route.params
+      .subscribe((params: Params) => {
+        this.doctorId = params.doctorId;
+        this.refresh();
+      });
   }
 
+  public refresh(): void {
+
+  }
 }

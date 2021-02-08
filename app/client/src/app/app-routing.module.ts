@@ -12,6 +12,7 @@ import { PatientHistoryComponent } from './patient/patient-history/patient-histo
 import { PatientDetailsMedicalEditComponent } from './patient/patient-details-medical-edit/patient-details-medical-edit.component';
 import { PatientDetailsPersonalEditComponent } from './patient/patient-details-personal-edit/patient-details-personal-edit.component';
 import { DoctorListForPatientComponent } from './doctor/doctor-list-for-patient/doctor-list-for-patient.component';
+import { PatientListForDoctorComponent } from './doctor/patient-list-for-doctor/patient-list-for-doctor.component';
 
 const routes: Routes = [
   {
@@ -61,6 +62,11 @@ const routes: Routes = [
   {
     path: 'doctor/:doctorId',
     component: DoctorComponent,
+    canActivate: [ AuthGuard ]
+  },
+  {
+    path: 'doctor/:doctorId/patients',
+    component: PatientListForDoctorComponent,
     canActivate: [ AuthGuard ]
   },
   {

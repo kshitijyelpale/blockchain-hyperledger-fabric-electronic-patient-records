@@ -112,7 +112,7 @@ class DoctorContract extends AdminContract {
         const permissionedAssets = [];
         for (let i = 0; i < asset.length; i++) {
             const obj = asset[i];
-            if (obj.Record.permissionGranted.includes(doctorId)) {
+            if ('permissionGranted' in obj.Record && obj.Record.permissionGranted.includes(doctorId)) {
                 permissionedAssets.push(asset[i]);
             }
         }

@@ -1,4 +1,4 @@
-<app-toolbar text="Patient">
+<app-toolbar text="Patient {{patientID}}">
   <app-toolbar-link *ngIf="isPatient()" text="Edit personal details" icon="edit"
     [routerLink]="['/patient/edit/', patientID]">
   </app-toolbar-link>

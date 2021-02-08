@@ -13,6 +13,6 @@ export class DoctorService {
   constructor(private http: HttpClient) { }
 
   public createDoctor(data: any): Observable<any> {
-    return this.http.patch(this.doctorURL + '/register', data);
+    return this.http.post(this.doctorURL + '/register', data);
   }
 }
