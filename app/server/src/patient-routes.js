@@ -82,7 +82,8 @@ exports.getDoctorsByHospitalId = async (req, res) => {
   const hospitalId = parseInt(req.params.hospitalId);
   // Set up and connect to Fabric Gateway
   // TODO: Connect to network using adminId from req auth
-  const networkObj = await network.connectToNetwork('hosp1admin');
+  userId = hospitalId === 1 ? 'hosp1admin' : 'hosp2admin';
+  const networkObj = await network.connectToNetwork(userId);
   // Use the gateway and identity service to get all users enrolled by the CA
   const response = await network.getAllDoctorsByHospitalId(networkObj, hospitalId);
   (response.error) ? res.status(500).send(response.error) : res.status(200).send(response);

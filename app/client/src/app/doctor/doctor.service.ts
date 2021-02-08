@@ -15,4 +15,8 @@ export class DoctorService {
   public createDoctor(data: any): Observable<any> {
     return this.http.post(this.doctorURL + '/register', data);
   }
+
+  public getDoctorsByHospitalId(hospitalId: number): Observable<any> {
+    return this.http.get(this.doctorURL + `/${hospitalId}/_all`);
+  }
 }
