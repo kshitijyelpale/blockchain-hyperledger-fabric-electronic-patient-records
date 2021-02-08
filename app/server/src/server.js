@@ -33,7 +33,8 @@ app.listen(3001, () => console.log('Backend server running on 3001'));
 const patientRoutes = require('./patient-routes');
 const doctorRoutes = require('./doctor-routes');
 const adminRoutes = require('./admin-routes');
-const {ROLE_DOCTOR, ROLE_ADMIN, ROLE_PATIENT, createRedisClient, capitalize, getMessage} = require('../utils');
+const {ROLE_DOCTOR, ROLE_ADMIN, ROLE_PATIENT, CHANGE_TMP_PASSWORD} = require('../utils');
+const {createRedisClient, capitalize, getMessage} = require('../utils');
 const network = require('../../patient-asset-transfer/application-javascript/app.js');
 
 // TODO: We can start the server with https so encryption will be done for the data transferred ove the network
@@ -100,7 +101,7 @@ app.post('/login', async (req, res) => {
         if (parsedResponse.password.toString('utf8') === value) {
           (!parsedResponse.pwdTemp) ?
             user = true :
-            res.status(200).send(getMessage(false, 'CHANGE_TMP_PASSWORD'));
+            res.status(200).send(getMessage(false, CHANGE_TMP_PASSWORD));
         }
       }
     } else {

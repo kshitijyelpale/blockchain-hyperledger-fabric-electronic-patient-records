@@ -32,6 +32,7 @@ class Patient {
         this.treatment = treatment;
         this.followUp = followUp;
         this.pwdTemp = true;
+        this.permissionGranted = [];
         return this;
     }
 }

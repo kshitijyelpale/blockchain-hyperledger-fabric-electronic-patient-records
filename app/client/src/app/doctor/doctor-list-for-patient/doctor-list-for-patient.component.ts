@@ -49,7 +49,6 @@ export class DoctorListForPatientComponent implements OnInit {
       data.map(y => this.doctorRecords.push(new DoctorViewRecord(y)));
     });
     this.doctorService.getDoctorsByHospitalId(2).subscribe(x => {
-      console.log(x);
       const data = x as Array<DoctorRecord>;
       data.map(y => this.doctorRecords.push(new DoctorViewRecord(y)));
     });

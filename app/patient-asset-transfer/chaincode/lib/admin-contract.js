@@ -42,12 +42,8 @@ class AdminContract extends PrimaryContract {
 
     //Read patient details based on patientId
     async readPatient(ctx, patientId) {
-        const exists = await this.patientExists(ctx, patientId);
-        if (!exists) {
-            throw new Error(`The patient ${patientId} does not exist`);
-        }
-        const buffer = await ctx.stub.getState(patientId);
-        let asset = JSON.parse(buffer.toString());
+        let asset = await super.readPatient(ctx, patientId)
+
         asset = ({
             patientId: patientId,
             firstName: asset.firstName,

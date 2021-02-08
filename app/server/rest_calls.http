@@ -17,8 +17,15 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlBJR
 Role: patient
 
 ###
-GET http://localhost:3001/doctors/2/_all
+GET http://localhost:3001/doctors/1/_all
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlBJRDEiLCJpYXQiOjE2MTI4MDMwNTF9.wD8eGfmm-V2JIDiQ-GsCGv_A-DlvbRFlhiYItMHXrSY
-Role: patient
+Role: doctor
 Username: PID1
+
+###
+GET http://localhost:3001/patients/PID3
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkhPU1AxLURPQzUiLCJpYXQiOjE2MTI4MjQwOTN9.NJhAkgzGl7nIHeanZKKcReK15RXWNcVQv2kaoPIjT4o
+Role: doctor
+Username: PID3

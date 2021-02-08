@@ -66,12 +66,13 @@ exports.createPatient = async (req, res) => {
 exports.createDoctor = async (req, res) => {
   // User role from the request header is validated
   const userRole = req.headers.role;
-  let {firstName, lastName, hospitalId, speciality, username, password} = req.body;
+  let {hospitalId, username, password} = req.body;
   hospitalId = parseInt(hospitalId);
 
   await validateRole([ROLE_ADMIN], userRole, res);
 
   req.body.userId = username;
+  req.body.role = ROLE_DOCTOR;
   req.body = JSON.stringify(req.body);
   const args = [req.body];
   // Create a redis client and add the doctor to redis

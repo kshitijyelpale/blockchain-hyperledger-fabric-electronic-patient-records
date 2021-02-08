@@ -12,22 +12,19 @@
 
 let Patient = require('./Patient.js');
 const AdminContract = require('./admin-contract.js');
-const PatientContract = require("./patient-contract.js");
+const PrimaryContract = require("./primary-contract.js");
 const { Context } = require('fabric-contract-api');
 
 class DoctorContract extends AdminContract {
 
     //Read patient details based on patientId
     async readPatient(ctx, patientId) {
-        const exists = await this.patientExists(ctx, patientId);
-        if (!exists) {
-            throw new Error(`The patient ${patientId} does not exist`);
-        }
-        const buffer = await ctx.stub.getState(patientId);
-        let asset = JSON.parse(buffer.toString());
+
+        let asset = await PrimaryContract.prototype.readPatient(ctx, patientId)
+
         // Get the doctorID, retrieves the id used to connect the network
         const doctorId = await this.getClientId(ctx);
-        // Check if doctor has the permsission to read the patient
+        // Check if doctor has the permission to read the patient
         const permissionArray = asset.permissionGranted;
         if(!permissionArray.includes(doctorId)) {
             throw new Error(`The doctor ${doctorId} does not have permission to patient ${patientId}`);
@@ -58,8 +55,7 @@ class DoctorContract extends AdminContract {
         let newFollowUp = args.followUp;
         let updatedBy = args.changedBy;
 
-        const patientContract = new PatientContract();
-        const patient = await patientContract.readPatient(ctx, patientId)
+        const patient = await PrimaryContract.prototype.readPatient(ctx, patientId);
 
         if (newSymptoms !== null && newSymptoms !== '' && patient.symptoms !== newSymptoms) {
             patient.symptoms = newSymptoms;
