@@ -105,6 +105,7 @@ class PatientContract extends PrimaryContract {
         patient.password = crypto.createHash('sha256').update(newPassword).digest('hex');
         if(patient.pwdTemp){
             patient.pwdTemp = false;
+            patient.changedBy = patientId;
         }
         const buffer = Buffer.from(JSON.stringify(patient));
         await ctx.stub.putState(patientId, buffer);
