@@ -89,6 +89,30 @@ export class PatientAdminViewRecord {
   }
 }
 
+export class PatientDoctorViewRecord {
+  patientId = '';
+  firstName = '';
+  lastName = '';
+  bloodGroup = '';
+  allergies = false;
+  symptoms = '';
+  diagnosis = '';
+  treatment = '';
+  followUp = '';
+
+  constructor(readonly patientRecord: PatientRecord) {
+    this.patientId = patientRecord.patientId;
+    this.firstName = patientRecord.firstName;
+    this.lastName = patientRecord.lastName;
+    this.bloodGroup = patientRecord.bloodGroup;
+    this.allergies = patientRecord.allergies;
+    this.symptoms = patientRecord.symptoms;
+    this.diagnosis = patientRecord.diagnosis;
+    this.treatment = patientRecord.treatment;
+    this.followUp = patientRecord.followUp;
+  }
+}
+
 export class DisplayVal {
   keyName: string | number | boolean;
   displayName: string;

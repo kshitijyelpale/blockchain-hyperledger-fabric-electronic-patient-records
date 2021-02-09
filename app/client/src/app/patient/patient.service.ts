@@ -35,4 +35,12 @@ export class PatientService {
   public updatePatientMedicalDetails(key: string, data: any): Observable<any> {
     return this.http.patch(this.patientURL + `/${key}/details/medical`, data);
   }
+
+  public grantAccessToDoctor(patientId: string, doctorId: string): Observable<any> {
+    return this.http.patch(this.patientURL + `/${patientId}/grant/${doctorId}`, {});
+  }
+
+  public revokeAccessFromDoctor(patientId: string, doctorId: string): Observable<any> {
+    return this.http.patch(this.patientURL + `/${patientId}/revoke/${doctorId}`, {});
+  }
 }

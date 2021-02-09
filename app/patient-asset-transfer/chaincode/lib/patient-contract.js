@@ -19,32 +19,7 @@ class PatientContract extends PrimaryContract {
 
     //Read patient details based on patientId
     async readPatient(ctx, patientId) {
-        const exists = await this.patientExists(ctx, patientId);
-        if (!exists) {
-            throw new Error(`The patient ${patientId} does not exist`);
-        }
-
-        const buffer = await ctx.stub.getState(patientId);
-        let asset = JSON.parse(buffer.toString());
-        asset = ({
-            patientId: patientId,
-            firstName: asset.firstName,
-            lastName: asset.lastName,
-            age: asset.age,
-            phoneNumber: asset.phoneNumber,
-            emergPhoneNumber: asset.emergPhoneNumber,
-            address: asset.address,
-            bloodGroup: asset.bloodGroup,
-            allergies: asset.allergies,
-            symptoms: asset.symptoms,
-            diagnosis: asset.diagnosis,
-            treatment: asset.treatment,
-            followUp: asset.followUp,
-            permissionGranted: asset.permissionGranted,
-            password: asset.password,
-            pwdTemp: asset.pwdTemp
-        });
-        return asset;
+        return await super.readPatient(ctx, patientId);
     }
 
     //Delete patient from the ledger based on patientId
@@ -130,6 +105,7 @@ class PatientContract extends PrimaryContract {
         patient.password = crypto.createHash('sha256').update(newPassword).digest('hex');
         if(patient.pwdTemp){
             patient.pwdTemp = false;
+            patient.changedBy = patientId;
         }
         const buffer = Buffer.from(JSON.stringify(patient));
         await ctx.stub.putState(patientId, buffer);
@@ -178,6 +154,7 @@ class PatientContract extends PrimaryContract {
 
         return asset;
     };
+
     /**
      * @author Jathin Sreenivas
      * @param  {Context} ctx
@@ -194,6 +171,7 @@ class PatientContract extends PrimaryContract {
         // unique doctorIDs in permissionGranted
         if (!patient.permissionGranted.includes(doctorId)) {
             patient.permissionGranted.push(doctorId);
+            patient.changedBy = patientId;
         }
         const buffer = Buffer.from(JSON.stringify(patient));
         // Update the ledger with updated permissionGranted
@@ -216,6 +194,7 @@ class PatientContract extends PrimaryContract {
         // Remove the doctor if existing
         if (patient.permissionGranted.includes(doctorId)) {
             patient.permissionGranted = patient.permissionGranted.filter(doctor => doctor !== doctorId);
+            patient.changedBy = patientId;
         }
         const buffer = Buffer.from(JSON.stringify(patient));
         // Update the ledger with updated permissionGranted

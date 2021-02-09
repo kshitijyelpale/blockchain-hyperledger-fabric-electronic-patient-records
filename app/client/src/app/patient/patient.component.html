@@ -1,4 +1,4 @@
-<app-toolbar text="Patient">
+<app-toolbar text="Patient {{patientID}}">
   <app-toolbar-link *ngIf="isPatient()" text="Edit personal details" icon="edit"
     [routerLink]="['/patient/edit/', patientID]">
   </app-toolbar-link>
@@ -30,6 +30,10 @@
               <tr>
                 <td class="labels"><strong>Last Name</strong></td>
                 <td>{{patientRecord.lastName}}</td>
+              </tr>
+              <tr>
+                <td class="labels"><strong>Age</strong></td>
+                <td>{{patientRecord.age}}</td>
               </tr>
               <ng-container *ngIf="isPatient()">
                 <tr>

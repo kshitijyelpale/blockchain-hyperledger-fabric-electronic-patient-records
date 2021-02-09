@@ -13,6 +13,8 @@ exports.ROLE_ADMIN = 'admin';
 exports.ROLE_DOCTOR = 'doctor';
 exports.ROLE_PATIENT = 'patient';
 
+exports.CHANGE_TMP_PASSWORD = 'CHANGE_TMP_PASSWORD';
+
 /**
  * @param  {Boolean} isError Returns a success msg if False else a success message
  * @param  {String} message Content of the message

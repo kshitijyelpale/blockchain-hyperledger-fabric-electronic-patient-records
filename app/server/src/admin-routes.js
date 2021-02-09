@@ -66,20 +66,25 @@ exports.createPatient = async (req, res) => {
 exports.createDoctor = async (req, res) => {
   // User role from the request header is validated
   const userRole = req.headers.role;
-  const {userId, hospitalId, password} = req.body;
+  let {hospitalId, username, password} = req.body;
+  hospitalId = parseInt(hospitalId);
+
   await validateRole([ROLE_ADMIN], userRole, res);
+
+  req.body.userId = username;
+  req.body.role = ROLE_DOCTOR;
   req.body = JSON.stringify(req.body);
   const args = [req.body];
   // Create a redis client and add the doctor to redis
   const redisClient = createRedisClient(hospitalId);
-  (await redisClient).SET(userId, password);
+  (await redisClient).SET(username, password);
   // Enrol and register the user with the CA and adds the user to the wallet.
   const response = await network.registerUser(args);
   if (response.error) {
-    (await redisClient).DEL(userId);
+    (await redisClient).DEL(username);
     res.status(400).send(response.error);
   }
-  res.status(201).send(getMessage(false, response));
+  res.status(201).send(getMessage(false, response, username, password));
 };
 
 /**

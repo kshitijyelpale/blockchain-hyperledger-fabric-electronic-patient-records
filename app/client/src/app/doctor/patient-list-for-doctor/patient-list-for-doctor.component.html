@@ -1,0 +1,33 @@
+<app-toolbar text="Patients">
+  <app-toolbar-button text="Refresh" icon="refresh" (click)="refresh()"></app-toolbar-button>
+</app-toolbar>
+<br><br><br>
+
+<div class="sidebar-layout-bottom-row p-3 container-fluid">
+  <p *ngIf="!patientRecords">You do not have permissions to view any of the patient records.</p>
+  <ng-container *ngIf="patientRecords">
+    <p>List of all patients.</p>
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead class="thead-light">
+        <tr>
+          <th *ngFor="let column of headerNames" scope="col">
+            {{column.displayName}}
+          </th>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let singleRecord of patientRecords">
+            <td>{{singleRecord.patientId}}</td>
+            <td>{{singleRecord.firstName}}</td>
+            <td>{{singleRecord.lastName}}</td>
+            <td>
+              <a role="button" [routerLink]="['/patient/', singleRecord.patientId]">View more</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </ng-container>
+</div>

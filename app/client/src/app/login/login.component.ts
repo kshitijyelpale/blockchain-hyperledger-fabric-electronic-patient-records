@@ -12,13 +12,15 @@ import { BrowserStorageFields, RoleEnum } from '../utils';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-
+  private PWD_CHANGE = 'CHANGE_TMP_PASSWORD';
+  public createNewPwd = false;
   public showHospList = true;
   public role = '';
   public hospitalId = 0;
   public username = '';
   public pwd = '';
-  public error: any;
+  public newPwd = '';
+  public error = { message: '' };
 
   constructor(private authService: AuthService,
               private router: Router,
@@ -33,7 +35,9 @@ export class LoginComponent implements OnInit {
     this.hospitalId = 0;
     this.username = '';
     this.pwd = '';
-    this.error = null;
+    this.newPwd = '';
+    this.createNewPwd = false;
+    this.error.message = '';
   }
 
   public roleChanged(): void {
@@ -46,21 +50,21 @@ export class LoginComponent implements OnInit {
         this.authService.loginAdminUser(new HospitalUser(this.role, this.hospitalId, this.username, this.pwd))
           .subscribe(
             (res: any) => this.afterSuccessfulLogin(res),
-            (err: any) => this.error = err
+            (err: any) => this.error.message = err.message
           );
         break;
       case RoleEnum.DOCTOR:
         this.authService.loginDoctorUser(new HospitalUser(this.role, this.hospitalId, this.username, this.pwd))
           .subscribe(
             (res: any) => this.afterSuccessfulLogin(res),
-            (err: any) => this.error = err
+            (err: any) => this.error.message = err.message
           );
         break;
       case RoleEnum.PATIENT:
-        this.authService.loginPatientUser(new User(this.role, this.username, this.pwd))
+        this.authService.loginPatientUser(new User(this.role, this.username, this.pwd, this.newPwd))
           .subscribe(
             (res: any) => this.afterSuccessfulLogin(res),
-            (err: any) => this.error = err
+            (err: any) => this.error.message = err.message
           );
         break;
     }
@@ -73,6 +77,16 @@ export class LoginComponent implements OnInit {
   }
 
   private afterSuccessfulLogin(res: any): void {
+    if (res.success && res.success === this.PWD_CHANGE) {
+      this.createNewPwd = true;
+
+      return;
+    } else if (!res.accessToken) {
+      this.error.message = 'Token is missing.';
+
+      return;
+    }
+
     localStorage.setItem(BrowserStorageFields.TOKEN, res.accessToken);
     const role = this.role;
     localStorage.setItem(BrowserStorageFields.USER_ROLE, this.role);

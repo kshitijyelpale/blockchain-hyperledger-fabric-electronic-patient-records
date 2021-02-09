@@ -37,10 +37,18 @@
               <input type="password" name="password" class="form-control rounded-1" required
                 [(ngModel)]="pwd">
             </div>
-            <div *ngIf="error">
+            <div *ngIf="error.message">
               <p class="alert alert alert-danger">{{error.message}}</p>
             </div>
-            <button type="button" class="btn btn-success float-right mt-2" [disabled]="loginForm.invalid"
+            <ng-container *ngIf="createNewPwd">
+              <div>
+                <p class="alert alert alert-danger">Please change the temporary password immediately.</p>
+              </div>
+              <button type="button" class="btn btn-success float-right mt-2" (click)="loginPatient(patientPassword)">
+                Create new password
+              </button>
+            </ng-container>
+            <button *ngIf="!createNewPwd" type="button" class="btn btn-success float-right mt-2" [disabled]="loginForm.invalid"
                     (click)="loginUser()">
               Login
             </button>
@@ -56,22 +64,21 @@
 <ng-template #patientPassword let-close="close" let-dismiss="dismiss">
   <div class="modal-header">
     <h4 class="modal-title">
-      <i class="fa fa-university mr-2"></i>Password
+      <i class="fa fa-key mr-2"></i>Password
     </h4>
     <button type="button" class="close" aria-label="Close" (click)="dismiss('Cross click')">
       <span aria-hidden="true">x</span>
     </button>
   </div>
   <div class="modal-body">
-    <p>Enter password for authentication</p>
+    <p>Enter new password for authentication</p>
     <div class="form-group">
-      <input type="password" name="password" class="form-control rounded-1" required
-             [(ngModel)]="pwd">
+      <input type="password" name="password" class="form-control rounded-1" required [(ngModel)]="newPwd">
     </div>
   </div>
   <div class="modal-footer">
     <button type="button" id="patientPwd" class="btn btn-danger" [disabled]="!pwd" (click)="close('Confirm password')">
-      Confirm Password
+      Confirm password and login
     </button>
     <button type="button" class="btn btn-outline-dark" (click)="dismiss('Cancel click')">Cancel</button>
   </div>

@@ -55,6 +55,7 @@ async function enrollAndRegisterDoctors() {
     for (let i = 0; i < doctors.length; i++) {
       const attr = {firstName: doctors[i].firstName, lastName: doctors[i].lastName, role: 'doctor'};
       // Create a redis client and add the doctor to redis
+      doctors[i].hospitalId = parseInt(doctors[i].hospitalId);
       const redisClient = createRedisClient(doctors[i].hospitalId);
       (await redisClient).SET('HOSP' + doctors[i].hospitalId + '-' + 'DOC' + i, 'password');
       await enrollRegisterUser(doctors[i].hospitalId, 'HOSP' + doctors[i].hospitalId + '-' + 'DOC' + i, JSON.stringify(attr));
