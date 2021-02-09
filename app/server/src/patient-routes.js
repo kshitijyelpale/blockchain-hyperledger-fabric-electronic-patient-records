@@ -2,7 +2,7 @@
  * @author Jathin Sreenivas
  * @email jathin.sreenivas@stud.fra-uas.de
  * @create date 2021-01-27 12:44:37
- * @modify date 2021-02-05 20:54:10
+ * @modify date 2021-02-09 11:56:08
  * @desc Paient specific methods - API documentation in http://localhost:3002/ swagger editor.
  */
 
@@ -22,8 +22,7 @@ exports.getPatientById = async (req, res) => {
   await validateRole([ROLE_DOCTOR, ROLE_PATIENT], userRole, res);
   const patientId = req.params.patientId;
   // Set up and connect to Fabric Gateway
-  // TODO: Connect to network using patientID from req auth - replace with req.headers.username
-  const networkObj = await network.connectToNetwork('hosp1admin');
+  const networkObj = await network.connectToNetwork(req.headers.username);
   // Invoke the smart contract function
   const response = await network.invoke(networkObj, true, capitalize(userRole) + 'Contract:readPatient', patientId);
   (response.error) ? res.status(400).send(response.error) : res.status(200).send(JSON.parse(response));
@@ -44,8 +43,7 @@ exports.updatePatientPersonalDetails = async (req, res) => {
   args.changedBy = req.params.patientId;
   args= [JSON.stringify(args)];
   // Set up and connect to Fabric Gateway
-  // TODO: Connect to network using patientID from req auth
-  const networkObj = await network.connectToNetwork('hosp1admin');
+  const networkObj = await network.connectToNetwork(req.headers.username);
   // Invoke the smart contract function
   const response = await network.invoke(networkObj, false, capitalize(userRole) + 'Contract:updatePatientPersonalDetails', args);
   (response.error) ? res.status(500).send(response.error) : res.status(200).send(getMessage(false, 'Successfully Updated Patient.'));
@@ -62,8 +60,7 @@ exports.getPatientHistoryById = async (req, res) => {
   await validateRole([ROLE_DOCTOR, ROLE_PATIENT], userRole, res);
   const patientId = req.params.patientId;
   // Set up and connect to Fabric Gateway
-  // TODO: Connect to network using patientID from req auth
-  const networkObj = await network.connectToNetwork('hosp1admin');
+  const networkObj = await network.connectToNetwork(req.headers.username);
   // Invoke the smart contract function
   const response = await network.invoke(networkObj, true, capitalize(userRole) + 'Contract:getPatientHistory', patientId);
   const parsedResponse = await JSON.parse(response);
@@ -81,7 +78,6 @@ exports.getDoctorsByHospitalId = async (req, res) => {
   await validateRole([ROLE_PATIENT, ROLE_ADMIN], userRole, res);
   const hospitalId = parseInt(req.params.hospitalId);
   // Set up and connect to Fabric Gateway
-  // TODO: Connect to network using adminId from req auth
   userId = hospitalId === 1 ? 'hosp1admin' : 'hosp2admin';
   const networkObj = await network.connectToNetwork(userId);
   // Use the gateway and identity service to get all users enrolled by the CA
@@ -102,8 +98,7 @@ exports.grantAccessToDoctor = async (req, res) => {
   let args = {patientId: patientId, doctorId: doctorId};
   args= [JSON.stringify(args)];
   // Set up and connect to Fabric Gateway
-  // TODO: Connect to network using adminId from req auth
-  const networkObj = await network.connectToNetwork('hosp1admin');
+  const networkObj = await network.connectToNetwork(req.headers.username);
   // Invoke the smart contract function
   const response = await network.invoke(networkObj, false, capitalize(userRole) + 'Contract:grantAccessToDoctor', args);
   (response.error) ? res.status(500).send(response.error) : res.status(200).send(getMessage(false, `Access granted to ${doctorId}`));
@@ -122,8 +117,7 @@ exports.revokeAccessFromDoctor = async (req, res) => {
   let args = {patientId: patientId, doctorId: doctorId};
   args= [JSON.stringify(args)];
   // Set up and connect to Fabric Gateway
-  // TODO: Connect to network using adminId from req auth
-  const networkObj = await network.connectToNetwork('hosp1admin');
+  const networkObj = await network.connectToNetwork(req.headers.username);
   // Invoke the smart contract function
   const response = await network.invoke(networkObj, false, capitalize(userRole) + 'Contract:revokeAccessFromDoctor', args);
   (response.error) ? res.status(500).send(response.error) : res.status(200).send(getMessage(false, `Access revoked from ${doctorId}`));
