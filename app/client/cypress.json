@@ -1,0 +1,5 @@
+{
+  "baseUrl": "http://localhost:4200",
+  "adminUsernameHospital1" : "hosp1admin",
+  "adminPasswordHospital1" : "hosp1lithium"
+}
