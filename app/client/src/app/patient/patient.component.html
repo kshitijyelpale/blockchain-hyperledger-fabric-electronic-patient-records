@@ -11,75 +11,84 @@
 </app-toolbar>
 <br><br><br>
 
-<div class="sidebar-layout-bottom-row p-3 container-fluid">
-  <div class="row">
-    <div class="col-xl-6 col-sm-12">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">Details</h5>
-          <table *ngIf="patientRecord !== undefined">
+<div class="sidebar-layout-bottom-row p-3 container-fluid" *ngIf="patientRecord$ | loading | async as obs">
+  <div class="page-loader" *ngIf="obs.loading">
+    <div class="ng-spinner-loader"></div>
+    <p class="text-left">Loading...</p>
+  </div>
+  <div *ngIf="obs.error">
+    <p class="alert alert-danger">There was an error requesting patient information.</p>
+  </div>
+  <ng-container  *ngIf="obs.value as model">
+    <div class="row">
+      <div class="col-xl-6 col-sm-12">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Details</h5>
+            <table>
             <span>
               <tr>
                 <td class="labels"><strong>Patient ID</strong></td>
-                <td>{{patientRecord.patientId}}</td>
+                <td>{{model.patientId}}</td>
               </tr>
               <tr>
                 <td class="labels"><strong>First Name</strong></td>
-                <td>{{patientRecord.firstName}}</td>
+                <td>{{model.firstName}}</td>
               </tr>
               <tr>
                 <td class="labels"><strong>Last Name</strong></td>
-                <td>{{patientRecord.lastName}}</td>
+                <td>{{model.lastName}}</td>
               </tr>
               <tr>
                 <td class="labels"><strong>Age</strong></td>
-                <td>{{patientRecord.age}}</td>
+                <td>{{model.age}}</td>
               </tr>
               <ng-container *ngIf="isPatient()">
                 <tr>
                   <td class="labels"><strong>Contact number</strong></td>
-                  <td>{{patientRecord.phoneNumber}}</td>
+                  <td>{{model.phoneNumber}}</td>
                 </tr>
                 <tr>
                   <td class="labels"><strong>Emergency number</strong></td>
-                  <td>{{patientRecord.emergPhoneNumber}}</td>
+                  <td>{{model.emergPhoneNumber}}</td>
                 </tr>
                 <tr>
                   <td class="labels"><strong>Address</strong></td>
-                  <td>{{patientRecord.address}}</td>
+                  <td>{{model.address}}</td>
                 </tr>
               </ng-container>
               <tr>
                 <td class="labels"><strong>Blood Group</strong></td>
-                <td>{{patientRecord.bloodGroup}}</td>
+                <td>{{model.bloodGroup}}</td>
               </tr>
               <tr>
                 <td class="labels"><strong>Allergies</strong></td>
-                <td>{{patientRecord.allergies}}</td>
+                <td>{{model.allergies}}</td>
               </tr>
               <tr>
                 <td class="labels"><strong>Symptoms</strong></td>
-                <td>{{patientRecord.symptoms}}</td>
+                <td>{{model.symptoms}}</td>
               </tr>
               <tr>
                 <td class="labels"><strong>Diagnosis</strong></td>
-                <td>{{patientRecord.diagnosis}}</td>
+                <td>{{model.diagnosis}}</td>
               </tr>
               <tr>
                 <td class="labels"><strong>Treatment</strong></td>
-                <td>{{patientRecord.treatment}}</td>
+                <td>{{model.treatment}}</td>
               </tr>
               <tr>
                 <td class="labels"><strong>Follow up period</strong></td>
-                <td>{{patientRecord.followUp}}</td>
+                <td>{{model.followUp}}</td>
               </tr>
             </span>
-          </table>
-          <div *ngIf="patientRecord === undefined">
-            <p>You are not authorized to view patient details.</p>
+            </table>
+            <div *ngIf="patientRecord$ === undefined">
+              <p>You are not authorized to view patient details.</p>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </ng-container>
 </div>

@@ -22,13 +22,13 @@
             {{singleRecord[columnName.keyName]}}
           </td>
         </tr>-->
-        <tr *ngFor="let singleRecord of patientRecords">
+        <tr *ngFor="let singleRecord of patientRecords$ | async">
           <td>{{singleRecord.patientId}}</td>
           <td>{{singleRecord.firstName}}</td>
           <td>{{singleRecord.lastName}}</td>
         </tr>
       </tbody>
     </table>
-    <span>Total count: {{patientRecords.length}}</span>
+    <span>Total count: {{(patientRecords$ | async)?.length}}</span>
   </div>
 </div>

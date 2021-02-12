@@ -1,22 +1,25 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 
+import { Observable, Subscription } from 'rxjs';
+
 import { PatientService } from '../patient.service';
-import { DisplayVal, PatientRecord, PatientViewRecord } from '../patient';
-import {RoleEnum} from '../../utils';
-import {AuthService} from '../../core/auth/auth.service';
+import { DisplayVal, PatientViewRecord } from '../patient';
+import { RoleEnum } from '../../utils';
+import { AuthService } from '../../core/auth/auth.service';
 
 @Component({
   selector: 'app-patient-history',
   templateUrl: './patient-history.component.html',
   styleUrls: ['./patient-history.component.scss']
 })
-export class PatientHistoryComponent implements OnInit {
+export class PatientHistoryComponent implements OnInit, OnDestroy {
   public patientID: any;
-  public patientRecordHistory: Array<PatientViewRecord> = [];
+  public patientRecordHistoryObs$?: Observable<Array<PatientViewRecord>>;
   public data: any;
+  private sub?: Subscription;
   headerNames = [
-    new DisplayVal(PatientViewRecord.prototype.date, 'Date'),
+    new DisplayVal(PatientViewRecord.prototype.Timestamp, 'Date'),
     new DisplayVal(PatientViewRecord.prototype.changedBy, 'Last changed by'),
     new DisplayVal(PatientViewRecord.prototype.firstName, 'First Name'),
     new DisplayVal(PatientViewRecord.prototype.lastName, 'Last Name'),
@@ -45,22 +48,26 @@ export class PatientHistoryComponent implements OnInit {
       new DisplayVal(PatientViewRecord.prototype.treatment, 'Treatment'),
       new DisplayVal(PatientViewRecord.prototype.followUp, 'Followup duration')
     );
-    this.route.params
+    this.sub = this.route.params
       .subscribe((params: Params) => {
         this.patientID = params.patientId;
         this.refresh();
       });
   }
 
+  ngOnDestroy(): void {
+    this.sub?.unsubscribe();
+  }
+
   public refresh(): void {
-    this.patientService.getPatientHistoryByKey(this.patientID).subscribe(x => {
-      this.data = x as Array<PatientRecord>;
-      this.patientRecordHistory = this.data.map((y: PatientRecord) => new PatientViewRecord(y));
-    });
+    this.patientRecordHistoryObs$ = this.patientService.getPatientHistoryByKey(this.patientID);
   }
 
   public isPatient(): boolean {
-    // TODO: remove admin from this condition at the end of web app development
-    return this.authService.getRole() === RoleEnum.PATIENT || this.authService.getRole() === RoleEnum.ADMIN;
+    return this.authService.getRole() === RoleEnum.PATIENT;
+  }
+
+  public convertToDate(val: any): string{
+    return new Date(val.seconds.low * 1000).toDateString();
   }
 }

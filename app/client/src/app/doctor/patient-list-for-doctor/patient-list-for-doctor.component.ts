@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
+import { Observable } from 'rxjs';
+
 import { PatientService } from '../../patient/patient.service';
-import { DisplayVal, PatientDoctorViewRecord, PatientRecord, PatientViewRecord } from '../../patient/patient';
+import { DisplayVal, PatientDoctorViewRecord, PatientViewRecord } from '../../patient/patient';
 
 @Component({
   selector: 'app-patient-list-for-doctor',
@@ -9,7 +11,7 @@ import { DisplayVal, PatientDoctorViewRecord, PatientRecord, PatientViewRecord }
   styleUrls: ['./patient-list-for-doctor.component.scss']
 })
 export class PatientListForDoctorComponent implements OnInit {
-  public patientRecords: Array<PatientDoctorViewRecord> = [];
+  public patientRecordsObs$?: Observable<Array<PatientDoctorViewRecord>>;
   public headerNames = [
     new DisplayVal(PatientViewRecord.prototype.patientId, 'Patient Id'),
     new DisplayVal(PatientViewRecord.prototype.firstName, 'First Name'),
@@ -23,9 +25,6 @@ export class PatientListForDoctorComponent implements OnInit {
   }
 
   public refresh(): void {
-    this.patientService.fetchAllPatients().subscribe(x => {
-      const data = x as Array<PatientRecord>;
-      this.patientRecords = data.map(y => new PatientDoctorViewRecord(y));
-    });
+    this.patientRecordsObs$ = this.patientService.fetchAllPatients();
   }
 }

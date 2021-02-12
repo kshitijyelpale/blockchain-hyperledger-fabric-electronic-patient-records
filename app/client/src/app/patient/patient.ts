@@ -49,7 +49,7 @@ export class PatientViewRecord {
   followUp = '';
   docType = '';
   changedBy = '';
-  date = '';
+  Timestamp = '';
 
   constructor(readonly patientRecord: PatientRecord) {
     this.patientId = patientRecord.patientId;
@@ -67,7 +67,7 @@ export class PatientViewRecord {
     this.followUp = patientRecord.followUp;
     this.docType = patientRecord.docType;
     this.changedBy = patientRecord.changedBy;
-    this.date = patientRecord.Timestamp ? new Date(patientRecord.Timestamp.seconds.low * 1000).toDateString() : '';
+    this.Timestamp = patientRecord.Timestamp ? new Date(patientRecord.Timestamp.seconds.low * 1000).toDateString() : '';
   }
 }
 
