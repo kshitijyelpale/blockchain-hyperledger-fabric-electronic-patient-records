@@ -1,0 +1,20 @@
+[
+  {
+    "firstName": "Kshitij",
+    "lastName" : "Yelpale",
+    "address": "E031, Friedrich-Wilhelm-von-Steuben-Str. 90",
+    "age": 27,
+    "bloodGroup": "ab+",
+    "phoneNumber": "017669434050",
+    "emergPhoneNumber": "017669434050"
+  },
+  {
+    "firstName": "Ram",
+    "lastName" : "Ram",
+    "address": "India",
+    "age": 27,
+    "bloodGroup": "ab+",
+    "phoneNumber": "017669434050",
+    "emergPhoneNumber": "017669434050"
+  }
+]
