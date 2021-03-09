@@ -26,6 +26,7 @@ import { PatientDetailsMedicalEditComponent } from './patient/patient-details-me
 import { PatientDetailsPersonalEditComponent } from './patient/patient-details-personal-edit/patient-details-personal-edit.component';
 import { DoctorListForPatientComponent } from './doctor/doctor-list-for-patient/doctor-list-for-patient.component';
 import { PatientListForDoctorComponent } from './doctor/patient-list-for-doctor/patient-list-for-doctor.component';
+import { LoadingPipe } from './loading.pipe';
 
 const components = [
   AppComponent,
@@ -47,8 +48,12 @@ const components = [
   SearchTextComponent
 ];
 
+const pipes = [
+  LoadingPipe
+];
+
 @NgModule({
-  declarations: [...components],
+  declarations: [...components, ...pipes],
   imports: [
     BrowserModule,
     FormsModule,

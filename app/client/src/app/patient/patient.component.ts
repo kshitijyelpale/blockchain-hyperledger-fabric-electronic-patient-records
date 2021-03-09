@@ -1,19 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 
+import { Observable, Subscription } from 'rxjs';
+
 import { PatientService } from './patient.service';
-import { PatientRecord, PatientViewRecord } from './patient';
+import { PatientViewRecord } from './patient';
 import { AuthService } from '../core/auth/auth.service';
-import {RoleEnum, Utils} from '../utils';
+import { RoleEnum } from '../utils';
+
 
 @Component({
   selector: 'app-patient',
   templateUrl: './patient.component.html',
   styleUrls: ['./patient.component.scss']
 })
-export class PatientComponent implements OnInit {
+export class PatientComponent implements OnInit, OnDestroy {
   public patientID: any;
-  public patientRecord: PatientViewRecord | undefined;
+  public patientRecordObs?: Observable<PatientViewRecord>;
+  private sub?: Subscription;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -22,27 +26,26 @@ export class PatientComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.route.params
+    this.sub = this.route.params
       .subscribe((params: Params) => {
         this.patientID = params.patientId;
         this.refresh();
-    });
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.sub?.unsubscribe();
   }
 
   public refresh(): void {
-    this.patientService.getPatientByKey(this.patientID).subscribe(x => {
-      const data = x as PatientRecord;
-      this.patientRecord = new PatientViewRecord(data);
-    });
+    this.patientRecordObs = this.patientService.getPatientByKey(this.patientID);
   }
 
   public isPatient(): boolean {
-    // TODO: remove admin from this condition at the end of web app development
-    return this.authService.getRole() === RoleEnum.PATIENT || this.authService.getRole() === RoleEnum.ADMIN;
+    return this.authService.getRole() === RoleEnum.PATIENT;
   }
 
   public isDoctor(): boolean {
-    // TODO: remove admin from this condition at the end of web app development
-    return this.authService.getRole() === RoleEnum.DOCTOR || this.authService.getRole() === RoleEnum.ADMIN;
+    return this.authService.getRole() === RoleEnum.DOCTOR;
   }
 }

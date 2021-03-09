@@ -4,8 +4,8 @@
 <br><br><br>
 
 <div class="sidebar-layout-bottom-row p-3 container-fluid">
-  <p *ngIf="!patientRecords">You do not have permissions to view any of the patient records.</p>
-  <ng-container *ngIf="patientRecords">
+  <p *ngIf="!patientRecordsObs$">You do not have permissions to view any of the patient records.</p>
+  <ng-container *ngIf="patientRecordsObs$">
     <p>List of all patients.</p>
     <div class="table-responsive">
       <table class="table table-hover">
@@ -18,7 +18,7 @@
         </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let singleRecord of patientRecords">
+          <tr *ngFor="let singleRecord of patientRecordsObs$ | async">
             <td>{{singleRecord.patientId}}</td>
             <td>{{singleRecord.firstName}}</td>
             <td>{{singleRecord.lastName}}</td>
@@ -28,7 +28,7 @@
           </tr>
         </tbody>
       </table>
-      <span>Total count: {{patientRecords.length}}</span>
+      <span>Total count: {{(patientRecordsObs$ | async)?.length}}</span>
     </div>
   </ng-container>
 </div>

@@ -20,8 +20,8 @@
             {{singleRecord[columnName.keyName]}}
           </td>
         </tr>-->
-        <tr *ngFor="let singleRecord of patientRecordHistory">
-          <td>{{singleRecord.date}}</td>
+        <tr *ngFor="let singleRecord of patientRecordHistoryObs$ | async">
+          <td>{{convertToDate(singleRecord.Timestamp)}}</td>
           <td>{{singleRecord.changedBy}}</td>
           <td>{{singleRecord.firstName}}</td>
           <td>{{singleRecord.lastName}}</td>
@@ -40,6 +40,6 @@
         </tr>
       </tbody>
     </table>
-    <span>Total count: {{patientRecordHistory.length}}</span>
+    <span>Total count: {{(patientRecordHistoryObs$ | async)?.length}}</span>
   </div>
 </div>

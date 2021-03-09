@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+
+import { Subscription } from 'rxjs';
 
 import { DoctorService } from '../doctor.service';
 import { AuthService } from '../../core/auth/auth.service';
@@ -10,7 +12,7 @@ import { AuthService } from '../../core/auth/auth.service';
   templateUrl: './doctor-register.component.html',
   styleUrls: ['./doctor-register.component.scss']
 })
-export class DoctorRegisterComponent implements OnInit {
+export class DoctorRegisterComponent implements OnInit, OnDestroy {
   public form: FormGroup;
   public error: any = null;
 
@@ -18,6 +20,7 @@ export class DoctorRegisterComponent implements OnInit {
     {id: '1', name: 'Hospital 1'},
     {id: '2', name: 'Hospital 2'}
   ];
+  private sub?: Subscription;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -39,6 +42,10 @@ export class DoctorRegisterComponent implements OnInit {
     this.refresh();
   }
 
+  ngOnDestroy(): void {
+    this.sub?.unsubscribe();
+  }
+
   public refresh(): void {
     this.form.reset();
   }
@@ -49,7 +56,7 @@ export class DoctorRegisterComponent implements OnInit {
 
   public save(): void {
     console.log(this.form.value);
-    this.doctorService.createDoctor(this.form.value).subscribe(x => {
+    this.sub = this.doctorService.createDoctor(this.form.value).subscribe(x => {
       const docRegResponse = x;
       if (docRegResponse.error) {
         this.error = docRegResponse.error;

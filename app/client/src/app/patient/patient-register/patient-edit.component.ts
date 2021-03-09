@@ -1,24 +1,26 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Params, Router } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Location } from '@angular/common';
+
+import { Subscription } from 'rxjs';
 
 import { PatientService } from '../patient.service';
-import {PatientRecord} from '../patient';
-import {RoleEnum} from '../../utils';
-import {AuthService} from '../../core/auth/auth.service';
+import { PatientRecord } from '../patient';
+import { RoleEnum } from '../../utils';
+import { AuthService } from '../../core/auth/auth.service';
 
 @Component({
   selector: 'app-patient-new',
   templateUrl: './patient-edit.component.html',
   styleUrls: ['./patient-edit.component.scss']
 })
-export class PatientEditComponent implements OnInit {
+export class PatientEditComponent implements OnInit, OnDestroy {
   public form: FormGroup;
   public error: any = null;
   public title = '';
   public patientId: any;
   public newPatientData: any;
+  private allSub = new Subscription();
 
   public bloodGroupTypes = [
     {id: 'a+', name: 'A +'},
@@ -55,11 +57,16 @@ export class PatientEditComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.params
-      .subscribe((params: Params) => {
+    this.allSub.add(
+      this.route.params.subscribe((params: Params) => {
         this.patientId = params.self;
         this.refresh();
-      });
+      })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.allSub.unsubscribe();
   }
 
   public refresh(): void {
@@ -68,10 +75,12 @@ export class PatientEditComponent implements OnInit {
       this.form.reset();
     }
     else {
-      this.patientService.getPatientByKey(this.patientId).subscribe(x => {
-        const data = x as PatientRecord;
-        this.loadRecord(data);
-      });
+      this.allSub.add(
+        this.patientService.getPatientByKey(this.patientId).subscribe(x => {
+          const data = x as PatientRecord;
+          this.loadRecord(data);
+        })
+      );
     }
     this.error = null;
   }
@@ -94,27 +103,31 @@ export class PatientEditComponent implements OnInit {
 
   public save(): void {
     if (this.isNew()) {
-      this.patientService.createPatient(this.form.value).subscribe(x => {
-        this.newPatientData = x;
-      });
+      this.allSub.add(
+        this.patientService.createPatient(this.form.value).subscribe(x => this.newPatientData = x)
+      );
     }
     else if (this.isPatient()) {
-      this.patientService.updatePatientPersonalDetails(this.patientId, this.form.value).subscribe(x => {
-        const response = x;
-        if (response.error) {
-          this.error = response.error;
-        }
-        this.router.navigate(['/', 'patient', this.patientId]);
-      });
+      this.allSub.add(
+        this.patientService.updatePatientPersonalDetails(this.patientId, this.form.value).subscribe(x => {
+          const response = x;
+          if (response.error) {
+            this.error = response.error;
+          }
+          this.router.navigate(['/', 'patient', this.patientId]);
+        })
+      );
     }
     else {
-      this.patientService.updatePatientMedicalDetails(this.patientId, this.form.value).subscribe(x => {
-        const response = x;
-        if (response.error) {
-          this.error = response.error;
-        }
-        this.router.navigate(['/', 'patient', this.patientId]);
-      });
+      this.allSub.add(
+        this.patientService.updatePatientMedicalDetails(this.patientId, this.form.value).subscribe(x => {
+          const response = x;
+          if (response.error) {
+            this.error = response.error;
+          }
+          this.router.navigate(['/', 'patient', this.patientId]);
+        })
+      );
     }
   }
 

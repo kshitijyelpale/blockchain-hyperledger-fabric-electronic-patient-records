@@ -1,17 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Params } from '@angular/router';
+
+import { Observable, Subscription } from 'rxjs';
 
 import { PatientService } from '../patient/patient.service';
-import { DisplayVal, PatientAdminViewRecord, PatientRecord, PatientViewRecord } from '../patient/patient';
-import { ActivatedRoute, Params } from '@angular/router';
+import { DisplayVal, PatientAdminViewRecord, PatientViewRecord } from '../patient/patient';
 
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss']
 })
-export class AdminComponent implements OnInit {
+export class AdminComponent implements OnInit, OnDestroy {
   public adminId: any;
-  public patientRecords: Array<PatientAdminViewRecord> = [];
+  public patientRecords$?: Observable<Array<PatientAdminViewRecord>>;
+  private sub?: Subscription;
   public headerNames = [
     new DisplayVal(PatientViewRecord.prototype.patientId, 'Patient Id'),
     new DisplayVal(PatientViewRecord.prototype.firstName, 'First Name'),
@@ -24,17 +27,18 @@ export class AdminComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.route.params
+    this.sub = this.route.params
       .subscribe((params: Params) => {
         this.adminId = params.adminId;
         this.refresh();
       });
   }
 
+  ngOnDestroy(): void {
+    this.sub?.unsubscribe();
+  }
+
   public refresh(): void {
-    this.patientService.fetchAllPatients().subscribe(x => {
-      const data = x as Array<PatientRecord>;
-      this.patientRecords = data.map(y => new PatientAdminViewRecord(y));
-    });
+    this.patientRecords$ = this.patientService.fetchAllPatients();
   }
 }
