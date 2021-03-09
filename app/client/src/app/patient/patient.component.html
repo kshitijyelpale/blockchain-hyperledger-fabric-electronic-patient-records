@@ -11,84 +11,75 @@
 </app-toolbar>
 <br><br><br>
 
-<div class="sidebar-layout-bottom-row p-3 container-fluid" *ngIf="patientRecord$ | loading | async as obs">
-  <div class="page-loader" *ngIf="obs.loading">
-    <div class="ng-spinner-loader"></div>
-    <p class="text-left">Loading...</p>
-  </div>
-  <div *ngIf="obs.error">
-    <p class="alert alert-danger">There was an error requesting patient information.</p>
-  </div>
-  <ng-container  *ngIf="obs.value as model">
-    <div class="row">
-      <div class="col-xl-6 col-sm-12">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Details</h5>
-            <table>
+<div class="sidebar-layout-bottom-row p-3 container-fluid">
+  <div class="row">
+    <div class="col-xl-6 col-sm-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Details</h5>
+          <table *ngIf="patientRecordObs | async as record">
             <span>
               <tr>
                 <td class="labels"><strong>Patient ID</strong></td>
-                <td>{{model.patientId}}</td>
+                <td>{{record.patientId}}</td>
               </tr>
               <tr>
                 <td class="labels"><strong>First Name</strong></td>
-                <td>{{model.firstName}}</td>
+                <td>{{record.firstName}}</td>
               </tr>
               <tr>
                 <td class="labels"><strong>Last Name</strong></td>
-                <td>{{model.lastName}}</td>
+                <td>{{record.lastName}}</td>
               </tr>
               <tr>
                 <td class="labels"><strong>Age</strong></td>
-                <td>{{model.age}}</td>
+                <td>{{record.age}}</td>
               </tr>
               <ng-container *ngIf="isPatient()">
                 <tr>
                   <td class="labels"><strong>Contact number</strong></td>
-                  <td>{{model.phoneNumber}}</td>
+                  <td>{{record.phoneNumber}}</td>
                 </tr>
                 <tr>
                   <td class="labels"><strong>Emergency number</strong></td>
-                  <td>{{model.emergPhoneNumber}}</td>
+                  <td>{{record.emergPhoneNumber}}</td>
                 </tr>
                 <tr>
                   <td class="labels"><strong>Address</strong></td>
-                  <td>{{model.address}}</td>
+                  <td>{{record.address}}</td>
                 </tr>
               </ng-container>
               <tr>
                 <td class="labels"><strong>Blood Group</strong></td>
-                <td>{{model.bloodGroup}}</td>
+                <td>{{record.bloodGroup}}</td>
               </tr>
               <tr>
                 <td class="labels"><strong>Allergies</strong></td>
-                <td>{{model.allergies}}</td>
+                <td>{{record.allergies}}</td>
               </tr>
               <tr>
                 <td class="labels"><strong>Symptoms</strong></td>
-                <td>{{model.symptoms}}</td>
+                <td>{{record.symptoms}}</td>
               </tr>
               <tr>
                 <td class="labels"><strong>Diagnosis</strong></td>
-                <td>{{model.diagnosis}}</td>
+                <td>{{record.diagnosis}}</td>
               </tr>
               <tr>
                 <td class="labels"><strong>Treatment</strong></td>
-                <td>{{model.treatment}}</td>
+                <td>{{record.treatment}}</td>
               </tr>
               <tr>
                 <td class="labels"><strong>Follow up period</strong></td>
-                <td>{{model.followUp}}</td>
+                <td>{{record.followUp}}</td>
               </tr>
             </span>
-            </table>
-            <div *ngIf="patientRecord$ === undefined">
-              <p>You are not authorized to view patient details.</p>
-            </div>
+          </table>
+          <div *ngIf="patientRecordObs === undefined">
+            <p>You are not authorized to view patient details.</p>
           </div>
         </div>
       </div>
     </div>
-  </ng-container>
+  </div>
 </div>

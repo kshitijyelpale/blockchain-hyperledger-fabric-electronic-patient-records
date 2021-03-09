@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { PatientService } from './patient.service';
-import { PatientRecord, PatientViewRecord } from './patient';
+import { PatientViewRecord } from './patient';
 import { AuthService } from '../core/auth/auth.service';
 import { RoleEnum } from '../utils';
 
@@ -14,10 +14,10 @@ import { RoleEnum } from '../utils';
   templateUrl: './patient.component.html',
   styleUrls: ['./patient.component.scss']
 })
-export class PatientComponent implements OnInit {
+export class PatientComponent implements OnInit, OnDestroy {
   public patientID: any;
-  public patientRecord$?: Observable<PatientViewRecord>;
-  public patientViewRecord = {};
+  public patientRecordObs?: Observable<PatientViewRecord>;
+  private sub?: Subscription;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -26,15 +26,19 @@ export class PatientComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.route.params
+    this.sub = this.route.params
       .subscribe((params: Params) => {
         this.patientID = params.patientId;
         this.refresh();
       });
   }
 
+  ngOnDestroy(): void {
+    this.sub?.unsubscribe();
+  }
+
   public refresh(): void {
-    this.patientRecord$ = this.patientService.getPatientByKey(this.patientID);
+    this.patientRecordObs = this.patientService.getPatientByKey(this.patientID);
   }
 
   public isPatient(): boolean {
