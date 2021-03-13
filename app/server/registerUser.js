@@ -2,7 +2,7 @@
  * @author Jathin Sreenivas
  * @email jathin.sreenivas@stud.fra-uas.de
  * @create date 2020-12-26 13:26:42
- * @modify date 2021-02-08 13:16:07
+ * @modify date 2021-03-13 15:04:01
  * @desc This file creates a user named 'appUser' at Hospital 1. (Just for testing. Use the API to create a patient)
  */
 
@@ -12,7 +12,7 @@ const FabricCAServices = require('fabric-ca-client');
 const path = require('path');
 const {buildCAClient, registerAndEnrollUser} = require('../patient-asset-transfer/application-javascript/CAUtil.js');
 const walletPath = path.join(__dirname, '/../patient-asset-transfer/application-javascript/wallet');
-const {buildCCPHosp1, buildCCPHosp2, buildWallet} = require('../patient-asset-transfer/application-javascript/AppUtil.js');
+const {buildCCPHosp1, buildCCPHosp2, buildWallet, buildCCPHosp3} = require('../patient-asset-transfer/application-javascript/AppUtil.js');
 let mspOrg;
 let adminUserId;
 let caClient;
@@ -38,7 +38,7 @@ exports.enrollRegisterUser = async function(hospitalId, userId, attributes) {
 
       mspOrg = 'hosp1MSP';
       adminUserId = 'hosp1admin';
-    } else {
+    } else if (hospitalId === 2) {
       // build an in memory object with the network configuration (also known as a connection profile)
       const ccp = buildCCPHosp2();
 
@@ -48,6 +48,16 @@ exports.enrollRegisterUser = async function(hospitalId, userId, attributes) {
 
       mspOrg = 'hosp2MSP';
       adminUserId = 'hosp2admin';
+    } else if (hospitalId === 3) {
+      // build an in memory object with the network configuration (also known as a connection profile)
+      const ccp = buildCCPHosp3();
+
+      // build an instance of the fabric ca services client based on
+      // the information in the network configuration
+      caClient = buildCAClient(FabricCAServices, ccp, 'ca.hosp3.lithium.com');
+
+      mspOrg = 'hosp3MSP';
+      adminUserId = 'hosp3admin';
     }
     // enrolls users to Hospital 1 and adds the user to the wallet
     await registerAndEnrollUser(caClient, wallet, mspOrg, userId, adminUserId, attributes);

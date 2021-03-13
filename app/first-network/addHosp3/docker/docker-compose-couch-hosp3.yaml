@@ -9,8 +9,8 @@ networks:
   hospital:
 
 services:
-  couchdb3:
-    container_name: couchdb3
+  couchdb.hosp3.lithium.com:
+    container_name: couchdb.hosp3.lithium.com
     image: couchdb:3.1.1
     # Populate the COUCHDB_USER and COUCHDB_PASSWORD to set an admin user and password
     # for CouchDB.  This will prevent CouchDB from operating in an "Admin Party" mode.
@@ -27,13 +27,13 @@ services:
   peer0.hosp3.lithium.com:
     environment:
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb3:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.hosp3.lithium.com:5984
       # The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
       # provide the credentials for ledger to connect to CouchDB.  The username and password must
       # match the username and password set for the associated CouchDB.
       - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=hosp3admin
       - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=hosp3lithium
     depends_on:
-      - couchdb3
+      - couchdb.hosp3.lithium.com
     networks:
       - hospital

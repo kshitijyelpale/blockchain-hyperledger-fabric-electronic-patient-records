@@ -57,6 +57,29 @@ exports.buildCCPHosp2 = () => {
 
 /**
  * @author Jathin Sreenivas
+ * @return {ccp} ccp
+ * @description Creates a connection profile and returns the network config to Hospital 3. Reads the JSON file created
+ * @description When CA is created there is a json for each hospital which specfies the connection profile.
+ */
+exports.buildCCPHosp3 = () => {
+  // load the common connection configuration file
+  const ccpPath = path.resolve(__dirname, '..', '..', 'first-network',
+    'organizations', 'peerOrganizations', 'hosp3.lithium.com', 'connection-hosp3.json');
+  const fileExists = fs.existsSync(ccpPath);
+  if (!fileExists) {
+    throw new Error(`no such file or directory: ${ccpPath}`);
+  }
+  const contents = fs.readFileSync(ccpPath, 'utf8');
+
+  // build a JSON object from the file contents
+  const ccp = JSON.parse(contents);
+
+  console.log(`Loaded the network configuration located at ${ccpPath}`);
+  return ccp;
+};
+
+/**
+ * @author Jathin Sreenivas
  * @param  {*} Wallets
  * @param  {string} walletPath
  * @return {wallet} wallet

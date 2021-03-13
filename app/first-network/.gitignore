@@ -9,3 +9,9 @@ organizations/peerOrganizations/*
 system-genesis-block/*
 *.tar.gz
 log.txt
+addHosp3/fabric-ca/hosp3/msp
+addHosp3/fabric-ca/hosp3/ca-cert.pem
+addHosp3/fabric-ca/hosp3/fabric-ca-server.db
+addHosp3/fabric-ca/hosp3/IssuerPublicKey
+addHosp3/fabric-ca/hosp3/IssuerRevocationPublicKey
+addHosp3/fabric-ca/hosp3/tls-cert.pem

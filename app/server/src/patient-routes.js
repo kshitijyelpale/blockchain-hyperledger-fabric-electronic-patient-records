@@ -78,7 +78,7 @@ exports.getDoctorsByHospitalId = async (req, res) => {
   await validateRole([ROLE_PATIENT, ROLE_ADMIN], userRole, res);
   const hospitalId = parseInt(req.params.hospitalId);
   // Set up and connect to Fabric Gateway
-  userId = hospitalId === 1 ? 'hosp1admin' : 'hosp2admin';
+  userId = hospitalId === 1 ? 'hosp1admin' : hospitalId === 2 ? 'hosp2admin' : 'hosp3admin';
   const networkObj = await network.connectToNetwork(userId);
   // Use the gateway and identity service to get all users enrolled by the CA
   const response = await network.getAllDoctorsByHospitalId(networkObj, hospitalId);

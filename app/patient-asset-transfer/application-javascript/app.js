@@ -11,12 +11,13 @@ const {Gateway, Wallets} = require('fabric-network');
 const FabricCAServices = require('fabric-ca-client');
 const path = require('path');
 const {buildCAClient, registerAndEnrollUser} = require('./CAUtil.js');
-const {buildCCPHosp2, buildCCPHosp1, buildWallet} = require('./AppUtil.js');
+const {buildCCPHosp3, buildCCPHosp2, buildCCPHosp1, buildWallet} = require('./AppUtil.js');
 
 const channelName = 'hospitalchannel';
 const chaincodeName = 'patient';
 const mspOrg1 = 'hosp1MSP';
 const mspOrg2 = 'hosp2MSP';
+const mspOrg3 = 'hosp3MSP';
 const walletPath = path.join(__dirname, 'wallet');
 
 
@@ -136,10 +137,14 @@ exports.registerUser = async function(attributes) {
       const ccp = buildCCPHosp1();
       const caClient = buildCAClient(FabricCAServices, ccp, 'ca.hosp1.lithium.com');
       await registerAndEnrollUser(caClient, wallet, mspOrg1, userId, 'hosp1admin', attributes);
-    } else {
+    } else if (hospitalId === 2) {
       const ccp = buildCCPHosp2();
       const caClient = buildCAClient(FabricCAServices, ccp, 'ca.hosp2.lithium.com');
       await registerAndEnrollUser(caClient, wallet, mspOrg2, userId, 'hosp2admin', attributes);
+    } else if (hospitalId === 3) {
+      const ccp = buildCCPHosp3();
+      const caClient = buildCAClient(FabricCAServices, ccp, 'ca.hosp3.lithium.com');
+      await registerAndEnrollUser(caClient, wallet, mspOrg3, userId, 'hosp3admin', attributes);
     }
     console.log(`Successfully registered user: + ${userId}`);
     const response = 'Successfully registered user: '+ userId;
@@ -168,9 +173,12 @@ exports.getAllDoctorsByHospitalId = async function(networkObj, hospitalId) {
     if (hospitalId === 1) {
       const ccp = buildCCPHosp1();
       caClient = buildCAClient(FabricCAServices, ccp, 'ca.hosp1.lithium.com');
-    } else {
+    } else if (hospitalId === 2) {
       const ccp = buildCCPHosp2();
       caClient = buildCAClient(FabricCAServices, ccp, 'ca.hosp2.lithium.com');
+    } else if (hospitalId === 3) {
+      const ccp = buildCCPHosp3();
+      caClient = buildCAClient(FabricCAServices, ccp, 'ca.hosp3.lithium.com');
     }
 
     // Use the identity service to get the user enrolled using the respective CA
