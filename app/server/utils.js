@@ -66,9 +66,12 @@ exports.createRedisClient = async function(hospitalId) {
   if (hospitalId === 1) {
     redisUrl = 'redis://127.0.0.1:6379';
     redisPassword = 'hosp1lithium';
-  } else {
+  } else if (hospitalId === 2) {
     redisUrl = 'redis://127.0.0.1:6380';
     redisPassword = 'hosp2lithium';
+  } else if (hospitalId === 3) {
+    redisUrl = 'redis://127.0.0.1:6381';
+    redisPassword = 'hosp3lithium';
   }
   const redisClient = redis.createClient(redisUrl);
   redisClient.AUTH(redisPassword);
