@@ -206,6 +206,10 @@ function networkDown () {
     ./network.sh down
 }
 
+function deployCC() {
+  cd ..
+  ./network.sh deployCC3
+}
 
 # Obtain the OS and Architecture string that will be used to select the correct
 # native binaries for your platform
@@ -301,6 +305,8 @@ done
 if [ "$MODE" == "up" ]; then
   echo "Add Hospital 3 to channel '${CHANNEL_NAME}' with '${CLI_TIMEOUT}' seconds and CLI delay of '${CLI_DELAY}' seconds and using database '${DATABASE}'"
   echo
+elif [ "${MODE}" == "deployCC" ]; then
+  echo "deploying second chaincode on channel '${CHANNEL_NAME}'"
 elif [ "$MODE" == "down" ]; then
   EXPMODE="Stopping network"
 elif [ "$MODE" == "generate" ]; then
@@ -313,6 +319,8 @@ fi
 #Create the network using docker compose
 if [ "${MODE}" == "up" ]; then
   addHosp3
+elif [ "${MODE}" == "deployCC" ]; then
+  deployCC
 elif [ "${MODE}" == "down" ]; then ## Clear the network
   networkDown
 elif [ "${MODE}" == "generate" ]; then ## Generate Artifacts

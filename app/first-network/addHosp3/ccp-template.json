@@ -12,7 +12,7 @@
         }
     },
     "organizations": {
-        "Org${ORG}": {
+        "hosp${ORG}": {
             "mspid": "hosp${ORG}MSP",
             "peers": [
                 "peer0.hosp${ORG}.lithium.com"
@@ -23,7 +23,7 @@
         }
     },
     "peers": {
-        "peer0.org${ORG}.lithium.com": {
+        "peer0.hosp${ORG}.lithium.com": {
             "url": "grpcs://localhost:${P0PORT}",
             "tlsCACerts": {
                 "pem": "${PEERPEM}"
@@ -35,11 +35,11 @@
         }
     },
     "certificateAuthorities": {
-        "ca.org${ORG}.lithium.com": {
+        "ca.hosp${ORG}.lithium.com": {
             "url": "https://localhost:${CAPORT}",
             "caName": "ca-hosp${ORG}",
             "tlsCACerts": {
-                "pem": "${CAPEM}"
+                "pem": ["${CAPEM}"]
             },
             "httpOptions": {
                 "verify": false

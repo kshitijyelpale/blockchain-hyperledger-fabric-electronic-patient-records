@@ -3,7 +3,7 @@
 function createHosp3 {
 
   echo
-	echo "Enroll the CA admin"
+	echo "Enroll the CA admin of hosp3"
   echo
 	mkdir -p ../organizations/peerOrganizations/hosp3.lithium.com/
 
@@ -31,21 +31,21 @@ function createHosp3 {
     OrganizationalUnitIdentifier: orderer' > ${PWD}/../organizations/peerOrganizations/hosp3.lithium.com/msp/config.yaml
 
   echo
-	echo "Register peer0"
+	echo "Register peer0 of hosp3"
   echo
   set -x
 	fabric-ca-client register --caname ca-hosp3 --id.name peer0 --id.secret peer0pw --id.type peer --tls.certfiles ${PWD}/fabric-ca/hosp3/tls-cert.pem
   { set +x; } 2>/dev/null
 
   echo
-  echo "Register user"
+  echo "Register user of hosp3"
   echo
   set -x
   fabric-ca-client register --caname ca-hosp3 --id.name user1 --id.secret user1pw --id.type client --tls.certfiles ${PWD}/fabric-ca/hosp3/tls-cert.pem
   { set +x; } 2>/dev/null
 
   echo
-  echo "Register the org admin"
+  echo "Register the hosp3 admin"
   echo
   set -x
   fabric-ca-client register --caname ca-hosp3 --id.name hosp3hosp3admin --id.secret hosp3hosp3lithium --id.type admin --tls.certfiles ${PWD}/fabric-ca/hosp3/tls-cert.pem
@@ -55,7 +55,7 @@ function createHosp3 {
   mkdir -p ../organizations/peerOrganizations/hosp3.lithium.com/peers/peer0.hosp3.lithium.com
 
   echo
-  echo "## Generate the peer0 msp"
+  echo "## Generate the peer0 msp for hosp3"
   echo
   set -x
 	fabric-ca-client enroll -u https://peer0:peer0pw@localhost:11054 --caname ca-hosp3 -M ${PWD}/../organizations/peerOrganizations/hosp3.lithium.com/peers/peer0.hosp3.lithium.com/msp --csr.hosts peer0.hosp3.lithium.com --tls.certfiles ${PWD}/fabric-ca/hosp3/tls-cert.pem
@@ -64,7 +64,7 @@ function createHosp3 {
   cp ${PWD}/../organizations/peerOrganizations/hosp3.lithium.com/msp/config.yaml ${PWD}/../organizations/peerOrganizations/hosp3.lithium.com/peers/peer0.hosp3.lithium.com/msp/config.yaml
 
   echo
-  echo "## Generate the peer0-tls certificates"
+  echo "## Generate the peer0-tls certificates for hosp3"
   echo
   set -x
   fabric-ca-client enroll -u https://peer0:peer0pw@localhost:11054 --caname ca-hosp3 -M ${PWD}/../organizations/peerOrganizations/hosp3.lithium.com/peers/peer0.hosp3.lithium.com/tls --enrollment.profile tls --csr.hosts peer0.hosp3.lithium.com --csr.hosts localhost --tls.certfiles ${PWD}/fabric-ca/hosp3/tls-cert.pem
@@ -88,7 +88,7 @@ function createHosp3 {
   mkdir -p ../organizations/peerOrganizations/hosp3.lithium.com/users/User1@hosp3.lithium.com
 
   echo
-  echo "## Generate the user msp"
+  echo "## Generate the user msp for hosp3"
   echo
   set -x
 	fabric-ca-client enroll -u https://user1:user1pw@localhost:11054 --caname ca-hosp3 -M ${PWD}/../organizations/peerOrganizations/hosp3.lithium.com/users/User1@hosp3.lithium.com/msp --tls.certfiles ${PWD}/fabric-ca/hosp3/tls-cert.pem
@@ -99,7 +99,7 @@ function createHosp3 {
   mkdir -p ../organizations/peerOrganizations/hosp3.lithium.com/users/Admin@hosp3.lithium.com
 
   echo
-  echo "## Generate the org admin msp"
+  echo "## Generate the hosp 3 admin msp"
   echo
   set -x
 	fabric-ca-client enroll -u https://hosp3hosp3admin:hosp3hosp3lithium@localhost:11054 --caname ca-hosp3 -M ${PWD}/../organizations/peerOrganizations/hosp3.lithium.com/users/Admin@hosp3.lithium.com/msp --tls.certfiles ${PWD}/fabric-ca/hosp3/tls-cert.pem
