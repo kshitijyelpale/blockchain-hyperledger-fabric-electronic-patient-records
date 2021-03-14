@@ -2,21 +2,25 @@
     {
         "hospitalId": "1",
         "firstName": "Brick",
-        "lastName": "Wall"
+        "lastName": "Wall",
+        "speciality": "Neurosurgery"
     },
     {
         "hospitalId": "2",
         "firstName": "Everhart",
-        "lastName": "Hall"
+        "lastName": "Hall",
+        "speciality": "Cardiology"
     },
     {
         "hospitalId": "1",
         "firstName": "Peter",
-        "lastName": "Leavitt"
+        "lastName": "Leavitt",
+        "speciality": "Cardiology"
     },
     {
         "hospitalId": "2",
         "firstName": "Jeremy",
-        "lastName": "Stone"
+        "lastName": "Stone",
+        "speciality": "Neurosurgery"
     }
 ]

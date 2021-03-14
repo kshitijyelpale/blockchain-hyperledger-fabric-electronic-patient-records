@@ -53,7 +53,7 @@ async function enrollAndRegisterDoctors() {
     const jsonString = fs.readFileSync('./initDoctors.json');
     const doctors = JSON.parse(jsonString);
     for (let i = 0; i < doctors.length; i++) {
-      const attr = {firstName: doctors[i].firstName, lastName: doctors[i].lastName, role: 'doctor'};
+      const attr = {firstName: doctors[i].firstName, lastName: doctors[i].lastName, role: 'doctor', speciality: doctors[i].speciality};
       // Create a redis client and add the doctor to redis
       doctors[i].hospitalId = parseInt(doctors[i].hospitalId);
       const redisClient = createRedisClient(doctors[i].hospitalId);

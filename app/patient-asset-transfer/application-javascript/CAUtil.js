@@ -2,7 +2,7 @@
  * @author Jathin Sreenivas
  * @email jathin.sreenivas@stud.fra-uas.de
  * @create date 2020-12-26 13:26:42
- * @modify date 2021-02-03 16:25:46
+ * @modify date 2021-03-14 20:50:51
  * @desc Referenced from https://github.com/hyperledger/fabric-samples/tree/master/test-application/javascript
  */
 
@@ -97,6 +97,7 @@ exports.registerAndEnrollUser = async (caClient, wallet, orgMspId, userId, admin
     const firstName = attributes.firstName;
     const lastName = attributes.lastName;
     const role = attributes.role;
+    const speciality = (role === 'doctor') ? attributes.speciality : '';
 
 
     // Register the user, enroll the user, and import the new identity into the wallet.
@@ -123,6 +124,11 @@ exports.registerAndEnrollUser = async (caClient, wallet, orgMspId, userId, admin
         name: 'role',
         value: role,
         ecert: true,
+      },
+      {
+        name: 'speciality',
+        value: speciality,
+        ecert: true,
       }],
     }, adminUser);
     const enrollment = await caClient.enroll({
@@ -141,6 +147,11 @@ exports.registerAndEnrollUser = async (caClient, wallet, orgMspId, userId, admin
       {
         name: 'role',
         value: role,
+        ecert: true,
+      },
+      {
+        name: 'speciality',
+        value: speciality,
         ecert: true,
       }],
     });
