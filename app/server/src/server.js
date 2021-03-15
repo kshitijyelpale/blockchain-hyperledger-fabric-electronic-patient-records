@@ -3,7 +3,7 @@
  * @author Jathin Sreenivas
  * @email jathin.sreenivas@stud.fra-uas.de
  * @create date 2020-12-26 11:31:42
- * @modify date 2021-02-04 16:39:05
+ * @modify date 2021-03-14 19:30:00
  * @desc NodeJS APIs to interact with the fabric network.
  * @desc Look into API docs for the documentation of the routes
  */
@@ -16,6 +16,8 @@ const cors = require('cors');
 const morgan = require('morgan');
 const jwt = require('jsonwebtoken');
 const jwtSecretToken = 'password';
+const refreshSecretToken = 'refreshpassword';
+let refreshTokens = [];
 const crypto = require('crypto');
 // const https = require('https');
 // const fs = require('fs');
@@ -117,17 +119,58 @@ app.post('/login', async (req, res) => {
 
   if (user) {
     // Generate an access token
-    const accessToken = jwt.sign({username: username, role: req.params.role}, jwtSecretToken);
+    const accessToken = generateAccessToken(username,role);
+    const refreshToken = jwt.sign({ username: username, role: role }, refreshSecretToken);
+    refreshTokens.push(refreshToken);
     // Once the password is matched a session is created with the username and password
     res.status(200);
     res.json({
       accessToken,
+      refreshToken
     });
   } else {
     res.status(400).send({error: 'Username or password incorrect!'});
   }
 });
+/**
+ * @description Generates a new accessToken
+ */
+function generateAccessToken(username,role)
+{
+  return jwt.sign({username: username, role: role}, jwtSecretToken, { expiresIn: '5m' });
+}
+/**
+ * @description Creates a new accessToken when refreshToken is passed in post request
+ */
+ app.post('/token', (req, res) => {
+  let { token } = req.body;
 
+  if (!token) {
+      return res.sendStatus(401);
+  }
+
+  if (!refreshTokens.includes(token)) {
+      return res.sendStatus(403);
+  }
+
+  jwt.verify(token, refreshSecretToken, (err, username) => {
+      if (err) {
+          return res.sendStatus(403);
+      }
+
+      const accessToken = generateAccessToken({username: username, role: req.body.role});
+      res.json({
+          accessToken
+      });
+  });
+});
+/**
+ * @description Logout to remove refreshTokens
+ */
+app.delete('/logout', (req, res) => {
+  refreshTokens = refreshTokens.filter(token => token !== req.body.token);
+  res.sendStatus(204);
+});
 
 // //////////////////////////////// Admin Routes //////////////////////////////////////
 app.post('/doctors/register', authenticateJWT, adminRoutes.createDoctor);
