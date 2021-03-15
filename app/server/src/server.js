@@ -15,10 +15,12 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const morgan = require('morgan');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+
 const jwtSecretToken = 'password';
 const refreshSecretToken = 'refreshpassword';
 let refreshTokens = [];
-const crypto = require('crypto');
+
 // const https = require('https');
 // const fs = require('fs');
 // const path = require('path');
@@ -57,19 +59,27 @@ const authenticateJWT = (req, res, next) => {
     const token = authHeader.split(' ')[1];
 
     if (token === '' || token === 'null') {
-      return res.status(401).send('Unauthorized request');
+      return res.status(401).send('Unauthorized request: Token is missing');
     }
     jwt.verify(token, jwtSecretToken, (err, user) => {
       if (err) {
-        return res.sendStatus(403);
+        return res.status(403).send('Unauthorized request: Wrong or expired token found');
       }
       req.user = user;
       next();
     });
   } else {
-    return res.status(401).send('Unauthorized request');
+    return res.status(401).send('Unauthorized request: Token is missing');
   }
 };
+
+/**
+ * @description Generates a new accessToken
+ */
+function generateAccessToken(username, role) {
+  return jwt.sign({username: username, role: role}, jwtSecretToken, {expiresIn: '5m'});
+}
+
 /**
  * @description Login and create a session with and add two variables to the session
  */
@@ -119,56 +129,51 @@ app.post('/login', async (req, res) => {
 
   if (user) {
     // Generate an access token
-    const accessToken = generateAccessToken(username,role);
-    const refreshToken = jwt.sign({ username: username, role: role }, refreshSecretToken);
+    const accessToken = generateAccessToken(username, role);
+    const refreshToken = jwt.sign({username: username, role: role}, refreshSecretToken);
     refreshTokens.push(refreshToken);
     // Once the password is matched a session is created with the username and password
     res.status(200);
     res.json({
       accessToken,
-      refreshToken
+      refreshToken,
     });
   } else {
     res.status(400).send({error: 'Username or password incorrect!'});
   }
 });
-/**
- * @description Generates a new accessToken
- */
-function generateAccessToken(username,role)
-{
-  return jwt.sign({username: username, role: role}, jwtSecretToken, { expiresIn: '5m' });
-}
+
 /**
  * @description Creates a new accessToken when refreshToken is passed in post request
  */
- app.post('/token', (req, res) => {
-  let { token } = req.body;
+app.post('/token', (req, res) => {
+  const {token} = req.body;
 
   if (!token) {
-      return res.sendStatus(401);
+    return res.sendStatus(401);
   }
 
   if (!refreshTokens.includes(token)) {
-      return res.sendStatus(403);
+    return res.sendStatus(403);
   }
 
   jwt.verify(token, refreshSecretToken, (err, username) => {
-      if (err) {
-          return res.sendStatus(403);
-      }
+    if (err) {
+      return res.sendStatus(403);
+    }
 
-      const accessToken = generateAccessToken({username: username, role: req.body.role});
-      res.json({
-          accessToken
-      });
+    const accessToken = generateAccessToken({username: username, role: req.headers.role});
+    res.json({
+      accessToken,
+    });
   });
 });
+
 /**
  * @description Logout to remove refreshTokens
  */
 app.delete('/logout', (req, res) => {
-  refreshTokens = refreshTokens.filter(token => token !== req.body.token);
+  refreshTokens = refreshTokens.filter((token) => token !== req.body.token);
   res.sendStatus(204);
 });
 
