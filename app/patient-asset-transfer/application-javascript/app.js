@@ -2,7 +2,7 @@
  * @author Jathin Sreenivas
  * @email jathin.sreenivas@stud.fra-uas.de
  * @create date 2020-12-26 13:26:42
- * @modify date 2021-02-03 16:33:45
+ * @modify date 2021-03-14 20:52:37
  * @desc The file which interacts with the fabric network.
  */
 
@@ -196,7 +196,7 @@ exports.getAllDoctorsByHospitalId = async function(networkObj, hospitalId) {
         attributes = identities[i].attrs;
         // Doctor object will consist of firstName and lastName
         for (let j = 0; j < attributes.length; j++) {
-          if (attributes[j].name.endsWith('Name') || attributes[j].name === 'role') {
+          if (attributes[j].name.endsWith('Name') || attributes[j].name === 'role' || attributes[j].name === 'speciality') {
             tmp[attributes[j].name] = attributes[j].value;
           }
         }

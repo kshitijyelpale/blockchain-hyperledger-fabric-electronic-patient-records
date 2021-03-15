@@ -3,7 +3,7 @@
  * @author Jathin Sreenivas
  * @email jathin.sreenivas@stud.fra-uas.de
  * @create date 2020-12-26 11:31:42
- * @modify date 2021-03-14 19:30:00
+ * @modify date 2021-03-14 21:12:15
  * @desc NodeJS APIs to interact with the fabric network.
  * @desc Look into API docs for the documentation of the routes
  */
@@ -179,6 +179,7 @@ app.post('/patients/register', authenticateJWT, adminRoutes.createPatient);
 
 // //////////////////////////////// Doctor Routes //////////////////////////////////////
 app.patch('/patients/:patientId/details/medical', authenticateJWT, doctorRoutes.updatePatientMedicalDetails);
+app.get('/doctors/:hospitalId/:doctorId', authenticateJWT, doctorRoutes.getDoctorById);
 
 // //////////////////////////////// Patient Routes //////////////////////////////////////
 app.get('/patients/:patientId', authenticateJWT, patientRoutes.getPatientById);
