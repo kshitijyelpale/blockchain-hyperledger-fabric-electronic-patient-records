@@ -173,7 +173,7 @@ app.post('/token', (req, res) => {
  * @description Logout to remove refreshTokens
  */
 app.delete('/logout', (req, res) => {
-  refreshTokens = refreshTokens.filter((token) => token !== req.body.token);
+  refreshTokens = refreshTokens.filter((token) => token !== req.headers.token);
   res.sendStatus(204);
 });
 

@@ -75,6 +75,14 @@ export class TokenInterceptorService implements HttpInterceptor {
       });
     }
 
+    if (request.url.includes('logout')) {
+      return request.clone({
+        setHeaders: {
+          token: `${this.authService.getRefreshToken()}`
+        }
+      });
+    }
+
     const token = this.authService.getToken();
     if (token) {
       return request.clone({

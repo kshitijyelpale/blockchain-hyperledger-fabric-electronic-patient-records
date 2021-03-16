@@ -27,7 +27,7 @@ export class DoctorComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.route.params
+    this.sub = this.route.params
       .subscribe((params: Params) => {
         this.doctorId = params.doctorId;
         this.refresh();

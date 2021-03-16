@@ -52,6 +52,10 @@ export class AuthService {
     this.router.navigate(['/login']);
   }
 
+  public logout(): any {
+    return this.http.delete(this.serverUrl + '/logout');
+  }
+
   public loggedIn(): boolean {
     return !!localStorage.getItem(BrowserStorageFields.TOKEN);
   }
