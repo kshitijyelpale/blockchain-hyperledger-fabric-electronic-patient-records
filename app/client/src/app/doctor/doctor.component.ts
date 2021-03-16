@@ -39,7 +39,7 @@ export class DoctorComponent implements OnInit, OnDestroy {
   }
 
   public refresh(): void {
-    this.doctorRecordObs = this.doctorService.getDoctorByHospitalId(1, this.doctorId);
+    this.doctorRecordObs = this.doctorService.getDoctorByHospitalId(this.authService.getHospitalId(), this.doctorId);
   }
 
   public isDoctor(): boolean {

@@ -20,7 +20,7 @@ export class DoctorService {
     return this.http.get(this.doctorURL + `/${hospitalId}/_all`);
   }
 
-  public getDoctorByHospitalId(hospitalId: number, docId: any): Observable<any> {
+  public getDoctorByHospitalId(hospitalId: string, docId: any): Observable<any> {
     return this.http.get(this.doctorURL + `/${hospitalId}/${docId}`);
   }
 }

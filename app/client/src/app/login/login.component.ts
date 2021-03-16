@@ -87,11 +87,10 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    localStorage.setItem(BrowserStorageFields.TOKEN, res.accessToken);
     const role = this.role;
-    localStorage.setItem(BrowserStorageFields.USER_ROLE, this.role);
     const userId = this.username;
-    localStorage.setItem(BrowserStorageFields.USERNAME, this.username);
+    const hospitalId = this.hospitalId;
+    this.authService.setHeaders(res, role, hospitalId, userId);
 
     this.resetFields();
 

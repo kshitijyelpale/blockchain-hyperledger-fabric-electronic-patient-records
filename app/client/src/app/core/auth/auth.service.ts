@@ -38,10 +38,11 @@ export class AuthService {
         }));
   }
 
-  public setHeaders(res: any, role: string, username: string): void {
+  public setHeaders(res: any, role: string, hospitalId: number, username: string): void {
     localStorage.setItem(BrowserStorageFields.TOKEN, res.accessToken);
     localStorage.setItem(BrowserStorageFields.REFRESH_TOKEN, res.refreshToken);
     localStorage.setItem(BrowserStorageFields.USER_ROLE, role);
+    localStorage.setItem(BrowserStorageFields.HOSPITAL_ID, String(hospitalId));
     localStorage.setItem(BrowserStorageFields.USERNAME, username);
   }
 
@@ -71,6 +72,10 @@ export class AuthService {
     return localStorage.getItem(BrowserStorageFields.USER_ROLE) as string;
   }
 
+  public getHospitalId(): string {
+    return JSON.parse(localStorage.getItem(BrowserStorageFields.HOSPITAL_ID) as string);
+  }
+
   public getUsername(): string {
     return localStorage.getItem(BrowserStorageFields.USERNAME) as string;
   }
@@ -79,6 +84,7 @@ export class AuthService {
     localStorage.removeItem(BrowserStorageFields.TOKEN);
     localStorage.removeItem(BrowserStorageFields.REFRESH_TOKEN);
     localStorage.removeItem(BrowserStorageFields.USER_ROLE);
+    localStorage.removeItem(BrowserStorageFields.HOSPITAL_ID);
     localStorage.removeItem(BrowserStorageFields.USERNAME);
   }
 }

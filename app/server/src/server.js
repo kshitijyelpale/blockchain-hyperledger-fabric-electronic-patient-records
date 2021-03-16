@@ -184,12 +184,12 @@ app.post('/patients/register', authenticateJWT, adminRoutes.createPatient);
 
 // //////////////////////////////// Doctor Routes //////////////////////////////////////
 app.patch('/patients/:patientId/details/medical', authenticateJWT, doctorRoutes.updatePatientMedicalDetails);
-app.get('/doctors/:hospitalId/:doctorId', authenticateJWT, doctorRoutes.getDoctorById);
+app.get('/doctors/:hospitalId([0-9]+)/:doctorId(HOSP[0-9]+\-DOC[0-9]+)', authenticateJWT, doctorRoutes.getDoctorById);
 
 // //////////////////////////////// Patient Routes //////////////////////////////////////
 app.get('/patients/:patientId', authenticateJWT, patientRoutes.getPatientById);
 app.patch('/patients/:patientId/details/personal', authenticateJWT, patientRoutes.updatePatientPersonalDetails);
 app.get('/patients/:patientId/history', authenticateJWT, patientRoutes.getPatientHistoryById);
-app.get('/doctors/:hospitalId/_all', authenticateJWT, patientRoutes.getDoctorsByHospitalId);
+app.get('/doctors/:hospitalId([0-9]+)/_all', authenticateJWT, patientRoutes.getDoctorsByHospitalId);
 app.patch('/patients/:patientId/grant/:doctorId', authenticateJWT, patientRoutes.grantAccessToDoctor);
 app.patch('/patients/:patientId/revoke/:doctorId', authenticateJWT, patientRoutes.revokeAccessFromDoctor);
