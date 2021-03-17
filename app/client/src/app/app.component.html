@@ -24,7 +24,7 @@
       <li class="nav-item">
         <a class="nav-link fa fa-sign-in" *ngIf="!authService.loggedIn()" routerLink="/login" routerLinkActive="active">&nbsp;Login</a>
         <a class="nav-link fa fa-sign-out mr-2" style="cursor: pointer" *ngIf="authService.loggedIn()"
-          (click)="authService.logoutUser()">
+          (click)="logoutUser()">
           Logout
         </a>
       </li>

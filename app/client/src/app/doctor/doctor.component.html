@@ -4,3 +4,38 @@
   <app-toolbar-button text="Refresh" icon="refresh" (click)="refresh()"></app-toolbar-button>
 </app-toolbar>
 <br><br><br>
+
+<div class="sidebar-layout-bottom-row p-3 container-fluid">
+  <div class="row">
+    <div class="col-xl-6 col-sm-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Details</h5>
+          <table *ngIf="doctorRecordObs | async as record">
+            <span>
+              <tr>
+                <td class="labels"><strong>Doctor ID</strong></td>
+                <td>{{doctorId}}</td>
+              </tr>
+              <tr>
+                <td class="labels"><strong>First Name</strong></td>
+                <td>{{record.firstName}}</td>
+              </tr>
+              <tr>
+                <td class="labels"><strong>Last Name</strong></td>
+                <td>{{record.lastName}}</td>
+              </tr>
+              <tr>
+                <td class="labels"><strong>Speciality</strong></td>
+                <td>{{record.speciality}}</td>
+              </tr>
+            </span>
+          </table>
+          <div *ngIf="doctorRecordObs === undefined">
+            <p>You are not authorized to view doctor details.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

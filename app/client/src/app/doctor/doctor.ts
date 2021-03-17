@@ -9,6 +9,7 @@ export class DoctorViewRecord {
   doctorId = '';
   firstName = '';
   lastName = '';
+  speciality = '';
   role = '';
 
   constructor(readonly doctorRecord: DoctorRecord) {

@@ -5,8 +5,10 @@ export enum RoleEnum {
 }
 
 export enum BrowserStorageFields {
-  TOKEN= 'token',
+  TOKEN = 'token',
+  REFRESH_TOKEN = 'refreshToken',
   USER_ROLE = 'role',
+  HOSPITAL_ID = 'hospitalId',
   USERNAME = 'username'
 }
 export class Utils {
