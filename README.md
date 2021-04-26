@@ -1,6 +1,6 @@
 # blockchain-hyperledger-fabric-electronic-patient-records
 
-Project report will be uploaded soon.
+Project report is available [here](https://github.com/kshitijyelpale/blockchain-hyperledger-fabric-electronic-patient-records/blob/main/docs/Final%20report.pdf) and [presentation](https://github.com/kshitijyelpale/blockchain-hyperledger-fabric-electronic-patient-records/blob/main/docs/Final%20presentation.pdf)
 
 **Project Management**
 
