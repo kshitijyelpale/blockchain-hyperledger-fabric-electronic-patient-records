@@ -163,6 +163,57 @@ installChaincode() {
   successln "Chaincode is installed on peer0.org${ORG}"
 }
 
+installChaincode11() {
+  export PATH=${PWD}/../bin:$PATH
+  export FABRIC_CFG_PATH=$PWD/../config/
+  export CORE_PEER_TLS_ENABLED=true
+  export CORE_PEER_LOCALMSPID="Org1MSP"
+  export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt
+  export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+  export CORE_PEER_ADDRESS=localhost:7151
+  ORG=$1
+  peer lifecycle chaincode install ${CC_NAME}.tar.gz >&log.txt
+  res=$?
+  { set +x; } 2>/dev/null
+  cat log.txt
+  verifyResult $res "Chaincode installation on peer1.org${ORG} has failed"
+  successln "Chaincode is installed on peer1.org${ORG}"
+}
+
+installChaincode21() {
+  export PATH=${PWD}/../bin:$PATH
+  export FABRIC_CFG_PATH=$PWD/../config/
+  export CORE_PEER_TLS_ENABLED=true
+  export CORE_PEER_LOCALMSPID="Org2MSP"
+  export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt
+  export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
+  export CORE_PEER_ADDRESS=localhost:9151
+  ORG=$1
+  peer lifecycle chaincode install ${CC_NAME}.tar.gz >&log.txt
+  res=$?
+  { set +x; } 2>/dev/null
+  cat log.txt
+  verifyResult $res "Chaincode installation on peer1.org${ORG} has failed"
+  successln "Chaincode is installed on peer1.org${ORG}"
+}
+
+installChaincode22() {
+  export PATH=${PWD}/../bin:$PATH
+  export FABRIC_CFG_PATH=$PWD/../config/
+  export CORE_PEER_TLS_ENABLED=true
+  export CORE_PEER_LOCALMSPID="Org2MSP"
+  export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer2.org2.example.com/tls/ca.crt
+  export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
+  export CORE_PEER_ADDRESS=localhost:9251
+  ORG=$1
+  peer lifecycle chaincode install ${CC_NAME}.tar.gz >&log.txt
+  res=$?
+  { set +x; } 2>/dev/null
+  cat log.txt
+  verifyResult $res "Chaincode installation on peer2.org${ORG} has failed"
+  successln "Chaincode is installed on peer2.org${ORG}"
+}
+
 # queryInstalled PEER ORG
 queryInstalled() {
   ORG=$1
@@ -231,11 +282,30 @@ commitChaincodeDefinition() {
   # peer (if join was successful), let's supply it directly as we know
   # it using the "-o" option
   set -x
-  peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile $ORDERER_CA --channelID $CHANNEL_NAME --name ${CC_NAME} $PEER_CONN_PARMS --version ${CC_VERSION} --sequence ${CC_SEQUENCE} ${INIT_REQUIRED} ${CC_END_POLICY} ${CC_COLL_CONFIG} >&log.txt
+  # peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile $ORDERER_CA --channelID $CHANNEL_NAME --name ${CC_NAME} $PEER_CONN_PARMS --version ${CC_VERSION} --sequence ${CC_SEQUENCE} ${INIT_REQUIRED} ${CC_END_POLICY} ${CC_COLL_CONFIG} >&log.txt
+  peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name basic --version 1.0 --sequence 1 --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses localhost:7151 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt --peerAddresses localhost:9151 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt --peerAddresses localhost:9251 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer2.org2.example.com/tls/ca.crt
   res=$?
   { set +x; } 2>/dev/null
   cat log.txt
-  verifyResult $res "Chaincode definition commit failed on peer0.org${ORG} on channel '$CHANNEL_NAME' failed"
+  verifyResult $res "Chaincode definition commit failed on all peers of all orgs on channel '$CHANNEL_NAME' failed"
+  successln "Chaincode definition committed on channel '$CHANNEL_NAME'"
+}
+
+commitChaincodeDefinition1() {
+  export PATH=${PWD}/../bin:$PATH
+  export FABRIC_CFG_PATH=$PWD/../config/
+
+  # while 'peer chaincode' command can get the orderer endpoint from the
+  # peer (if join was successful), let's supply it directly as we know
+  # it using the "-o" option
+  # set -x
+  # peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile $ORDERER_CA --channelID $CHANNEL_NAME --name ${CC_NAME} $PEER_CONN_PARMS --version ${CC_VERSION} --sequence ${CC_SEQUENCE} ${INIT_REQUIRED} ${CC_END_POLICY} ${CC_COLL_CONFIG} >&log.txt
+  peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID $CHANNEL_NAME --name ${CC_NAME}  --version ${CC_VERSION} --sequence ${CC_SEQUENCE} --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --peerAddresses localhost:7151 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt >&log.txt
+
+  res=$?
+  { set +x; } 2>/dev/null
+  cat log.txt
+  verifyResult $res "Chaincode definition commit failed on peer1.org${ORG} on channel '$CHANNEL_NAME' failed"
   successln "Chaincode definition committed on channel '$CHANNEL_NAME'"
 }
 
@@ -319,8 +389,14 @@ packageChaincode
 ## Install chaincode on peer0.org1 and peer0.org2
 infoln "Installing chaincode on peer0.org1..."
 installChaincode 1
-infoln "Install chaincode on peer0.org2..."
+infoln "Installing chaincode on peer1.org1..."
+installChaincode11 1
+infoln "Installing chaincode on peer0.org2..."
 installChaincode 2
+infoln "Installing chaincode on peer1.org2..."
+installChaincode21 2
+infoln "Installing chaincode on peer2.org2..."
+installChaincode22 2
 
 ## query whether the chaincode is installed
 queryInstalled 1
@@ -343,6 +419,7 @@ checkCommitReadiness 2 "\"Org1MSP\": true" "\"Org2MSP\": true"
 
 ## now that we know for sure both orgs have approved, commit the definition
 commitChaincodeDefinition 1 2
+# commitChaincodeDefinition1 1
 
 ## query on both orgs to see that the definition committed successfully
 queryCommitted 1

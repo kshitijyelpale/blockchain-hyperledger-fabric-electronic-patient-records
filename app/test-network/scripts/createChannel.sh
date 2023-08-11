@@ -84,6 +84,69 @@ joinChannel() {
 	verifyResult $res "After $MAX_RETRY attempts, peer0.org${ORG} has failed to join channel '$CHANNEL_NAME' "
 }
 
+joinChannelCustom() {
+
+  export CORE_PEER_LOCALMSPID="Org1MSP"
+  export CORE_PEER_TLS_ROOTCERT_FILE=$PEER1_ORG1_CA
+  export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+  export CORE_PEER_ADDRESS=localhost:7151
+
+	local rc=1
+	local COUNTER=1
+	## Sometimes Join takes time, hence retry
+	while [ $rc -ne 0 -a $COUNTER -lt $MAX_RETRY ] ; do
+    sleep $DELAY
+    set -x
+    peer channel join -b ./channel-artifacts/$CHANNEL_NAME.block >&log.txt
+    res=$?
+    { set +x; } 2>/dev/null
+		let rc=$res
+		COUNTER=$(expr $COUNTER + 1)
+	done
+	cat log.txt
+	verifyResult $res "After $MAX_RETRY attempts, peer1.org1 has failed to join channel '$CHANNEL_NAME' "
+
+	export CORE_PEER_LOCALMSPID="Org2MSP"
+  export CORE_PEER_TLS_ROOTCERT_FILE=$PEER1_ORG2_CA
+  export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
+  export CORE_PEER_ADDRESS=localhost:9151
+
+	local rc=1
+	local COUNTER=1
+	## Sometimes Join takes time, hence retry
+	while [ $rc -ne 0 -a $COUNTER -lt $MAX_RETRY ] ; do
+    sleep $DELAY
+    set -x
+    peer channel join -b ./channel-artifacts/$CHANNEL_NAME.block >&log.txt
+    res=$?
+    { set +x; } 2>/dev/null
+		let rc=$res
+		COUNTER=$(expr $COUNTER + 1)
+	done
+	cat log.txt
+	verifyResult $res "After $MAX_RETRY attempts, peer1.org2 has failed to join channel '$CHANNEL_NAME' "
+
+	export CORE_PEER_LOCALMSPID="Org2MSP"
+  export CORE_PEER_TLS_ROOTCERT_FILE=$PEER2_ORG2_CA
+  export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
+  export CORE_PEER_ADDRESS=localhost:9251
+
+	local rc=1
+	local COUNTER=1
+	## Sometimes Join takes time, hence retry
+	while [ $rc -ne 0 -a $COUNTER -lt $MAX_RETRY ] ; do
+    sleep $DELAY
+    set -x
+    peer channel join -b ./channel-artifacts/$CHANNEL_NAME.block >&log.txt
+    res=$?
+    { set +x; } 2>/dev/null
+		let rc=$res
+		COUNTER=$(expr $COUNTER + 1)
+	done
+	cat log.txt
+	verifyResult $res "After $MAX_RETRY attempts, peer2.org2 has failed to join channel '$CHANNEL_NAME' "
+}
+
 updateAnchorPeers() {
   ORG=$1
   setGlobals $ORG
@@ -132,6 +195,9 @@ infoln "Join Org1 peers to the channel..."
 joinChannel 1
 infoln "Join Org2 peers to the channel..."
 joinChannel 2
+
+infoln "Join custom peers of hospital network"
+joinChannelCustom
 
 ## Set the anchor peers for each org in the channel
 infoln "Updating anchor peers for org1..."
